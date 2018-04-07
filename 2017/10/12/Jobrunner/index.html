@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <!-- Title -->
+    
+    <title>
+        Jobrunner 源码解析 | Jsharkc&#39;s secret
+    </title>
+    
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+    
+    <!-- Meta & INfo -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="Jsharkc">
+    <meta name="description" content="">
+    <meta name="keywords" content="Golang">
+    
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+    
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Jsharkc&#39;s secret">
+    
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://yoursite.com">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Jobrunner 源码解析 | Jsharkc&#39;s secret">
+    <meta property="og:description" content="">
+    
+     <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+        
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+    
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="/css/material.min.css">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+	body, html{
+		font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+	}
+	
+    a{
+        color: #00838F
+    }
+    
+    .mdl-card__media,
+    #search-label,
+    #search-form-label:after,
+    #scheme-Paradox .hot_tags-count,
+    #scheme-Paradox .sidebar_archives-count,
+    #scheme-Paradox .sidebar-colored .sidebar-header,
+    #scheme-Paradox .sidebar-colored .sidebar-badge{
+        background-color: #0097A7 !important
+    }
+    
+	/* Sidebar User Drop Down Menu Text Color */
+	#scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+    #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus{
+        color: #0097A7 !important
+    }
+    
+    #post_entry-right-info,
+    .sidebar-colored .sidebar-nav li:hover > a,
+    .sidebar-colored .sidebar-nav li:hover > a i,
+    .sidebar-colored .sidebar-nav li > a:hover,
+    .sidebar-colored .sidebar-nav li > a:hover i,
+    .sidebar-colored .sidebar-nav li > a:focus i,
+    .sidebar-colored .sidebar-nav > .open > a,
+    .sidebar-colored .sidebar-nav > .open > a:hover,
+    .sidebar-colored .sidebar-nav > .open > a:focus,
+    #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a{
+        color: #0097A7 !important
+    }
+    
+    .toTop{
+        background: #757575 !important
+    }
+		
+	.material-layout .material-post>.material-nav,
+	.material-layout .material-index>.material-nav,
+	.material-nav a{
+		color: #757575;
+	}
+		
+	#scheme-Paradox .MD-burger-layer {
+		background-color: #757575;
+	}
+
+	#scheme-Paradox #post-toc-trigger-btn{
+		color: #757575;
+	}
+	
+	.post-toc a:hover{
+		color: #00838F;
+		text-decoration: underline;
+	}
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+        body{
+            background-image: url(/img/bg.png);
+        }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+        .fade {
+            transition: all 800ms linear;
+            -webkit-transform: translate3d(0,0,0);
+            -moz-transform: translate3d(0,0,0);
+            -ms-transform: translate3d(0,0,0);
+            -o-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
+            opacity: 1;
+        }
+
+        .fade.out{
+            opacity: 0;
+        }
+    </style>
+
+	<script src="/js/jquery.min.js"></script>
+	
+	<link rel="stylesheet" href="/css/highlight/solarized-white.css">
+	
+	<!-- UC Browser Compatible-->
+	<script>
+		var agent = navigator.userAgent.toLowerCase();
+		if(agent.indexOf('ucbrowser')>0) {
+			document.write('<link rel="stylesheet" href="/css/uc.css">');
+		   alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+		}
+	</script>
+    
+    <!-- Custom Head -->
+    
+</head>
+	
+	
+
+    <body id="scheme-Paradox">
+
+		
+        <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+				
+			
+			
+            <!-- Main Container -->
+            <main class="material-layout__content" id="main">
+				
+                <!-- Top Anchor -->
+                <div id="top"></div>
+				
+				
+                <!-- Hamburger Button -->
+                <button class="MD-burger-icon sidebar-toggle">
+                    <span class="MD-burger-layer"></span>
+                </button>
+				
+				
+                <!-- Post TOC -->
+
+    
+	<!-- Back Button -->
+<!--
+	<div class="material-back" id="backhome-div" tabindex="0">
+		<a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" href="#" onclick="window.history.back();return false;" target="_self" role="button" data-upgraded=",MaterialButton,MaterialRipple">
+			<i class="material-icons" role="presentation">arrow_back</i>
+			<span class="mdl-button__ripple-container">
+				<span class="mdl-ripple"></span>
+			</span>
+		</a>
+	</div>			
+-->
+	<!-- Left aligned menu below button -->
+	<button id="post-toc-trigger-btn"
+			class="mdl-button mdl-js-button mdl-button--icon">
+	  <i class="material-icons">format_list_numbered</i>
+	</button>
+
+	<ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+		for="post-toc-trigger-btn">
+			
+			<ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#安装"><span class="post-toc-number">1.</span> <span class="post-toc-text">安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#eg1"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">eg1</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#源码解析"><span class="post-toc-number">3.</span> <span class="post-toc-text">源码解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#jobrunner-开始函数-Start"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">jobrunner 开始函数 Start()</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#添加任务的四种方式"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">添加任务的四种方式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-Schedule-spec-string-job-cron-Job"><span class="post-toc-number">3.0.2.1.</span> <span class="post-toc-text">1. Schedule(spec string, job cron.Job)</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-Every-duration-time-Duration-job-cron-Job"><span class="post-toc-number">3.0.2.2.</span> <span class="post-toc-text">2.Every(duration time.Duration, job cron.Job)</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-Now-job-cron-Job"><span class="post-toc-number">3.0.2.3.</span> <span class="post-toc-text">3.Now(job cron.Job)</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#4-In-duration-time-Duration-job-cron-Job"><span class="post-toc-number">3.0.2.4.</span> <span class="post-toc-text">4.In(duration time.Duration, job cron.Job)</span></a></li></ol></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#job-结构"><span class="post-toc-number">3.0.3.</span> <span class="post-toc-text">job 结构</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#新建一个-job"><span class="post-toc-number">3.0.4.</span> <span class="post-toc-text">新建一个 job</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#更新-job-状态"><span class="post-toc-number">3.0.4.1.</span> <span class="post-toc-text">更新 job 状态</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#job-运行"><span class="post-toc-number">3.0.4.2.</span> <span class="post-toc-text">job 运行</span></a></li></ol></li></ol></li></ol></li></ol>
+		
+<!--			<li class="mdl-menu__item">Some Action</li>-->
+	</ul>
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+		
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+	<!-- Paradox Post Header -->
+	
+		
+			<!-- Random Thumbnail -->
+			<div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
+				<script>
+    
+    var randomNum;
+    randomNum = Math.floor(Math.random() * 6 + 1);
+    
+    $(".post_thumbnail-random").css('background-image', 'url(' + '/img/random/' + randomNum + '.png' + ')');
+    
+</script>
+
+		
+	
+        <p class="article-headline-p">
+            Jobrunner 源码解析
+        </p>
+    </div>
+
+	
+
+				
+				
+					<!-- Paradox Post Info -->
+					<div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+    
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>Jsharkc</strong>
+        <span>10月 12, 2017</span>
+    </div>
+    
+    <div class="section-spacer"></div>
+	
+    <!-- Favorite -->
+<!--
+    <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+        <i class="material-icons" role="presentation">favorite</i>
+        <span class="visuallyhidden">favorites</span>
+    </button>
+-->
+    
+    <!-- Tags (bookmark) -->
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        
+    </ul>
+    
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+    
+    
+    
+    <!-- Busuanzi Views -->
+    <a class="post_share-link" href="#">
+        <li class="mdl-menu__item">
+            <span id="busuanzi_container_page_pv">
+                <span id="busuanzi_value_page_pv"></span>&nbsp;浏览量
+            </span>
+        </li>
+    </a>
+    
+    
+    <!-- Share Twitter -->
+    <a class="post_share-link" href="https://twitter.com/intent/tweet?text=Jobrunner 源码解析&url=http://yoursite.com//2017/10/12/Jobrunner/index.html&via=Jsharkc" target="_blank">
+        <li class="mdl-menu__item">
+            分享到 Twitter
+        </li>
+    </a>
+    
+    <!-- Share Google+ -->
+    <a class="post_share-link" href="https://plus.google.com/share?url=http://yoursite.com//2017/10/12/Jobrunner/index.html" target="_blank">
+        <li class="mdl-menu__item">
+            分享到 Google+
+        </li>
+    </a>
+    
+    <!-- Share Weibo -->
+    <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=Jobrunner 源码解析&url=http://yoursite.com//2017/10/12/Jobrunner/index.html&pic=&searchPic=false&style=simple" target="_blank">
+        <li class="mdl-menu__item">
+            分享到微博
+        </li>
+    </a>
+</ul>
+</div>
+				
+
+                <!-- Post Content -->
+                <div id="post-content" class="markdown-Github mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+	
+		<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> get github.com/bamzi/jobrunner</span><br></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h4 id="eg1"><a href="#eg1" class="headerlink" title="eg1"></a>eg1</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"github.com/bamzi/jobrunner"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    jobrunner.Start()</span><br><span class="line">    jobrunner.Schedule(<span class="string">"@every 5s"</span>, ReminderEmails&#123;&#125;)</span><br><span class="line">  	<span class="keyword">select</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> ReminderEmails <span class="keyword">struct</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(e ReminderEmails)</span> <span class="title">Run</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"Every 5 sec send reminder emails \n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>解析：</em></strong>在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。</p>
+<p>Jobrunner 支持两种时间格式：</p>
+<ul>
+<li><p>“@XXX”</p>
+<ol>
+<li>“@yearly”, “@annually” 每年</li>
+<li>“@monthly” 每月</li>
+<li>“@weekly” 每星期</li>
+<li>“@daily”, “@midnight” 每天</li>
+<li>“@hourly” 每小时</li>
+<li>“@every 5s” 支持 “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”。</li>
+</ol>
+</li>
+<li><p>“x x x x x x”</p>
+<p>从左到右依次代表 :</p>
+<p>1．秒  </p>
+<p>2．分钟  </p>
+<p>3．小时 </p>
+<p>4．月份中的日期</p>
+<p>5．月份</p>
+<p>6．星期中的日期</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名</th>
+<th>支持的数字</th>
+<th>支持的字符</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Seconds</td>
+<td>0-59</td>
+<td>- * /</td>
+</tr>
+<tr>
+<td>Minutes</td>
+<td>0-59</td>
+<td>- * /</td>
+</tr>
+<tr>
+<td>Hours</td>
+<td>0-23</td>
+<td>- * /</td>
+</tr>
+<tr>
+<td>Day-of-month</td>
+<td>1-31</td>
+<td>- * ? /</td>
+</tr>
+<tr>
+<td>Month</td>
+<td>1-12 or JAN-DEC</td>
+<td>- * /</td>
+</tr>
+<tr>
+<td>Day-of-Week</td>
+<td>1-7 or SUN-SAT</td>
+<td>- * ? /</td>
+</tr>
+</tbody>
+</table>
+<p><strong>解释 :</strong></p>
+<ol>
+<li>* 是一个通配符，表示任何值，用在Minutes字段中表示每分钟。  </li>
+<li>? 只可以用在 <strong><em>day-of-month</em></strong> 或者 <strong><em>Day-of-Week</em></strong> 字段中，用来表示不指定特殊的值。  </li>
+<li>- 用来表示一个范围，比如10-12用在Month中表示10到12月。  </li>
+<li>, 用来表示附加的值，比如 <strong><em>MON,WED,FRI</em></strong> 在 day-of-week 字段中表示<strong><em>礼拜一和礼拜三和礼拜五</em></strong>。  </li>
+<li>/ 用来表示增量，比如0/15用在Minutes字段中表示从0分开始0和15和30和45分。  </li>
+</ol>
+<p><strong><em>e.g.</em></strong></p>
+<ul>
+<li>“0  1  0  1  1-12  ?” 表示每月1号0点1分执行。  </li>
+<li>“0  0  21  ?  *  1” 表示每个礼拜天21点0分执行。  </li>
+<li>“0  0  0  *  *  ?” 表示每天0点0分执行。  </li>
+<li>“0  *  22  *  *  ?” 表示每天22点开始每分钟  </li>
+<li>“0  *  0-23  *  *  ?” 表示每天每分钟 </li>
+</ul>
+<h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><h4 id="jobrunner-开始函数-Start"><a href="#jobrunner-开始函数-Start" class="headerlink" title="jobrunner 开始函数 Start()"></a>jobrunner 开始函数 Start()</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Start</span><span class="params">(v ...<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	MainCron = cron.New()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(v) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> v[<span class="number">0</span>] &gt; <span class="number">0</span> &#123;</span><br><span class="line">			workPermits = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;, v[<span class="number">0</span>])</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			workPermits = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;, DEFAULT_JOB_POOL_SIZE)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(v) &gt; <span class="number">1</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> v[<span class="number">1</span>] &gt; <span class="number">0</span> &#123;</span><br><span class="line">			selfConcurrent = <span class="literal">true</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			selfConcurrent = <span class="literal">false</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	MainCron.Start()</span><br><span class="line"></span><br><span class="line">	fmt.Printf(<span class="string">"%s[JobRunner] %v Started... %s \n"</span>,</span><br><span class="line">		magenta, time.Now().Format(<span class="string">"2006/01/02 - 15:04:05"</span>), reset)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>Start() 接受不定长参数，可以不传，可以传多个，但实际上最多前两个参数有效。首先，创建一个 Cron 定时任务实例 MainCron。如果传入了 &gt; 0 个参数，并且第一个参数 &gt; 0，则用此参数初始化 workPermits 参数，此参数用于控制最多同时运行的 job 数量，如果 &lt;= 0，则用默认 DEFAULT_JOB_POOL_SIZE 常量。如果传入了 &gt; 1 个参数，并且第二个参数 &gt; 0，则用此参数初始化 selfConcurrent 参数，此参数用于控制同一个 job 是否可以并行执行，如果 &lt;= 0，则不可并行。最后，MainCron 开始执行，并打印开始时间。</p>
+<h4 id="添加任务的四种方式"><a href="#添加任务的四种方式" class="headerlink" title="添加任务的四种方式"></a>添加任务的四种方式</h4><h5 id="1-Schedule-spec-string-job-cron-Job"><a href="#1-Schedule-spec-string-job-cron-Job" class="headerlink" title="1. Schedule(spec string, job cron.Job)"></a>1. Schedule(spec string, job cron.Job)</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Schedule</span><span class="params">(spec <span class="keyword">string</span>, job cron.Job)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	sched, err := cron.Parse(spec)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	MainCron.Schedule(sched, New(job))</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>第一个参数是表示什么时间执行，第二个参数就是任务。首先调用 cron 的Parse 解析函数，判断是否有错误，成功的话添加到 MainCron 中准备执行。</p>
+<h5 id="2-Every-duration-time-Duration-job-cron-Job"><a href="#2-Every-duration-time-Duration-job-cron-Job" class="headerlink" title="2.Every(duration time.Duration, job cron.Job)"></a>2.Every(duration time.Duration, job cron.Job)</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Every</span><span class="params">(duration time.Duration, job cron.Job)</span></span> &#123;</span><br><span class="line">	MainCron.Schedule(cron.Every(duration), New(job))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>这个方法是以固定时间间隔执行任务。</p>
+<h5 id="3-Now-job-cron-Job"><a href="#3-Now-job-cron-Job" class="headerlink" title="3.Now(job cron.Job)"></a>3.Now(job cron.Job)</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Now</span><span class="params">(job cron.Job)</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> New(job).Run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>新起一个协程立即运行一次。</p>
+<h5 id="4-In-duration-time-Duration-job-cron-Job"><a href="#4-In-duration-time-Duration-job-cron-Job" class="headerlink" title="4.In(duration time.Duration, job cron.Job)"></a>4.In(duration time.Duration, job cron.Job)</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">In</span><span class="params">(duration time.Duration, job cron.Job)</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		time.Sleep(duration)</span><br><span class="line">		New(job).Run()</span><br><span class="line">	&#125;()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>在第一个参数的时间后，执行一次。</p>
+<h4 id="job-结构"><a href="#job-结构" class="headerlink" title="job 结构"></a>job 结构</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Job <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name    <span class="keyword">string</span>        <span class="comment">// inner 类型名称</span></span><br><span class="line">	inner   cron.Job      <span class="comment">// 实现 Run() 方法的 type</span></span><br><span class="line">	status  <span class="keyword">uint32</span>        <span class="comment">// 状态数</span></span><br><span class="line">	Status  <span class="keyword">string</span>        <span class="comment">// 状态解释</span></span><br><span class="line">	Latency <span class="keyword">string</span>        <span class="comment">// job 运行所用时间</span></span><br><span class="line">	running sync.Mutex    <span class="comment">// 锁</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="新建一个-job"><a href="#新建一个-job" class="headerlink" title="新建一个 job"></a>新建一个 job</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(job cron.Job)</span> *<span class="title">Job</span></span> &#123;</span><br><span class="line">	name := reflect.TypeOf(job).Name()</span><br><span class="line">	<span class="keyword">if</span> name == <span class="string">"Func"</span> &#123;</span><br><span class="line">		name = UNNAMED</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> &amp;Job&#123;</span><br><span class="line">		Name:  name,</span><br><span class="line">		inner: job,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>用反射获取一下传入的 job 的类型，并新建一个 Job 。</p>
+<h5 id="更新-job-状态"><a href="#更新-job-状态" class="headerlink" title="更新 job 状态"></a>更新 job 状态</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(j *Job)</span> <span class="title">StatusUpdate</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> atomic.LoadUint32(&amp;j.status) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		j.Status = <span class="string">"RUNNING"</span></span><br><span class="line">		<span class="keyword">return</span> j.Status</span><br><span class="line">	&#125;</span><br><span class="line">	j.Status = <span class="string">"IDLE"</span></span><br><span class="line">	<span class="keyword">return</span> j.Status</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>以原子方式获取 job.status 的状态数，如果 &gt;0 ，设置 job.Status = “RUNNING”, 否则 job.Status = “IDLE”</p>
+<h5 id="job-运行"><a href="#job-运行" class="headerlink" title="job 运行"></a>job 运行</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(j *Job)</span> <span class="title">Run</span><span class="params">()</span></span> &#123;</span><br><span class="line">	start := time.Now()</span><br><span class="line">	<span class="comment">// If the job panics, just print a stack trace.</span></span><br><span class="line">	<span class="comment">// Don't let the whole process die.</span></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">var</span> buf bytes.Buffer</span><br><span class="line">			logger := log.New(&amp;buf, <span class="string">"JobRunner Log: "</span>, log.Lshortfile)</span><br><span class="line">			logger.Panic(err, <span class="string">"\n"</span>, <span class="keyword">string</span>(debug.Stack()))</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> !selfConcurrent &#123;</span><br><span class="line">		j.running.Lock()</span><br><span class="line">		<span class="keyword">defer</span> j.running.Unlock()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> workPermits != <span class="literal">nil</span> &#123;</span><br><span class="line">		workPermits &lt;- <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line">		<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123; &lt;-workPermits &#125;()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	atomic.StoreUint32(&amp;j.status, <span class="number">1</span>)</span><br><span class="line">	j.StatusUpdate()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">defer</span> j.StatusUpdate()</span><br><span class="line">	<span class="keyword">defer</span> atomic.StoreUint32(&amp;j.status, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">	j.inner.Run()</span><br><span class="line"></span><br><span class="line">	end := time.Now()</span><br><span class="line">	j.Latency = end.Sub(start).String()</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解析：</strong>先获取一下当前时间，作为任务开始时间记录下来，并添加 defer recover 防止崩溃，并打印错误信息。如果 selfConcurrent 为 false ，不能同一个任务并行执行，则加锁，一个一个执行。否则可以同时执行。如果 workPermits 不为空，则限制同时最大执行数量。以原子方式把 job.status 存储为 1，更新一下状态，以 defer 延迟修改 job.status 存储为 0，并更新状态。最后，run job。</p>
+
+	
+	
+	
+	
+</div>
+				
+				
+
+                <!-- Post Comments -->
+                
+                    
+
+
+    <!-- 使用 DISQUS -->
+	<div id="disqus-comment">
+		<div id="disqus_thread"></div>
+<script>
+	var disqus_config = function () {
+		this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+		this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+
+	(function() { // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+		s.src = '//jsharkc.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+	</div>
+	<style>
+		#disqus-comment{
+			background-color:#eee;
+			padding:2pc;
+		}
+	</style>
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    
+    <!-- Prev Nav -->
+    
+        <a href="/2018/02/03/create-react-app 脚手架添加 less 支持和 antd 样式按需加载/" id="post_nav-newer" class="prev-content">
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_back</i>
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            新篇
+        </a>
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+        <a href="/2017/07/17/cobra入门小教程/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
+    
+</nav>
+        </div>
+    </div>
+
+				
+				
+					<!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay "></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored  sidebar-fixed-left" role="navigation">
+	<div id="sidebar-main">
+	    <!-- Sidebar Header -->
+		<div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+    <i class="material-icons">clear_all</i>
+    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="Jsharkc's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        1773867204@qq.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+		<!-- Sidebar Navigation  -->
+		<ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+			
+                <li>
+                    <a href="mailto:1773867204@qq.com" target="_blank" title="Email Me">
+						<i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    <li id="sidebar-first-li">
+        <a href="/" target="_self">
+            <i class="material-icons sidebar-material-icons">home</i>
+             主页
+        </a>
+    </li>
+
+    <!-- I'm Feeling Lucky -->
+<!--
+    <li class="dropdown">
+        <a href="" target="_self">
+            <i class="material-icons sidebar-material-icons">explore</i>
+             sidebar.imlucky
+        </a>
+    </li>
+-->
+
+	
+    <!-- Archives  -->
+    <li class="dropdown">
+        <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+            <i class="material-icons sidebar-material-icons">inbox</i>
+             归档
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+            <a class="sidebar_archives-link" href="/archives/2018/02/">二月 2018<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/10/">十月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/07/">七月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/05/">五月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/04/">四月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/03/">三月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/12/">十二月 2016<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/11/">十一月 2016<span class="sidebar_archives-count">2</span></a>
+        </ul>
+    </li>
+
+    <!-- Divider -->
+    <li class="divider"></li>
+
+
+    <!-- Pages  -->
+	
+		<li>
+			<a href="/tags/" title="标签云">
+				标签云
+			</a>
+		</li>
+	
+		<li>
+			<a href="/gallery/" title="图库">
+				图库
+			</a>
+		</li>
+	
+
+    <!-- Article Numebr  -->
+    <li>
+        <a href="/archives">
+             文章总数
+             <span class="sidebar-badge">17</span>
+        </a>
+    </li>
+</ul>
+
+		<!-- Sidebar Divider -->
+		<div class="sidebar-divider"></div>
+
+		<!-- Sidebar Footer -->
+		<!-- 
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持。 :) 
+-->
+
+<!-- Theme Material -->
+<a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+	<div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+		主题 - Material
+		<span class="sidebar-badge badge-circle">i</span>
+	</div>
+</a>
+
+<!-- Help & Support -->
+<!--
+<a href="mailto:hiviosey@gmail.com" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+		sidebar.help
+		<span class="mdl-button__ripple-container">
+			<span class="mdl-ripple"></span>
+		</span>
+	</div>
+</a>
+-->
+
+<!-- Feedback -->
+<!--
+<a href="https://github.com/viosey/hexo-theme-material/issues" target="_blank" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+         sidebar.feedback
+                    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
+</a>
+-->
+
+<!-- Abount Theme -->
+<!--
+<a href="https://blog.viosey.com/index.php/Material.html" target="_blank" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+         sidebar.about_theme
+        <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
+</a>-->
+
+	</div>
+    
+    <!-- Sidebar Sponsor -->
+    
+
+
+</aside>
+
+				
+				
+				
+					<!-- Footer Top Button -->
+					<div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+				
+				
+				<!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+	
+	
+		<!-- Paradox Footer Left Section -->
+		<div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+    
+    
+    <!-- Facebook -->
+    
+    
+    
+    <!-- Google + -->
+    
+    
+    
+    <!-- Weibo -->
+    
+    
+    
+    <!-- Instagram -->
+    
+    
+    
+    <!-- Tumblr -->
+    
+    
+    
+    <!-- Github -->
+    
+    <a href="http://github.com/jsharkc" target="view_window"><button class="mdl-mini-footer--social-btn social-btn" style="background-image: url(/img/footer/footer_ico-github.png);">
+        <span class="visuallyhidden">Github</span>
+    </button></a>
+    
+</div>
+
+
+		<!--Copyright-->
+		<div id="copyright">Copyright&nbsp;©&nbsp;<script type="text/javascript">var fd = new Date();document.write(fd.getFullYear());</script>&nbsp;Jsharkc's secret</div>
+
+		<!-- Paradox Footer Right Section -->
+
+		<!-- 
+		I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+		It will not impact the appearance and can give developers a lot of support :)
+
+		很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+		它不会影响美观并可以给开发者很大的支持。 :) 
+		-->
+
+		<div class="mdl-mini-footer--right-section">
+			
+		</div>
+	
+    
+</footer>
+                
+				<!-- Import File -->
+<script src="/js/highlight.min.js"></script>
+<script src="/js/js.min.js"></script>
+<script src="/js/nprogress.js"></script>
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    
+    $('#nprogress .bar').css({
+        'background': '#FF4081'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #FF4081, 0 0 15px #FF4081'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#FF4081',
+        'border-left-color': '#FF4081'
+    });
+    
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+    <!-- Busuanzi -->
+    <script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+    <!-- 使用 DISQUS js 代码 -->
+	<script id="dsq-count-scr" src="//jsharkc.disqus.com/count.js" async></script>
+
+
+<!-- Swiftye -->
+
+
+<!-- Local Search-->
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $(".post-toc-wrap").parent(".mdl-menu__container").css("position", "fixed");
+    });
+</script>
+
+<!-- MathJax Load-->
+
+            </main>
+        </div>
+		
+    </body>
+		
+	
+</html>

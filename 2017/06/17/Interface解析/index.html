@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <!-- Title -->
+    
+    <title>
+        Golang Interface 解析 | Jsharkc&#39;s secret
+    </title>
+    
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+    
+    <!-- Meta & INfo -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="Jsharkc">
+    <meta name="description" content="">
+    <meta name="keywords" content="Golang">
+    
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+    
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Jsharkc&#39;s secret">
+    
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://yoursite.com">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Golang Interface 解析 | Jsharkc&#39;s secret">
+    <meta property="og:description" content="">
+    
+     <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+        
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+    
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="/css/material.min.css">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+	body, html{
+		font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+	}
+	
+    a{
+        color: #00838F
+    }
+    
+    .mdl-card__media,
+    #search-label,
+    #search-form-label:after,
+    #scheme-Paradox .hot_tags-count,
+    #scheme-Paradox .sidebar_archives-count,
+    #scheme-Paradox .sidebar-colored .sidebar-header,
+    #scheme-Paradox .sidebar-colored .sidebar-badge{
+        background-color: #0097A7 !important
+    }
+    
+	/* Sidebar User Drop Down Menu Text Color */
+	#scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+    #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus{
+        color: #0097A7 !important
+    }
+    
+    #post_entry-right-info,
+    .sidebar-colored .sidebar-nav li:hover > a,
+    .sidebar-colored .sidebar-nav li:hover > a i,
+    .sidebar-colored .sidebar-nav li > a:hover,
+    .sidebar-colored .sidebar-nav li > a:hover i,
+    .sidebar-colored .sidebar-nav li > a:focus i,
+    .sidebar-colored .sidebar-nav > .open > a,
+    .sidebar-colored .sidebar-nav > .open > a:hover,
+    .sidebar-colored .sidebar-nav > .open > a:focus,
+    #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a{
+        color: #0097A7 !important
+    }
+    
+    .toTop{
+        background: #757575 !important
+    }
+		
+	.material-layout .material-post>.material-nav,
+	.material-layout .material-index>.material-nav,
+	.material-nav a{
+		color: #757575;
+	}
+		
+	#scheme-Paradox .MD-burger-layer {
+		background-color: #757575;
+	}
+
+	#scheme-Paradox #post-toc-trigger-btn{
+		color: #757575;
+	}
+	
+	.post-toc a:hover{
+		color: #00838F;
+		text-decoration: underline;
+	}
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+        body{
+            background-image: url(/img/bg.png);
+        }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+        .fade {
+            transition: all 800ms linear;
+            -webkit-transform: translate3d(0,0,0);
+            -moz-transform: translate3d(0,0,0);
+            -ms-transform: translate3d(0,0,0);
+            -o-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
+            opacity: 1;
+        }
+
+        .fade.out{
+            opacity: 0;
+        }
+    </style>
+
+	<script src="/js/jquery.min.js"></script>
+	
+	<link rel="stylesheet" href="/css/highlight/solarized-white.css">
+	
+	<!-- UC Browser Compatible-->
+	<script>
+		var agent = navigator.userAgent.toLowerCase();
+		if(agent.indexOf('ucbrowser')>0) {
+			document.write('<link rel="stylesheet" href="/css/uc.css">');
+		   alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+		}
+	</script>
+    
+    <!-- Custom Head -->
+    
+</head>
+	
+	
+
+    <body id="scheme-Paradox">
+
+		
+        <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+				
+			
+			
+            <!-- Main Container -->
+            <main class="material-layout__content" id="main">
+				
+                <!-- Top Anchor -->
+                <div id="top"></div>
+				
+				
+                <!-- Hamburger Button -->
+                <button class="MD-burger-icon sidebar-toggle">
+                    <span class="MD-burger-layer"></span>
+                </button>
+				
+				
+                <!-- Post TOC -->
+
+    
+	<!-- Back Button -->
+<!--
+	<div class="material-back" id="backhome-div" tabindex="0">
+		<a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" href="#" onclick="window.history.back();return false;" target="_self" role="button" data-upgraded=",MaterialButton,MaterialRipple">
+			<i class="material-icons" role="presentation">arrow_back</i>
+			<span class="mdl-button__ripple-container">
+				<span class="mdl-ripple"></span>
+			</span>
+		</a>
+	</div>			
+-->
+	<!-- Left aligned menu below button -->
+	<button id="post-toc-trigger-btn"
+			class="mdl-button mdl-js-button mdl-button--icon">
+	  <i class="material-icons">format_list_numbered</i>
+	</button>
+
+	<ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+		for="post-toc-trigger-btn">
+			
+			<ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Interface-解析"><span class="post-toc-number">1.</span> <span class="post-toc-text">Interface 解析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#interface-底层结构"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">interface 底层结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#itab"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">itab</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-Type-Assertion"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">3. Type Assertion</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-总结"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">4. 总结</span></a></li></ol></li></ol>
+		
+<!--			<li class="mdl-menu__item">Some Action</li>-->
+	</ul>
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+		
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+	<!-- Paradox Post Header -->
+	
+		<!-- Custom Thumbnail -->
+		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(/img/gallery/GolangStudy.png)">
+	
+        <p class="article-headline-p">
+            Golang Interface 解析
+        </p>
+    </div>
+
+	
+
+				
+				
+					<!-- Paradox Post Info -->
+					<div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+    
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>Jsharkc</strong>
+        <span>6月 17, 2017</span>
+    </div>
+    
+    <div class="section-spacer"></div>
+	
+    <!-- Favorite -->
+<!--
+    <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+        <i class="material-icons" role="presentation">favorite</i>
+        <span class="visuallyhidden">favorites</span>
+    </button>
+-->
+    
+    <!-- Tags (bookmark) -->
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        <a class="post_tag-link" href="/tags/Golang/">Golang</a>
+    </ul>
+    
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+    
+    
+    
+    <!-- Busuanzi Views -->
+    <a class="post_share-link" href="#">
+        <li class="mdl-menu__item">
+            <span id="busuanzi_container_page_pv">
+                <span id="busuanzi_value_page_pv"></span>&nbsp;浏览量
+            </span>
+        </li>
+    </a>
+    
+    
+    <!-- Share Twitter -->
+    <a class="post_share-link" href="https://twitter.com/intent/tweet?text=Golang Interface 解析&url=http://yoursite.com//2017/06/17/Interface解析/index.html&via=Jsharkc" target="_blank">
+        <li class="mdl-menu__item">
+            分享到 Twitter
+        </li>
+    </a>
+    
+    <!-- Share Google+ -->
+    <a class="post_share-link" href="https://plus.google.com/share?url=http://yoursite.com//2017/06/17/Interface解析/index.html" target="_blank">
+        <li class="mdl-menu__item">
+            分享到 Google+
+        </li>
+    </a>
+    
+    <!-- Share Weibo -->
+    <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=Golang Interface 解析&url=http://yoursite.com//2017/06/17/Interface解析/index.html&pic=&searchPic=false&style=simple" target="_blank">
+        <li class="mdl-menu__item">
+            分享到微博
+        </li>
+    </a>
+</ul>
+</div>
+				
+
+                <!-- Post Content -->
+                <div id="post-content" class="markdown-Github mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+	
+		<h1 id="Interface-解析"><a href="#Interface-解析" class="headerlink" title="Interface 解析"></a>Interface 解析</h1><p>转自 <a href="https://zhuanlan.zhihu.com/p/27652856" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/27652856</a></p>
+<p>先看一段代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Foo</span><span class="params">(x <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> x == <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"empty interface"</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println(<span class="string">"non-empty interface"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> x *<span class="keyword">int</span> = <span class="literal">nil</span></span><br><span class="line">    Foo(x)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子的输出结果如下</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">go</span> run test_interface.<span class="keyword">go</span></span><br><span class="line">non-empty <span class="keyword">interface</span></span><br></pre></td></tr></table></figure>
+<p>可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。</p>
+<h3 id="interface-底层结构"><a href="#interface-底层结构" class="headerlink" title="interface 底层结构"></a>interface 底层结构</h3><p>根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> eface <span class="keyword">struct</span> &#123;</span><br><span class="line">    _type *_type</span><br><span class="line">    data  unsafe.Pointer</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> _type <span class="keyword">struct</span> &#123;</span><br><span class="line">    size       <span class="keyword">uintptr</span> <span class="comment">// type size</span></span><br><span class="line">    ptrdata    <span class="keyword">uintptr</span> <span class="comment">// size of memory prefix holding all pointers</span></span><br><span class="line">    hash       <span class="keyword">uint32</span>  <span class="comment">// hash of type; avoids computation in hash tables</span></span><br><span class="line">    tflag      tflag   <span class="comment">// extra type information flags</span></span><br><span class="line">    align      <span class="keyword">uint8</span>   <span class="comment">// alignment of variable with this type</span></span><br><span class="line">    fieldalign <span class="keyword">uint8</span>   <span class="comment">// alignment of struct field with this type</span></span><br><span class="line">    kind       <span class="keyword">uint8</span>   <span class="comment">// enumeration for C</span></span><br><span class="line">    alg        *typeAlg  <span class="comment">// algorithm table</span></span><br><span class="line">    gcdata    *<span class="keyword">byte</span>    <span class="comment">// garbage collection data</span></span><br><span class="line">    str       nameOff  <span class="comment">// string form</span></span><br><span class="line">    ptrToThis typeOff  <span class="comment">// type for pointer to this type, may be zero</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.fun 变量里。如果 interface 包含多个 method，这里只有一个 fun 变量怎么存呢？这个下面再细说。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> iface <span class="keyword">struct</span> &#123;</span><br><span class="line">    tab  *itab</span><br><span class="line">    data unsafe.Pointer</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// layout of Itab known to compilers</span></span><br><span class="line"><span class="comment">// allocated in non-garbage-collected memory</span></span><br><span class="line"><span class="comment">// Needs to be in sync with</span></span><br><span class="line"><span class="comment">// ../cmd/compile/internal/gc/reflect.go:/^func.dumptypestructs.</span></span><br><span class="line"><span class="keyword">type</span> itab <span class="keyword">struct</span> &#123;</span><br><span class="line">    inter  *interfacetype</span><br><span class="line">    _type  *_type</span><br><span class="line">    link   *itab</span><br><span class="line">    bad    <span class="keyword">int32</span></span><br><span class="line">    inhash <span class="keyword">int32</span>      <span class="comment">// has this itab been added to hash?</span></span><br><span class="line">    fun    [<span class="number">1</span>]<span class="keyword">uintptr</span> <span class="comment">// variable sized</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用实际程序来看一下。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyInterface <span class="keyword">interface</span> &#123;</span><br><span class="line">    Print()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyStruct <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(ms MyStruct)</span> <span class="title">Print</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    x := <span class="number">1</span></span><br><span class="line">    <span class="keyword">var</span> y <span class="keyword">interface</span>&#123;&#125; = x</span><br><span class="line">    <span class="keyword">var</span> s MyStruct</span><br><span class="line">    <span class="keyword">var</span> t MyInterface = s</span><br><span class="line">    fmt.Println(y, z)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看汇编代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$ go build -gcflags &apos;-l&apos; -o interface11 interface11.go</span><br><span class="line">$ go tool objdump -s &quot;main\.main&quot; interface11</span><br><span class="line">TEXT main.main(SB) /Users/kltao/code/go/examples/interface11.go</span><br><span class="line">    interface11.go:15   0x10870f0   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX</span><br><span class="line">    interface11.go:15   0x10870f9   483b6110        CMPQ 0x10(CX), SP</span><br><span class="line">    interface11.go:15   0x10870fd   0f86de000000        JBE 0x10871e1</span><br><span class="line">    interface11.go:15   0x1087103   4883ec70        SUBQ $0x70, SP</span><br><span class="line">    interface11.go:15   0x1087107   48896c2468      MOVQ BP, 0x68(SP)</span><br><span class="line">    interface11.go:15   0x108710c   488d6c2468      LEAQ 0x68(SP), BP</span><br><span class="line">    interface11.go:17   0x1087111   48c744243001000000  MOVQ $0x1, 0x30(SP)</span><br><span class="line">    interface11.go:17   0x108711a   488d057fde0000      LEAQ 0xde7f(IP), AX</span><br><span class="line">    interface11.go:17   0x1087121   48890424        MOVQ AX, 0(SP)</span><br><span class="line">    interface11.go:17   0x1087125   488d442430      LEAQ 0x30(SP), AX</span><br><span class="line">    interface11.go:17   0x108712a   4889442408      MOVQ AX, 0x8(SP)</span><br><span class="line">    interface11.go:17   0x108712f   e87c45f8ff      CALL runtime.convT2E(SB)</span><br><span class="line">    interface11.go:17   0x1087134   488b442410      MOVQ 0x10(SP), AX</span><br><span class="line">    interface11.go:17   0x1087139   4889442438      MOVQ AX, 0x38(SP)</span><br><span class="line">    interface11.go:17   0x108713e   488b4c2418      MOVQ 0x18(SP), CX</span><br><span class="line">    interface11.go:17   0x1087143   48894c2440      MOVQ CX, 0x40(SP)</span><br><span class="line">    interface11.go:19   0x1087148   488d15b1000800      LEAQ 0x800b1(IP), DX</span><br><span class="line">    interface11.go:19   0x108714f   48891424        MOVQ DX, 0(SP)</span><br><span class="line">    interface11.go:19   0x1087153   488d542430      LEAQ 0x30(SP), DX</span><br><span class="line">    interface11.go:19   0x1087158   4889542408      MOVQ DX, 0x8(SP)</span><br><span class="line">    interface11.go:19   0x108715d   e8fe45f8ff      CALL runtime.convT2I(SB)</span><br></pre></td></tr></table></figure>
+<p>代码 17 行 var y interface{} = x 调用了函数 runtime.convT2E，将 int 类型的 x 转换成 empty interface。代码 19 行 var t MyInterface = s 将 MyStruct 类型转换成 non-empty interface: MyInterface。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">convT2E</span><span class="params">(t *_type, elem unsafe.Pointer)</span> <span class="params">(e eface)</span></span> &#123;</span><br><span class="line">    ...</span><br><span class="line">  </span><br><span class="line">    x := newobject(t)</span><br><span class="line">    typedmemmove(t, x, elem)</span><br><span class="line">    e._type = t</span><br><span class="line">    e.data = x</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">convT2I</span><span class="params">(tab *itab, elem unsafe.Pointer)</span> <span class="params">(i iface)</span></span> &#123;</span><br><span class="line">    t := tab._type</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">  </span><br><span class="line">    x := newobject(t)</span><br><span class="line">    typedmemmove(t, x, elem)</span><br><span class="line">    i.tab = tab</span><br><span class="line">    i.data = x</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看上面的函数原型，可以看出中间过程编译器将根据我们的转换目标类型的 empty interface 还是 non-empty interface，来对原数据类型进行转换（转换成 &lt;<em>_type, unsafe.Pointer&gt; 或者 &lt;</em>itab, unsafe.Pointer&gt;）。这里对于 struct 满不满足 interface 的类型要求（也就是 struct 是否实现了 interface 的所有 method），是由编译器来检测的。</p>
+<h3 id="itab"><a href="#itab" class="headerlink" title="itab"></a>itab</h3><p>iface 结构中最重要的是 itab 结构。itab 可以理解为 pair<interface type,="" concrete="" type=""> 。当然 itab 里面还包含一些其他信息，比如 interface 里面包含的 method 的具体实现。下面细说。itab 的结构如下。</interface></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type itab struct &#123;</span><br><span class="line">    inter  *interfacetype</span><br><span class="line">    _type  *_type</span><br><span class="line">    link   *itab</span><br><span class="line">    bad    int32</span><br><span class="line">    inhash int32      // has this itab been added to hash?</span><br><span class="line">    fun    [1]uintptr // variable sized</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中 interfacetype 包含了一些关于 interface 本身的信息，比如 package path，包含的 method。上面提到的 iface 和 eface 是数据类型（built-in 和 type-define）转换成 interface 之后的实体的 struct 结构，而这里的 interfacetype 是我们定义 interface 时候的一种抽象表示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">type interfacetype struct &#123;</span><br><span class="line">    typ     _type</span><br><span class="line">    pkgpath name</span><br><span class="line">    mhdr    []imethod</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type imethod struct &#123;   //这里的 method 只是一种函数声明的抽象，比如  func Print() error</span><br><span class="line">    name nameOff</span><br><span class="line">    ityp typeOff</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>_type 表示 concrete type。fun 表示的 interface 里面的 method 的具体实现。比如 interface type 包含了 method A, B，则通过 fun 就可以找到这两个 method 的具体实现。这里有个问题 fun 是长度为 1 的 uintptr 数组，那么怎么表示多个 method 呢？看一下测试程序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">type MyInterface interface &#123;</span><br><span class="line">    Print()</span><br><span class="line">    Hello()</span><br><span class="line">    World()</span><br><span class="line">    AWK()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func Foo(me MyInterface) &#123;</span><br><span class="line">    me.Print()</span><br><span class="line">    me.Hello()</span><br><span class="line">    me.World()</span><br><span class="line">    me.AWK()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type MyStruct struct &#123;&#125;</span><br><span class="line"></span><br><span class="line">func (me MyStruct) Print() &#123;&#125;</span><br><span class="line">func (me MyStruct) Hello() &#123;&#125;</span><br><span class="line">func (me MyStruct) World() &#123;&#125;</span><br><span class="line">func (me MyStruct) AWK() &#123;&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    var me MyStruct</span><br><span class="line">    Foo(me)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看一下函数调用对应的汇编代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">$ go build -gcflags &apos;-l&apos; -o interface8 interface8.go</span><br><span class="line">$ go tool objdump -s &quot;main\.Foo&quot; interface8</span><br><span class="line">TEXT main.Foo(SB) /Users/kltao/code/go/examples/interface8.go</span><br><span class="line">    interface8.go:10    0x104c060   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX</span><br><span class="line">    interface8.go:10    0x104c069   483b6110        CMPQ 0x10(CX), SP</span><br><span class="line">    interface8.go:10    0x104c06d   7668            JBE 0x104c0d7</span><br><span class="line">    interface8.go:10    0x104c06f   4883ec10        SUBQ $0x10, SP</span><br><span class="line">    interface8.go:10    0x104c073   48896c2408      MOVQ BP, 0x8(SP)</span><br><span class="line">    interface8.go:10    0x104c078   488d6c2408      LEAQ 0x8(SP), BP</span><br><span class="line">    interface8.go:11    0x104c07d   488b442418      MOVQ 0x18(SP), AX</span><br><span class="line">    interface8.go:11    0x104c082   488b4830        MOVQ 0x30(AX), CX //取得 Print 函数地址</span><br><span class="line">    interface8.go:11    0x104c086   488b542420      MOVQ 0x20(SP), DX</span><br><span class="line">    interface8.go:11    0x104c08b   48891424        MOVQ DX, 0(SP)</span><br><span class="line">    interface8.go:11    0x104c08f   ffd1            CALL CX     // 调用 Print()</span><br><span class="line">    interface8.go:12    0x104c091   488b442418      MOVQ 0x18(SP), AX</span><br><span class="line">    interface8.go:12    0x104c096   488b4828        MOVQ 0x28(AX), CX //取得 Hello 函数地址</span><br><span class="line">    interface8.go:12    0x104c09a   488b542420      MOVQ 0x20(SP), DX</span><br><span class="line">    interface8.go:12    0x104c09f   48891424        MOVQ DX, 0(SP)</span><br><span class="line">    interface8.go:12    0x104c0a3   ffd1            CALL CX           //调用 Hello()</span><br><span class="line">    interface8.go:13    0x104c0a5   488b442418      MOVQ 0x18(SP), AX</span><br><span class="line">    interface8.go:13    0x104c0aa   488b4838        MOVQ 0x38(AX), CX //取得 World 函数地址</span><br><span class="line">    interface8.go:13    0x104c0ae   488b542420      MOVQ 0x20(SP), DX </span><br><span class="line">    interface8.go:13    0x104c0b3   48891424        MOVQ DX, 0(SP)</span><br><span class="line">    interface8.go:13    0x104c0b7   ffd1            CALL CX           //调用 World()</span><br><span class="line">    interface8.go:14    0x104c0b9   488b442418      MOVQ 0x18(SP), AX</span><br><span class="line">    interface8.go:14    0x104c0be   488b4020        MOVQ 0x20(AX), AX //取得 AWK 函数地址</span><br><span class="line">    interface8.go:14    0x104c0c2   488b4c2420      MOVQ 0x20(SP), CX</span><br><span class="line">    interface8.go:14    0x104c0c7   48890c24        MOVQ CX, 0(SP)</span><br><span class="line">    interface8.go:14    0x104c0cb   ffd0            CALL AX           //调用 AWK()</span><br><span class="line">    interface8.go:15    0x104c0cd   488b6c2408      MOVQ 0x8(SP), BP</span><br><span class="line">    interface8.go:15    0x104c0d2   4883c410        ADDQ $0x10, SP</span><br><span class="line">    interface8.go:15    0x104c0d6   c3          RET</span><br><span class="line">    interface8.go:10    0x104c0d7   e8f48bffff      CALL runtime.morestack_noctxt(SB)</span><br><span class="line">    interface8.go:10    0x104c0dc   eb82            JMP main.Foo(SB)</span><br></pre></td></tr></table></figure>
+<p>其中 0x18(SP) 对应的 itab 的地址。fun 在 x86-64 机器上对应 itab 内的地址偏移为 8+8+8+4+4 = 32 = 0x20，也就是 0x20(AX) 对应的 fun 的值，此时存放的 AWK 函数地址。然后 0x28(AX) = &amp;Hello，0x30(AX) = &amp;Print，0x38(AX) = &amp;World。对的，每次函数是按字典序排序存放的。</p>
+<p>我们再来看一下函数地址究竟是怎么写入的？首先 Golang 中的 uintptr 一般用来存放指针的值，这里对应的就是函数指针的值（也就是函数的调用地址）。但是这里的 fun 是一个长度为 1 的 uintptr 数组。我们看一下 runtime 包的 additab 函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func additab(m *itab, locked, canfail bool) &#123;</span><br><span class="line">    ...</span><br><span class="line">    *(*unsafe.Pointer)(add(unsafe.Pointer(&amp;m.fun[0]), uintptr(k)*sys.PtrSize)) = ifn</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码的意思是在 fun[0] 的地址后面依次写入其他 method 对应的函数指针。熟悉 C++ 的同学可以类比 C++ 的虚函数表指针来看。</p>
+<p>剩下的还有 bad，link，inhash。其中 bad 是一个表征 itab 状态的变量。而这里的 link 是 *itab 类型，是不是表示 interface 的嵌套呢？并不是，interface 的嵌套也是把 method 平铺而已。link 要和 inhash 一起来说。在 runtime 包里面有一个 hash 表，通过 hash[hashitab(interface_type, concrete_type)] 可以取得 itab，这是出于性能方面的考虑。主要代码如下，这里就不再赘述了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">const (</span><br><span class="line">    hashSize = 1009</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var (</span><br><span class="line">    ifaceLock mutex // lock for accessing hash</span><br><span class="line">    hash      [hashSize]*itab</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func itabhash(inter *interfacetype, typ *_type) uint32 &#123;</span><br><span class="line">    // compiler has provided some good hash codes for us.</span><br><span class="line">    h := inter.typ.hash</span><br><span class="line">    h += 17 * typ.hash</span><br><span class="line">    // TODO(rsc): h += 23 * x.mhash ?</span><br><span class="line">    return h % hashSize</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func additab(...) &#123;</span><br><span class="line">    ...</span><br><span class="line">    h := itabhash(inter, typ)</span><br><span class="line">    m.link = hash[h]</span><br><span class="line">    m.inhash = 1</span><br><span class="line">    atomicstorep(unsafe.Pointer(&amp;hash[h]), unsafe.Pointer(m))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-Type-Assertion"><a href="#3-Type-Assertion" class="headerlink" title="3. Type Assertion"></a><strong>3. Type Assertion</strong></h2><p>我们知道使用 interface type assertion (中文一般叫断言) 的时候需要注意，不然很容易引入 panic。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">func do(v interface&#123;&#125;) &#123;</span><br><span class="line">    n := v.(int)    // might panic</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func do(v interface&#123;&#125;) &#123;</span><br><span class="line">    n, ok := v.(int)</span><br><span class="line">    if !ok &#123;</span><br><span class="line">        // 断言失败处理</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个过程体现在下面的几个函数上。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">// The assertXXX functions may fail (either panicking or returning false,</span><br><span class="line">// depending on whether they are 1-result or 2-result).</span><br><span class="line">func assertI2I(inter *interfacetype, i iface) (r iface) &#123;</span><br><span class="line">    tab := i.tab</span><br><span class="line">    if tab == nil &#123;</span><br><span class="line">        // explicit conversions require non-nil interface value.</span><br><span class="line">        panic(&amp;TypeAssertionError&#123;&quot;&quot;, &quot;&quot;, inter.typ.string(), &quot;&quot;&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    if tab.inter == inter &#123;</span><br><span class="line">        r.tab = tab</span><br><span class="line">        r.data = i.data</span><br><span class="line">        return</span><br><span class="line">    &#125;</span><br><span class="line">    r.tab = getitab(inter, tab._type, false)</span><br><span class="line">    r.data = i.data</span><br><span class="line">    return</span><br><span class="line">&#125;</span><br><span class="line">func assertI2I2(inter *interfacetype, i iface) (r iface, b bool) &#123;</span><br><span class="line">    tab := i.tab</span><br><span class="line">    if tab == nil &#123;</span><br><span class="line">        return</span><br><span class="line">    &#125;</span><br><span class="line">    if tab.inter != inter &#123;</span><br><span class="line">        tab = getitab(inter, tab._type, true)</span><br><span class="line">        if tab == nil &#123;</span><br><span class="line">            return</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    r.tab = tab</span><br><span class="line">    r.data = i.data</span><br><span class="line">    b = true</span><br><span class="line">    return</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 类似</span><br><span class="line">func assertE2I(inter *interfacetype, e eface) (r iface)</span><br><span class="line">func assertE2I2(inter *interfacetype, e eface) (r iface, b bool)</span><br></pre></td></tr></table></figure>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a><strong>4. 总结</strong></h2><p>从某种意义上来说，Golang 的 interface 也是一种多态的体现。对比其他支持多态特性的语言，实现还是略有差异，很难说谁好谁坏。</p>
+
+	
+	
+	
+	
+</div>
+				
+				
+
+                <!-- Post Comments -->
+                
+                    
+
+
+    <!-- 使用 DISQUS -->
+	<div id="disqus-comment">
+		<div id="disqus_thread"></div>
+<script>
+	var disqus_config = function () {
+		this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+		this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+
+	(function() { // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+		s.src = '//jsharkc.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+	</div>
+	<style>
+		#disqus-comment{
+			background-color:#eee;
+			padding:2pc;
+		}
+	</style>
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    
+    <!-- Prev Nav -->
+    
+        <a href="/2017/07/10/Slice机制/" id="post_nav-newer" class="prev-content">
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_back</i>
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            新篇
+        </a>
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+        <a href="/2017/05/26/十条有用的 GO 技术/" id="post_nav-older" class="next-content">
+            旧篇
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_forward</i>
+            </button>
+        </a>
+    
+</nav>
+        </div>
+    </div>
+
+				
+				
+					<!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay "></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored  sidebar-fixed-left" role="navigation">
+	<div id="sidebar-main">
+	    <!-- Sidebar Header -->
+		<div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+    <i class="material-icons">clear_all</i>
+    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="Jsharkc's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        1773867204@qq.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+		<!-- Sidebar Navigation  -->
+		<ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+			
+                <li>
+                    <a href="mailto:1773867204@qq.com" target="_blank" title="Email Me">
+						<i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    <li id="sidebar-first-li">
+        <a href="/" target="_self">
+            <i class="material-icons sidebar-material-icons">home</i>
+             主页
+        </a>
+    </li>
+
+    <!-- I'm Feeling Lucky -->
+<!--
+    <li class="dropdown">
+        <a href="" target="_self">
+            <i class="material-icons sidebar-material-icons">explore</i>
+             sidebar.imlucky
+        </a>
+    </li>
+-->
+
+	
+    <!-- Archives  -->
+    <li class="dropdown">
+        <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+            <i class="material-icons sidebar-material-icons">inbox</i>
+             归档
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+            <a class="sidebar_archives-link" href="/archives/2018/02/">二月 2018<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/10/">十月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/07/">七月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/05/">五月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/04/">四月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/03/">三月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/12/">十二月 2016<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/11/">十一月 2016<span class="sidebar_archives-count">2</span></a>
+        </ul>
+    </li>
+
+    <!-- Divider -->
+    <li class="divider"></li>
+
+
+    <!-- Pages  -->
+	
+		<li>
+			<a href="/tags/" title="标签云">
+				标签云
+			</a>
+		</li>
+	
+		<li>
+			<a href="/gallery/" title="图库">
+				图库
+			</a>
+		</li>
+	
+
+    <!-- Article Numebr  -->
+    <li>
+        <a href="/archives">
+             文章总数
+             <span class="sidebar-badge">17</span>
+        </a>
+    </li>
+</ul>
+
+		<!-- Sidebar Divider -->
+		<div class="sidebar-divider"></div>
+
+		<!-- Sidebar Footer -->
+		<!-- 
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持。 :) 
+-->
+
+<!-- Theme Material -->
+<a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+	<div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+		主题 - Material
+		<span class="sidebar-badge badge-circle">i</span>
+	</div>
+</a>
+
+<!-- Help & Support -->
+<!--
+<a href="mailto:hiviosey@gmail.com" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+		sidebar.help
+		<span class="mdl-button__ripple-container">
+			<span class="mdl-ripple"></span>
+		</span>
+	</div>
+</a>
+-->
+
+<!-- Feedback -->
+<!--
+<a href="https://github.com/viosey/hexo-theme-material/issues" target="_blank" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+         sidebar.feedback
+                    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
+</a>
+-->
+
+<!-- Abount Theme -->
+<!--
+<a href="https://blog.viosey.com/index.php/Material.html" target="_blank" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+         sidebar.about_theme
+        <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
+</a>-->
+
+	</div>
+    
+    <!-- Sidebar Sponsor -->
+    
+
+
+</aside>
+
+				
+				
+				
+					<!-- Footer Top Button -->
+					<div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+				
+				
+				<!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+	
+	
+		<!-- Paradox Footer Left Section -->
+		<div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+    
+    
+    <!-- Facebook -->
+    
+    
+    
+    <!-- Google + -->
+    
+    
+    
+    <!-- Weibo -->
+    
+    
+    
+    <!-- Instagram -->
+    
+    
+    
+    <!-- Tumblr -->
+    
+    
+    
+    <!-- Github -->
+    
+    <a href="http://github.com/jsharkc" target="view_window"><button class="mdl-mini-footer--social-btn social-btn" style="background-image: url(/img/footer/footer_ico-github.png);">
+        <span class="visuallyhidden">Github</span>
+    </button></a>
+    
+</div>
+
+
+		<!--Copyright-->
+		<div id="copyright">Copyright&nbsp;©&nbsp;<script type="text/javascript">var fd = new Date();document.write(fd.getFullYear());</script>&nbsp;Jsharkc's secret</div>
+
+		<!-- Paradox Footer Right Section -->
+
+		<!-- 
+		I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+		It will not impact the appearance and can give developers a lot of support :)
+
+		很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+		它不会影响美观并可以给开发者很大的支持。 :) 
+		-->
+
+		<div class="mdl-mini-footer--right-section">
+			
+		</div>
+	
+    
+</footer>
+                
+				<!-- Import File -->
+<script src="/js/highlight.min.js"></script>
+<script src="/js/js.min.js"></script>
+<script src="/js/nprogress.js"></script>
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    
+    $('#nprogress .bar').css({
+        'background': '#FF4081'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #FF4081, 0 0 15px #FF4081'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#FF4081',
+        'border-left-color': '#FF4081'
+    });
+    
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+    <!-- Busuanzi -->
+    <script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+    <!-- 使用 DISQUS js 代码 -->
+	<script id="dsq-count-scr" src="//jsharkc.disqus.com/count.js" async></script>
+
+
+<!-- Swiftye -->
+
+
+<!-- Local Search-->
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $(".post-toc-wrap").parent(".mdl-menu__container").css("position", "fixed");
+    });
+</script>
+
+<!-- MathJax Load-->
+
+            </main>
+        </div>
+		
+    </body>
+		
+	
+</html>

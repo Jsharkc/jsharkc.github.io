@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <!-- Title -->
+    
+    <title>
+        Go注意点总结 | Jsharkc&#39;s secret
+    </title>
+    
+    <!-- Favicons -->
+    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+    
+    <!-- Meta & INfo -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0097A7">
+    <meta name="author" content="Jsharkc">
+    <meta name="description" content="">
+    <meta name="keywords" content="Golang">
+    
+    <!--iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="Title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="480">
+    
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Jsharkc&#39;s secret">
+    
+    <!-- The Open Graph protocol -->
+    <meta property="og:url" content="http://yoursite.com">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Go注意点总结 | Jsharkc&#39;s secret">
+    <meta property="og:description" content="">
+    
+     <!--[if lte IE 9]>
+        <link rel="stylesheet" href="/css/ie-blocker.css">
+        
+        
+            <script src="/js/ie-blocker.zhCN.js"></script>
+        
+    <![endif]-->
+    
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="/css/material.min.css">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <!-- Config CSS -->
+
+
+<!-- Other Styles -->
+<style>
+	body, html{
+		font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+	}
+	
+    a{
+        color: #00838F
+    }
+    
+    .mdl-card__media,
+    #search-label,
+    #search-form-label:after,
+    #scheme-Paradox .hot_tags-count,
+    #scheme-Paradox .sidebar_archives-count,
+    #scheme-Paradox .sidebar-colored .sidebar-header,
+    #scheme-Paradox .sidebar-colored .sidebar-badge{
+        background-color: #0097A7 !important
+    }
+    
+	/* Sidebar User Drop Down Menu Text Color */
+	#scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
+    #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus{
+        color: #0097A7 !important
+    }
+    
+    #post_entry-right-info,
+    .sidebar-colored .sidebar-nav li:hover > a,
+    .sidebar-colored .sidebar-nav li:hover > a i,
+    .sidebar-colored .sidebar-nav li > a:hover,
+    .sidebar-colored .sidebar-nav li > a:hover i,
+    .sidebar-colored .sidebar-nav li > a:focus i,
+    .sidebar-colored .sidebar-nav > .open > a,
+    .sidebar-colored .sidebar-nav > .open > a:hover,
+    .sidebar-colored .sidebar-nav > .open > a:focus,
+    #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a{
+        color: #0097A7 !important
+    }
+    
+    .toTop{
+        background: #757575 !important
+    }
+		
+	.material-layout .material-post>.material-nav,
+	.material-layout .material-index>.material-nav,
+	.material-nav a{
+		color: #757575;
+	}
+		
+	#scheme-Paradox .MD-burger-layer {
+		background-color: #757575;
+	}
+
+	#scheme-Paradox #post-toc-trigger-btn{
+		color: #757575;
+	}
+	
+	.post-toc a:hover{
+		color: #00838F;
+		text-decoration: underline;
+	}
+</style>
+
+
+<!-- Theme Background Related-->
+
+    <style>
+        body{
+            background-image: url(/img/bg.png);
+        }
+    </style>
+
+
+
+
+<!-- Fade Effect -->
+
+    <style>
+        .fade {
+            transition: all 800ms linear;
+            -webkit-transform: translate3d(0,0,0);
+            -moz-transform: translate3d(0,0,0);
+            -ms-transform: translate3d(0,0,0);
+            -o-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
+            opacity: 1;
+        }
+
+        .fade.out{
+            opacity: 0;
+        }
+    </style>
+
+	<script src="/js/jquery.min.js"></script>
+	
+	<link rel="stylesheet" href="/css/highlight/solarized-white.css">
+	
+	<!-- UC Browser Compatible-->
+	<script>
+		var agent = navigator.userAgent.toLowerCase();
+		if(agent.indexOf('ucbrowser')>0) {
+			document.write('<link rel="stylesheet" href="/css/uc.css">');
+		   alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
+		}
+	</script>
+    
+    <!-- Custom Head -->
+    
+</head>
+	
+	
+
+    <body id="scheme-Paradox">
+
+		
+        <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
+				
+			
+			
+            <!-- Main Container -->
+            <main class="material-layout__content" id="main">
+				
+                <!-- Top Anchor -->
+                <div id="top"></div>
+				
+				
+                <!-- Hamburger Button -->
+                <button class="MD-burger-icon sidebar-toggle">
+                    <span class="MD-burger-layer"></span>
+                </button>
+				
+				
+                <!-- Post TOC -->
+
+    
+	<!-- Back Button -->
+<!--
+	<div class="material-back" id="backhome-div" tabindex="0">
+		<a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" href="#" onclick="window.history.back();return false;" target="_self" role="button" data-upgraded=",MaterialButton,MaterialRipple">
+			<i class="material-icons" role="presentation">arrow_back</i>
+			<span class="mdl-button__ripple-container">
+				<span class="mdl-ripple"></span>
+			</span>
+		</a>
+	</div>			
+-->
+	<!-- Left aligned menu below button -->
+	<button id="post-toc-trigger-btn"
+			class="mdl-button mdl-js-button mdl-button--icon">
+	  <i class="material-icons">format_list_numbered</i>
+	</button>
+
+	<ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+		for="post-toc-trigger-btn">
+			
+			<ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Go-gt-注意点-lt-总结"><span class="post-toc-number">1.</span> <span class="post-toc-text">Go &gt;注意点&lt; 总结</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-布尔类型"><span class="post-toc-number">1.0.0.1.</span> <span class="post-toc-text">1. 布尔类型</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-int与int32"><span class="post-toc-number">1.0.0.2.</span> <span class="post-toc-text">2. int与int32</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-整数值比较"><span class="post-toc-number">1.0.0.3.</span> <span class="post-toc-text">3. 整数值比较</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-x-表示对-x-取反"><span class="post-toc-number">1.0.0.4.</span> <span class="post-toc-text">4. ^x  表示对 x 取反</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5-字符串"><span class="post-toc-number">1.0.0.5.</span> <span class="post-toc-text">5. 字符串</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#6-一种特殊的switch"><span class="post-toc-number">1.0.0.6.</span> <span class="post-toc-text">6. 一种特殊的switch</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#7-make-函数创建数组切片"><span class="post-toc-number">1.0.0.7.</span> <span class="post-toc-text">7. make() 函数创建数组切片</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#8-数组切片追加"><span class="post-toc-number">1.0.0.8.</span> <span class="post-toc-text">8. 数组切片追加</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#9-判断能否从-map-中获取一个值的做法"><span class="post-toc-number">1.0.0.9.</span> <span class="post-toc-text">9. 判断能否从 map 中获取一个值的做法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#10-创建并初始化类型的对象实例"><span class="post-toc-number">1.0.0.10.</span> <span class="post-toc-text">10.  创建并初始化类型的对象实例</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#11-未显示初始化"><span class="post-toc-number">1.0.0.11.</span> <span class="post-toc-text">11.未显示初始化</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#12-无构造函数"><span class="post-toc-number">1.0.0.12.</span> <span class="post-toc-text">12. 无构造函数</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#13-go中最好用的超时机制——-gt-select-case"><span class="post-toc-number">1.0.0.13.</span> <span class="post-toc-text">13.  go中最好用的超时机制——&gt; select-case</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#14-单向channel变量的声明"><span class="post-toc-number">1.0.0.14.</span> <span class="post-toc-text">14.  单向channel变量的声明</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#15-关闭和判断channel"><span class="post-toc-number">1.0.0.15.</span> <span class="post-toc-text">15. 关闭和判断channel</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#17-一些链接"><span class="post-toc-number">1.0.0.16.</span> <span class="post-toc-text">17. 一些链接</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#18-函数中局部变量"><span class="post-toc-number">1.0.0.17.</span> <span class="post-toc-text">18. 函数中局部变量</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#19-flag-包小例子"><span class="post-toc-number">1.0.0.18.</span> <span class="post-toc-text">19. flag 包小例子</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#20-Rune"><span class="post-toc-number">1.0.0.19.</span> <span class="post-toc-text">20. Rune</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#21-内置函数"><span class="post-toc-number">1.0.0.20.</span> <span class="post-toc-text">21.内置函数</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#22-for-range-结构"><span class="post-toc-number">1.0.0.21.</span> <span class="post-toc-text">22. for-range 结构</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#23-从字符串生成字节切片"><span class="post-toc-number">1.0.0.22.</span> <span class="post-toc-text">23. 从字符串生成字节切片</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#24-常量"><span class="post-toc-number">1.0.0.23.</span> <span class="post-toc-text">24. 常量</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#25-方法"><span class="post-toc-number">1.0.0.24.</span> <span class="post-toc-text">25. 方法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#26-反射"><span class="post-toc-number">1.0.0.25.</span> <span class="post-toc-text">26. 反射</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#27-一种限制速率的方法"><span class="post-toc-number">1.0.0.26.</span> <span class="post-toc-text">27. 一种限制速率的方法</span></a></li></ol></li></ol></li></ol></li></ol>
+		
+<!--			<li class="mdl-menu__item">Some Action</li>-->
+	</ul>
+
+
+
+<!-- Layouts -->
+
+    <!-- Post Module -->
+    <div class="material-post_container">
+		
+        <div class="material-post mdl-grid">
+            <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+
+                <!-- Post Header(Thumbnail & Title) -->
+                
+	<!-- Paradox Post Header -->
+	
+		<!-- Custom Thumbnail -->
+		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(/img/gallery/GolangStudy.png)">
+	
+        <p class="article-headline-p">
+            Go注意点总结
+        </p>
+    </div>
+
+	
+
+				
+				
+					<!-- Paradox Post Info -->
+					<div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+    
+    <!-- Author Avatar -->
+    <div id="author-avatar">
+        <img src="/img/avatar.png" width="44px" height="44px" alt="Author Avatar"/>
+    </div>
+    <!-- Author Name & Date -->
+    <div>
+        <strong>Jsharkc</strong>
+        <span>11月 15, 2016</span>
+    </div>
+    
+    <div class="section-spacer"></div>
+	
+    <!-- Favorite -->
+<!--
+    <button id="article-functions-like-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon btn-like">
+        <i class="material-icons" role="presentation">favorite</i>
+        <span class="visuallyhidden">favorites</span>
+    </button>
+-->
+    
+    <!-- Tags (bookmark) -->
+    <button id="article-functions-viewtags-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+        <i class="material-icons" role="presentation">bookmark</i>
+        <span class="visuallyhidden">bookmark</span>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
+        <li class="mdl-menu__item">
+        <a class="post_tag-link" href="/tags/Golang/">Golang</a>
+    </ul>
+    
+    <!-- Share -->
+    <button id="article-fuctions-share-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+    <i class="material-icons" role="presentation">share</i>
+    <span class="visuallyhidden">share</span>
+</button>
+<ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-fuctions-share-button">
+    
+    
+    
+    
+    <!-- Busuanzi Views -->
+    <a class="post_share-link" href="#">
+        <li class="mdl-menu__item">
+            <span id="busuanzi_container_page_pv">
+                <span id="busuanzi_value_page_pv"></span>&nbsp;浏览量
+            </span>
+        </li>
+    </a>
+    
+    
+    <!-- Share Twitter -->
+    <a class="post_share-link" href="https://twitter.com/intent/tweet?text=Go注意点总结&url=http://yoursite.com//2016/11/15/GoNote/index.html&via=Jsharkc" target="_blank">
+        <li class="mdl-menu__item">
+            分享到 Twitter
+        </li>
+    </a>
+    
+    <!-- Share Google+ -->
+    <a class="post_share-link" href="https://plus.google.com/share?url=http://yoursite.com//2016/11/15/GoNote/index.html" target="_blank">
+        <li class="mdl-menu__item">
+            分享到 Google+
+        </li>
+    </a>
+    
+    <!-- Share Weibo -->
+    <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=Go注意点总结&url=http://yoursite.com//2016/11/15/GoNote/index.html&pic=&searchPic=false&style=simple" target="_blank">
+        <li class="mdl-menu__item">
+            分享到微博
+        </li>
+    </a>
+</ul>
+</div>
+				
+
+                <!-- Post Content -->
+                <div id="post-content" class="markdown-Github mdl-color-text--grey-700 mdl-card__supporting-text fade out">
+	
+		<h1 id="Go-gt-注意点-lt-总结"><a href="#Go-gt-注意点-lt-总结" class="headerlink" title="Go &gt;注意点&lt; 总结"></a>Go &gt;注意点&lt; 总结</h1><h4 id="1-布尔类型"><a href="#1-布尔类型" class="headerlink" title="1. 布尔类型"></a>1. <strong>布尔类型</strong></h4><p>​     布尔类型 <em>不能</em> 接受其他类型的赋值，<em>不支持</em> 自动或者强制的类型转换</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> b <span class="keyword">bool</span></span><br><span class="line">b = <span class="number">1</span>  <span class="comment">// 编译错误</span></span><br><span class="line">b = <span class="keyword">bool</span>(<span class="number">1</span>) <span class="comment">// 编译错误</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="2-int与int32"><a href="#2-int与int32" class="headerlink" title="2. int与int32"></a>2. int与int32</h4><p>​     <strong>注意：</strong>int和int32在Go语言里被认为是两种不同的类型，编译器也不会帮你自动做类型转换</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> value2 <span class="keyword">int32</span></span><br><span class="line">value1:= <span class="number">64</span>   <span class="comment">// value1将会被自动推导为int类型</span></span><br><span class="line">value2 = value1   <span class="comment">// 编译错误</span></span><br><span class="line"><span class="comment">// 可用强制转换解决这个编译错误：</span></span><br><span class="line">value2 = <span class="keyword">int32</span>(value1)   <span class="comment">// 编译通过</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="3-整数值比较"><a href="#3-整数值比较" class="headerlink" title="3. 整数值比较"></a>3. 整数值比较</h4><p>​     两种 <strong>不同</strong> 类型的整型数 <strong>不能</strong> 直接比较，比如 int8 类型的数和 int 类型的数不能直接比较，但各种类型的整型变量都可以直接与<em>字面常量</em> ( literal ) 进行比较</p>
+<hr>
+<h4 id="4-x-表示对-x-取反"><a href="#4-x-表示对-x-取反" class="headerlink" title="4. ^x  表示对 x 取反"></a>4. ^x  表示对 x 取反</h4><hr>
+<h4 id="5-字符串"><a href="#5-字符串" class="headerlink" title="5. 字符串"></a>5. 字符串</h4><p>​    字符串的内容可以用类似 <em>数组下标</em> 的方式获取，但不能在初始化后被修改</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eg.</span><br><span class="line">	str := “Hello world”  </span><br><span class="line">	str[<span class="number">0</span>] = ‘X’    <span class="comment">//编译错误</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="6-一种特殊的switch"><a href="#6-一种特殊的switch" class="headerlink" title="6. 一种特殊的switch"></a>6. 一种特殊的switch</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> k,v := <span class="keyword">range</span> m&#123;</span><br><span class="line">     <span class="keyword">switch</span> vv := v.(<span class="keyword">type</span>) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="keyword">string</span>:</span><br><span class="line">          fmt.Println(k, <span class="string">"is string"</span>, vv)</span><br><span class="line">      <span class="keyword">case</span> <span class="keyword">int</span>:</span><br><span class="line">          fmt.Println(k, <span class="string">"is int"</span>, vv)</span><br><span class="line">      <span class="keyword">case</span> <span class="keyword">float64</span>:</span><br><span class="line">          fmt.Println(k,<span class="string">"is float64"</span>,vv)</span><br><span class="line">      <span class="keyword">case</span> []<span class="keyword">interface</span>&#123;&#125;:</span><br><span class="line">          fmt.Println(k, <span class="string">"is an array:"</span>)</span><br><span class="line">          <span class="keyword">for</span> i, u := <span class="keyword">range</span> vv &#123;</span><br><span class="line">              fmt.Println(i, u)</span><br><span class="line">          &#125;</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">          fmt.Println(k, <span class="string">"is of a type I don't know how to handle"</span>)</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="7-make-函数创建数组切片"><a href="#7-make-函数创建数组切片" class="headerlink" title="7. make() 函数创建数组切片"></a>7. make() 函数创建数组切片</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个初始元素个数为5的数组切片，元素初始值为0:</span></span><br><span class="line">mySlice1 := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">5</span>) <span class="comment">// 创建一个初始元素个数为5的数组切片，</span></span><br><span class="line"><span class="comment">// 元素初始值为0，并预留10个元素的存储空间:</span></span><br><span class="line">mySlice2 := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">5</span>, <span class="number">10</span>) </span><br><span class="line"><span class="comment">// 直接创建并初始化包含5个元素的数组切片:</span></span><br><span class="line">mySlice3 := []<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125; </span><br><span class="line"><span class="comment">// 直接创建并初始化包含5个元素的数组切片 :</span></span><br><span class="line">mySlice3 := []<span class="keyword">int</span>&#123;<span class="number">3</span>:<span class="number">4</span>, <span class="number">5</span>&#125;  <span class="comment">// [0 0 0 4 5]</span></span><br></pre></td></tr></table></figure>
+<p>   当然，事实上还会有一个匿名数组被创建出来，只是不需要我们来操心而已。</p>
+<hr>
+<h4 id="8-数组切片追加"><a href="#8-数组切片追加" class="headerlink" title="8. 数组切片追加"></a>8. 数组切片追加</h4><p>​    将一个数组切片 <strong>追加</strong> 到另一个数组切片的末尾：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mySlice2 := []<span class="keyword">int</span>&#123;<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125;</span><br><span class="line">mySlice = <span class="built_in">append</span>(mySlice,mySlice2...)</span><br></pre></td></tr></table></figure>
+<p>   <strong>注意：</strong>在第二个参数后面加三个点，不加会有编译错误，加省略号表示把mySlice2包含的元素打散后传入</p>
+<hr>
+<h4 id="9-判断能否从-map-中获取一个值的做法"><a href="#9-判断能否从-map-中获取一个值的做法" class="headerlink" title="9. 判断能否从 map 中获取一个值的做法"></a>9. 判断能否从 map 中获取一个值的做法</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">value, ok := <span class="keyword">map</span>[key]</span><br><span class="line"><span class="keyword">if</span> ok&#123;  <span class="comment">//找到了</span></span><br><span class="line">   <span class="comment">//处理找到的value</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="10-创建并初始化类型的对象实例"><a href="#10-创建并初始化类型的对象实例" class="headerlink" title="10.  创建并初始化类型的对象实例"></a>10.  创建并初始化类型的对象实例</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rect1 := <span class="built_in">new</span>(Rect)</span><br><span class="line"></span><br><span class="line">rect2 := &amp;Rect&#123;&#125;</span><br><span class="line"></span><br><span class="line">rect3 := &amp;Rect&#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">100</span>,<span class="number">200</span>&#125;</span><br><span class="line"></span><br><span class="line">rect4 := &amp;Rect&#123;width:<span class="number">100</span>,height:<span class="number">200</span>&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="11-未显示初始化"><a href="#11-未显示初始化" class="headerlink" title="11.未显示初始化"></a>11.未显示初始化</h4><p>​     Go语言中，未 <strong>显式初始化</strong> 的变量都会被初始化为该类型的 <strong>零值</strong> ，<strong>bool</strong> 类型零值为 <strong>false</strong> , <strong>Int</strong> 类型的零值为 <strong>0</strong>，<strong>string</strong> 类型的零值为 <strong>空字符串</strong>, <strong>接口</strong>或<strong>引用类型</strong>（包括 <strong>slice</strong>、<strong>map</strong>、<strong>chan</strong> 和函数）变量对应的零值是<strong>nil</strong></p>
+<hr>
+<h4 id="12-无构造函数"><a href="#12-无构造函数" class="headerlink" title="12. 无构造函数"></a>12. 无构造函数</h4><p>​    Go语言中 <strong>没有构造函数</strong> 的概念，对象的创建通常交由一个全局的创建函数来完成，以NewXXX来命名，表示“构造函数”</p>
+<hr>
+<h4 id="13-go中最好用的超时机制——-gt-select-case"><a href="#13-go中最好用的超时机制——-gt-select-case" class="headerlink" title="13.  go中最好用的超时机制——&gt; select-case"></a>13.  go中最好用的超时机制——&gt; select-case</h4><p>​    <code>select</code>默认是阻塞的，只有当监听的 channel 中有发送或接收可以进行时才会运行，当多个 channel 都准备好的时候，select 是随机的选择一个执行的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">timeout := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>, <span class="number">1</span>)</span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    time.Sleep(<span class="number">1e9</span>) <span class="comment">// 等待1秒钟</span></span><br><span class="line">    timeout &lt;- <span class="literal">true</span> </span><br><span class="line">&#125;()</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 然后我们把timeout这个channel利用起来 </span></span><br><span class="line">   </span><br><span class="line"><span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> &lt;-ch:</span><br><span class="line">    <span class="comment">// 从ch中读取到数据</span></span><br><span class="line">    <span class="keyword">case</span> &lt;-timeout:</span><br><span class="line">    <span class="comment">// 一直没有从ch中读取到数据，但从timeout中读取到了数据</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>另一种实现方法</strong><br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">    o := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>)</span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">for</span> &#123;</span><br><span class="line">            <span class="keyword">select</span> &#123;</span><br><span class="line">                <span class="keyword">case</span> v := &lt;- c:</span><br><span class="line">                    <span class="built_in">println</span>(v)</span><br><span class="line">                <span class="keyword">case</span> &lt;- time.After(<span class="number">5</span> * time.Second):</span><br><span class="line">                    <span class="built_in">println</span>(<span class="string">"timeout"</span>)</span><br><span class="line">                    o &lt;- <span class="literal">true</span></span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line">    &lt;- o</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>​    在 select 里面还有 default 语法，select 其实就是类似switch 的功能，default 就是当监听的 channel 都没有准备好的时候，默认执行的（ select 不再阻塞等待 channel ）。</p>
+<hr>
+<h4 id="14-单向channel变量的声明"><a href="#14-单向channel变量的声明" class="headerlink" title="14.  单向channel变量的声明"></a>14.  单向channel变量的声明</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ch1 <span class="keyword">chan</span> <span class="keyword">int</span>        <span class="comment">//ch1是一个正常的channel，不是单向的</span></span><br><span class="line"><span class="keyword">var</span> ch2 <span class="keyword">chan</span>&lt;- <span class="keyword">float64</span>  <span class="comment">//ch2是单向channel，只用于写float64数据</span></span><br><span class="line"><span class="keyword">var</span> ch3 &lt;-<span class="keyword">chan</span> <span class="keyword">int</span>      <span class="comment">//ch3是单向channel，只用于读取int了数据</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="15-关闭和判断channel"><a href="#15-关闭和判断channel" class="headerlink" title="15. 关闭和判断channel"></a>15. 关闭和判断channel</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 关闭 ch channel</span></span><br><span class="line"><span class="built_in">close</span>(ch)</span><br><span class="line"><span class="comment">// 判断一个channel是否关闭</span></span><br><span class="line">x,ok := &lt;-ch</span><br></pre></td></tr></table></figure>
+<hr>
+<p>####16. runtime goroutine</p>
+<p>Runtime 包中有几个处理 goroutine 的函数</p>
+<ul>
+<li><p>Goexit</p>
+<p>退出当前执行的 goroutine , 但是 defer 函数还会继续调用</p>
+</li>
+<li><p>Gosched</p>
+<p>让出当前 goroutine 的执行权限， 调度器安排其他等待的任务运行，并在下次某个时候从该位置恢复运行</p>
+</li>
+<li><p>NumCPU</p>
+<p>返回 CPU 核数量</p>
+</li>
+<li><p>NumGroutine</p>
+<p>返回正在执行和排队的任务总数</p>
+</li>
+<li><p>GOMAXPROCS</p>
+<p>用来设置可以并行计算的CPU核数的最大值，并返回之前的值</p>
+</li>
+</ul>
+<hr>
+<h4 id="17-一些链接"><a href="#17-一些链接" class="headerlink" title="17. 一些链接"></a>17. 一些链接</h4><p>Golang学习思维导图<br><a href="http://yougg.github.io/static/gonote/GolangStudy.html" target="_blank" rel="noopener">http://yougg.github.io/static/gonote/GolangStudy.html</a></p>
+<hr>
+<h4 id="18-函数中局部变量"><a href="#18-函数中局部变量" class="headerlink" title="18. 函数中局部变量"></a>18. 函数中局部变量</h4><p>​        在Go语言中，返回 <strong>函数中局部变量</strong> 的地址也是 <strong>安全</strong> 的。例如下面的代码，调用f函数时创建局部变量v，在局部变量地址被返回之后依然有效，因为指针p依然引用这个变量。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p = f()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">()</span> *<span class="title">int</span></span> &#123;</span><br><span class="line">    v := <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> &amp;v</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="19-flag-包小例子"><a href="#19-flag-包小例子" class="headerlink" title="19. flag 包小例子"></a>19. flag 包小例子</h4><p>​    早些的echo版本中，就包含了两个可选的命令行参数：<code>-n</code>用于忽略行尾的换行符，<code>-s sep</code>用于指定分隔字符（默认是空格）。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">gopl.io/ch2/echo4</span><br><span class="line"><span class="comment">// Echo4 prints its command-line arguments.</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"flag"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"strings"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> n = flag.Bool(<span class="string">"n"</span>, <span class="literal">false</span>, <span class="string">"omit trailing newline"</span>)</span><br><span class="line"><span class="keyword">var</span> sep = flag.String(<span class="string">"s"</span>, <span class="string">" "</span>, <span class="string">"separator"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    flag.Parse()</span><br><span class="line">    fmt.Print(strings.Join(flag.Args(), *sep))</span><br><span class="line">    <span class="keyword">if</span> !*n &#123;</span><br><span class="line">        fmt.Println()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    调用 <strong>flag.Bool</strong> 函数会创建一个新的对应布尔型标志参数的变量。它有三个属性：第一个是的命令行标志参数的名字“n”，然后是该标志参数的默认值（这里是false），最后是该标志参数对应的描述信息。如果用户在命令行输入了一个无效的标志参数，或者输入<code>-h</code>或<code>-help</code>参数，那么将打印所有标志参数的名字、默认值和描述信息。类似的，调用flag.String函数将于创建一个对应字符串类型的标志参数变量，同样包含命令行标志参数对应的参数名、默认值、和描述信息。程序中的<code>sep</code>和<code>n</code>变量分别是指向对应命令行标志参数变量的指针，因此必须用<code>*sep</code>和<code>*n</code>形式的指针语法间接引用它们。</p>
+<p>​    当程序运行时，必须在使用标志参数对应的变量之前调用先flag.Parse函数，用于更新每个标志参数对应变量的值（之前是默认值）。对于非标志参数的普通命令行参数可以通过调用flag.Args()函数来访问，返回值对应对应一个字符串类型的slice。如果在flag.Parse函数解析命令行参数时遇到错误，默认将打印相关的提示信息，然后调用os.Exit(2)终止程序。</p>
+<p>​    运行一些echo测试用例： </p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">go</span> build gopl.io/ch2/echo4</span><br><span class="line">$ ./echo4 a bc def</span><br><span class="line">a bc def</span><br><span class="line">$ ./echo4 -s / a bc def</span><br><span class="line">a/bc/def</span><br><span class="line">$ ./echo4 -n a bc def</span><br><span class="line">a bc def$</span><br><span class="line">$ ./echo4 -help</span><br><span class="line">Usage of ./echo4:</span><br><span class="line">  -n    omit trailing newline</span><br><span class="line">  -s <span class="keyword">string</span></span><br><span class="line">        separator (<span class="keyword">default</span> <span class="string">" "</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="20-Rune"><a href="#20-Rune" class="headerlink" title="20. Rune"></a>20. Rune</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"unicode/utf8"</span></span><br><span class="line"></span><br><span class="line">s := <span class="string">"Hello, 世界"</span></span><br><span class="line">fmt.Println(<span class="built_in">len</span>(s))                    <span class="comment">// "13"</span></span><br><span class="line">fmt.Println(utf8.RuneCountInString(s)) <span class="comment">// "9"</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="21-内置函数"><a href="#21-内置函数" class="headerlink" title="21.内置函数"></a>21.内置函数</h4><table>
+<thead>
+<tr>
+<th>- 名称</th>
+<th>- 说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>close</td>
+<td>用于管道通信</td>
+</tr>
+<tr>
+<td>len/cap</td>
+<td></td>
+</tr>
+<tr>
+<td>new/make</td>
+<td>new 和 make 均是用于 <strong>分配内存</strong> ： new(T) 分配类型 T 的零值并返回其 <strong>地址</strong>，也就是指向类型 T 的指针。它也可以被用于基本类型：<code>v := new(int)</code>。make(T) 返回类型 T 的初始化之后的 <strong>值</strong></td>
+</tr>
+<tr>
+<td>copy/append</td>
+<td>用于复制和连接切片</td>
+</tr>
+<tr>
+<td>panic/recover</td>
+<td>两者均用于错误处理机制</td>
+</tr>
+<tr>
+<td>print/println</td>
+<td>底层打印函数，在部署环境中建议使用 fmt 包</td>
+</tr>
+<tr>
+<td>complex/realimag</td>
+<td>用于创建和操作复数</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="22-for-range-结构"><a href="#22-for-range-结构" class="headerlink" title="22. for-range 结构"></a>22. for-range 结构</h4><p>一般形式为：<code>for ix, val := range coll { }</code></p>
+<p>要注意的是，<code>val</code> 始终为集合中对应索引的值拷贝，因此它一般只具有只读性质，对它所做的任何修改都不会影响到集合中原有的值（<strong>译者注：如果 val 为指针，则会产生指针的拷贝，依旧可以修改集合中的原值</strong>）。一个字符串是 Unicode 编码的字符（或称之为 <code>rune</code>）集合，因此您也可以用它迭代字符串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for pos, char := range str &#123;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每个 rune 字符和索引在 for-range 循环中是一一对应的。它能够自动根据 UTF-8 规则识别 Unicode 编码的字符。</p>
+<hr>
+<h4 id="23-从字符串生成字节切片"><a href="#23-从字符串生成字节切片" class="headerlink" title="23. 从字符串生成字节切片"></a>23. 从字符串生成字节切片</h4><p>​    假设 s 是一个字符串（本质上是一个字节数组），那么就可以直接通过 <code>c := []byte(s)</code> 来获取一个字节的切片 c。另外，还可以通过 copy 函数来达到相同的目的：<code>copy(dst []byte, src string)</code>。</p>
+<p>​    可以通过代码 <code>len([]int32(s))</code> 来获得字符串中字符的数量，但使用 <code>utf8.RuneCountInString(s)</code> 效率会更高一点。</p>
+<p>​    还可以将一个字符串追加到某一个字符数组的尾部：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var b []byte</span><br><span class="line">var s string</span><br><span class="line">b = append(b, s...)</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="24-常量"><a href="#24-常量" class="headerlink" title="24. 常量"></a>24. 常量</h4><p><strong>常量</strong> 中的 <strong>数据类型</strong> 只可以是 <strong>布尔型</strong>、<strong>数字型</strong>（<strong>整数型</strong>、<strong>浮点型</strong>和<strong>复数</strong>）和<strong>字符串型</strong>。</p>
+<p>常量的定义格式：<code>const identifier [type] = value</code>，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const Pi = 3.14159</span><br></pre></td></tr></table></figure>
+<p>在 Go 语言中，你可以省略类型说明符 <code>[type]</code>，因为编译器可以根据变量的值来推断其类型。</p>
+<ul>
+<li>显式类型定义： <code>const b string = &quot;abc&quot;</code></li>
+<li>隐式类型定义： <code>const b = &quot;abc&quot;</code></li>
+</ul>
+<p><strong>注：常量的值必须是能够在编译时就能够确定的</strong></p>
+<hr>
+<h4 id="25-方法"><a href="#25-方法" class="headerlink" title="25. 方法"></a>25. 方法</h4><p>​    <strong>类型</strong> 和 <strong>作用在它上面定义的方法</strong> 必须在 <strong>同一个包里</strong> 定义，这就是为什么不能在 int、float 或类似这些的类型上定义方法。试图在 int 类型上定义方法会得到一个编译错误</p>
+<hr>
+<h4 id="26-反射"><a href="#26-反射" class="headerlink" title="26. 反射"></a>26. 反射</h4><p>​    变量的最基本信息就是类型和值：反射包的   <code>Type</code> 用来表示一个 Go 类型，反射包的 <code>Value</code> 为 Go 值提供了反射接口。</p>
+<p>​    两个简单的函数，<code>reflect.TypeOf</code> 和 <code>reflect.ValueOf</code>，返回被检查对象的 <strong>类型</strong> 和 <strong>值</strong> 。例如，x 被定义为：<code>var x float64 = 3.4</code>，那么 <code>reflect.TypeOf(x)</code> 返回 <code>float64</code>，<code>reflect.ValueOf(x)</code> 返回 <code>&lt;float64 Value&gt;</code></p>
+<ul>
+<li>Value 有一个 Type 方法返回 reflect.Value 的 Type。</li>
+</ul>
+<p>​        Type 和 Value 都有 Kind 方法返回一个常量来表示类型：Uint、Float64、Slice 等等 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">const (</span><br><span class="line">	Invalid Kind = iota</span><br><span class="line">	Bool</span><br><span class="line">	Int</span><br><span class="line">	Int8</span><br><span class="line">	Int16</span><br><span class="line">	Int32</span><br><span class="line">	Int64</span><br><span class="line">	Uint</span><br><span class="line">	Uint8</span><br><span class="line">	Uint16</span><br><span class="line">	Uint32</span><br><span class="line">	Uint64</span><br><span class="line">	Uintptr</span><br><span class="line">	Float32</span><br><span class="line">	Float64</span><br><span class="line">	Complex64</span><br><span class="line">	Complex128</span><br><span class="line">	Array</span><br><span class="line">	Chan</span><br><span class="line">	Func</span><br><span class="line">	Interface</span><br><span class="line">	Map</span><br><span class="line">	Ptr</span><br><span class="line">	Slice</span><br><span class="line">	String</span><br><span class="line">	Struct</span><br><span class="line">	UnsafePointer</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>​    变量 v 的    <code>Interface()</code> 方法可以得到还原（接口）值，所以可以这样打印 v 的值：<code>fmt.Println(v.Interface())</code>。</p>
+<p>​    通过 Type() 我们看到 v 现在的类型是   <code>*float64</code> 并且仍然是不可设置的。</p>
+<p>要想让其可设置我们需要使用 <code>Elem()</code> 函数，这间接的使用指针：<code>v = v.Elem()</code></p>
+<hr>
+<h4 id="27-一种限制速率的方法"><a href="#27-一种限制速率的方法" class="headerlink" title="27. 一种限制速率的方法"></a>27. 一种限制速率的方法</h4><p><code>time.Tick()</code> 函数声明为 <code>Tick(d Duration) &lt;-chan Time</code>，当你想返回一个通道而不必关闭它的时候这个函数非常有用：它以 d 为周期给返回的通道发送时间，d是纳秒数。如果需要像下边的代码一样，限制处理频率</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"time"</span></span><br><span class="line"></span><br><span class="line">rate_per_sec := <span class="number">10</span></span><br><span class="line"><span class="keyword">var</span> dur Duration = <span class="number">1e9</span> / rate_per_sec</span><br><span class="line">chRate := time.Tick(dur) <span class="comment">// a tick every 1/10th of a second</span></span><br><span class="line"><span class="keyword">for</span> req := <span class="keyword">range</span> requests &#123;</span><br><span class="line">    &lt;- chRate <span class="comment">// rate limit our Service.Method RPC calls</span></span><br><span class="line">    <span class="keyword">go</span> client.Call(<span class="string">"Service.Method"</span>, req, ...)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+	
+	
+	
+	
+</div>
+				
+				
+
+                <!-- Post Comments -->
+                
+                    
+
+
+    <!-- 使用 DISQUS -->
+	<div id="disqus-comment">
+		<div id="disqus_thread"></div>
+<script>
+	var disqus_config = function () {
+		this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+		this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+
+	(function() { // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+		s.src = '//jsharkc.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+	</div>
+	<style>
+		#disqus-comment{
+			background-color:#eee;
+			padding:2pc;
+		}
+	</style>
+
+                
+            </div>
+
+            <!-- Post Prev & Next Nav -->
+            <nav class="material-nav mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+    
+    <!-- Prev Nav -->
+    
+        <a href="/2016/11/21/MongoDB正确打开方式/" id="post_nav-newer" class="prev-content">
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                <i class="material-icons">arrow_back</i>
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            新篇
+        </a>
+    
+
+    <!-- Section Spacer -->
+    <div class="section-spacer"></div>
+
+    <!-- Next Nav -->
+    
+</nav>
+        </div>
+    </div>
+
+				
+				
+					<!-- Overlay For Active Sidebar -->
+<div class="sidebar-overlay "></div>
+
+<!-- Material sidebar -->
+<aside id="sidebar" class="sidebar sidebar-colored  sidebar-fixed-left" role="navigation">
+	<div id="sidebar-main">
+	    <!-- Sidebar Header -->
+		<div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
+    <!-- Top bar -->
+    <div class="top-bar"></div>
+
+    <!-- Sidebar toggle button -->
+    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
+    <i class="material-icons">clear_all</i>
+    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></button>
+
+    <!-- Sidebar Avatar -->
+    <div class="sidebar-image">
+        <img src="/img/avatar.png" alt="Jsharkc's avatar">
+    </div>
+
+    <!-- Sidebar Email -->
+    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
+        1773867204@qq.com
+        <b class="caret"></b>
+    </a>
+</div>
+
+		<!-- Sidebar Navigation  -->
+		<ul class="nav sidebar-nav">
+    <!-- User dropdown  -->
+    <li class="dropdown">
+        <ul id="settings-dropdown" class="dropdown-menu">
+			
+                <li>
+                    <a href="mailto:1773867204@qq.com" target="_blank" title="Email Me">
+						<i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
+                        Email Me
+                    </a>
+                </li>
+            
+        </ul>
+    </li>
+
+    <!-- Homepage -->
+    <li id="sidebar-first-li">
+        <a href="/" target="_self">
+            <i class="material-icons sidebar-material-icons">home</i>
+             主页
+        </a>
+    </li>
+
+    <!-- I'm Feeling Lucky -->
+<!--
+    <li class="dropdown">
+        <a href="" target="_self">
+            <i class="material-icons sidebar-material-icons">explore</i>
+             sidebar.imlucky
+        </a>
+    </li>
+-->
+
+	
+    <!-- Archives  -->
+    <li class="dropdown">
+        <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
+            <i class="material-icons sidebar-material-icons">inbox</i>
+             归档
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+            <a class="sidebar_archives-link" href="/archives/2018/02/">二月 2018<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/10/">十月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/07/">七月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/05/">五月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/04/">四月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/03/">三月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/12/">十二月 2016<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/11/">十一月 2016<span class="sidebar_archives-count">2</span></a>
+        </ul>
+    </li>
+
+    <!-- Divider -->
+    <li class="divider"></li>
+
+
+    <!-- Pages  -->
+	
+		<li>
+			<a href="/tags/" title="标签云">
+				标签云
+			</a>
+		</li>
+	
+		<li>
+			<a href="/gallery/" title="图库">
+				图库
+			</a>
+		</li>
+	
+
+    <!-- Article Numebr  -->
+    <li>
+        <a href="/archives">
+             文章总数
+             <span class="sidebar-badge">17</span>
+        </a>
+    </li>
+</ul>
+
+		<!-- Sidebar Divider -->
+		<div class="sidebar-divider"></div>
+
+		<!-- Sidebar Footer -->
+		<!-- 
+I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
+If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
+It will not impact the appearance and can give developers a lot of support :)
+
+很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
+如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
+它不会影响美观并可以给开发者很大的支持。 :) 
+-->
+
+<!-- Theme Material -->
+<a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
+	<div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+		主题 - Material
+		<span class="sidebar-badge badge-circle">i</span>
+	</div>
+</a>
+
+<!-- Help & Support -->
+<!--
+<a href="mailto:hiviosey@gmail.com" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+		sidebar.help
+		<span class="mdl-button__ripple-container">
+			<span class="mdl-ripple"></span>
+		</span>
+	</div>
+</a>
+-->
+
+<!-- Feedback -->
+<!--
+<a href="https://github.com/viosey/hexo-theme-material/issues" target="_blank" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+         sidebar.feedback
+                    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
+</a>
+-->
+
+<!-- Abount Theme -->
+<!--
+<a href="https://blog.viosey.com/index.php/Material.html" target="_blank" class="sidebar-footer-text-a">
+    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
+         sidebar.about_theme
+        <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
+</a>-->
+
+	</div>
+    
+    <!-- Sidebar Sponsor -->
+    
+
+
+</aside>
+
+				
+				
+				
+					<!-- Footer Top Button -->
+					<div class="toTop-wrap">
+    <a href="#top" class="toTop">
+        <i class="material-icons footer_top-i">expand_less</i>
+    </a>
+</div>
+				
+				
+				<!--Footer-->
+<footer class="mdl-mini-footer" id="bottom">
+	
+	
+		<!-- Paradox Footer Left Section -->
+		<div class="mdl-mini-footer--left-section sns-list">
+    <!-- Twitter -->
+    
+    
+    
+    <!-- Facebook -->
+    
+    
+    
+    <!-- Google + -->
+    
+    
+    
+    <!-- Weibo -->
+    
+    
+    
+    <!-- Instagram -->
+    
+    
+    
+    <!-- Tumblr -->
+    
+    
+    
+    <!-- Github -->
+    
+    <a href="http://github.com/jsharkc" target="view_window"><button class="mdl-mini-footer--social-btn social-btn" style="background-image: url(/img/footer/footer_ico-github.png);">
+        <span class="visuallyhidden">Github</span>
+    </button></a>
+    
+</div>
+
+
+		<!--Copyright-->
+		<div id="copyright">Copyright&nbsp;©&nbsp;<script type="text/javascript">var fd = new Date();document.write(fd.getFullYear());</script>&nbsp;Jsharkc's secret</div>
+
+		<!-- Paradox Footer Right Section -->
+
+		<!-- 
+		I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright.
+		It will not impact the appearance and can give developers a lot of support :)
+
+		很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
+		它不会影响美观并可以给开发者很大的支持。 :) 
+		-->
+
+		<div class="mdl-mini-footer--right-section">
+			
+		</div>
+	
+    
+</footer>
+                
+				<!-- Import File -->
+<script src="/js/highlight.min.js"></script>
+<script src="/js/js.min.js"></script>
+<script src="/js/nprogress.js"></script>
+
+<script type="text/javascript">
+    NProgress.configure({
+        showSpinner: true
+    });
+    NProgress.start();
+    
+    $('#nprogress .bar').css({
+        'background': '#FF4081'
+    });
+    $('#nprogress .peg').css({
+        'box-shadow': '0 0 10px #FF4081, 0 0 15px #FF4081'
+    });
+    $('#nprogress .spinner-icon').css({
+        'border-top-color': '#FF4081',
+        'border-left-color': '#FF4081'
+    });
+    
+    setTimeout(function() {
+        NProgress.done();
+        $('.fade').removeClass('out');
+    }, 800);
+</script>
+
+
+
+
+
+
+    <!-- Busuanzi -->
+    <script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+    <!-- 使用 DISQUS js 代码 -->
+	<script id="dsq-count-scr" src="//jsharkc.disqus.com/count.js" async></script>
+
+
+<!-- Swiftye -->
+
+
+<!-- Local Search-->
+
+
+<!-- Window Load-->
+<script>
+    $(window).load(function() {
+        // Post_Toc parent position fixed
+        $(".post-toc-wrap").parent(".mdl-menu__container").css("position", "fixed");
+    });
+</script>
+
+<!-- MathJax Load-->
+
+            </main>
+        </div>
+		
+    </body>
+		
+	
+</html>
