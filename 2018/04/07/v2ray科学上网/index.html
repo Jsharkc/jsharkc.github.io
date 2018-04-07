@@ -351,9 +351,10 @@
 <p>config.json 添加 http 代理：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">"inboundDetour": [&#123;</span><br><span class="line">  "protocol": "http",</span><br><span class="line">  "port": 1081,</span><br><span class="line">  "settings": &#123;</span><br><span class="line">    "udp": true</span><br><span class="line">  &#125;</span><br><span class="line">&#125;],</span><br></pre></td></tr></table></figure>
 <p>.zshrc 添加</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> proxy</span></span><br><span class="line">alias proxy='export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080'</span><br><span class="line">alias unproxy='unset https_proxy http_proxy socks5_proxy'</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># proxy</span><br><span class="line">alias proxy=&apos;export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080&apos;</span><br><span class="line">alias unproxy=&apos;unset https_proxy http_proxy socks5_proxy&apos;</span><br></pre></td></tr></table></figure>
 <p>然后配置一下 chrome 插件 Proxy SwitchyOmega</p>
 <p><img src="/img/src/switchOmega.png" alt=""></p>
+<p>OK，现在你可以科学上网了！</p>
 
 	
 	
