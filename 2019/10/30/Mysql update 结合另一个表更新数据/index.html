@@ -212,7 +212,7 @@
 	<ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
 		for="post-toc-trigger-btn">
 			
-			<ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Mysql-update-结合另一个表更新数据"><span class="post-toc-number">1.</span> <span class="post-toc-text">Mysql update 结合另一个表更新数据</span></a></li></ol>
+			
 		
 <!--			<li class="mdl-menu__item">Some Action</li>-->
 	</ul>
@@ -334,7 +334,7 @@
                 <!-- Post Content -->
                 <div id="post-content" class="markdown-Github mdl-color-text--grey-700 mdl-card__supporting-text fade out">
 	
-		<h1 id="Mysql-update-结合另一个表更新数据"><a href="#Mysql-update-结合另一个表更新数据" class="headerlink" title="Mysql update 结合另一个表更新数据"></a>Mysql update 结合另一个表更新数据</h1><p>有时 update 更新语句会需要根据另一个表进行更新，举例如下：</p>
+		<p>有时 update 更新语句会需要根据另一个表进行更新，举例如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-- 方式一：</span><br><span class="line">update tableA a, tableB b set a.Name=b.Name, a.Age=b.Age where a.IDCard=b.IDCard;</span><br><span class="line"></span><br><span class="line">-- 方式二:</span><br><span class="line">update tableA a inner join tableB b on a.IDCard=b.IDCard set a.Name=b.Name, a.Age=b.Age;</span><br></pre></td></tr></table></figure>
 
 	
