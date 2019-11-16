@@ -4,7 +4,7 @@
     <!-- Title -->
     
     <title>
-        初探 Cockroachdb | Jsharkc&#39;s secret
+        Android手机作为linux服务器 | Jsharkc&#39;s secret
     </title>
     
     <!-- Favicons -->
@@ -40,7 +40,7 @@
     <!-- The Open Graph protocol -->
     <meta property="og:url" content="http://yoursite.com">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="初探 Cockroachdb | Jsharkc&#39;s secret">
+    <meta property="og:title" content="Android手机作为linux服务器 | Jsharkc&#39;s secret">
     <meta property="og:description" content="">
     
      <!--[if lte IE 9]>
@@ -212,7 +212,7 @@
 	<ul class="post-toc-wrap mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
 		for="post-toc-trigger-btn">
 			
-			<ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#初探-Cockroachdb"><span class="post-toc-number">1.</span> <span class="post-toc-text">初探 Cockroachdb</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-创建网桥"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1.创建网桥</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-启动第一个节点"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">2.启动第一个节点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-将节点添加到集群"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">3.将节点添加到集群</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-测试集群"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">4.测试集群</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-监控集群"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">5.监控集群</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-停止集群"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">6.停止集群</span></a></li></ol></li></ol>
+			<ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#下载-Termux"><span class="post-toc-number">1.</span> <span class="post-toc-text">下载 Termux</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置-Termux"><span class="post-toc-number">2.</span> <span class="post-toc-text">配置 Termux</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#利用-frp-内网穿透"><span class="post-toc-number">3.</span> <span class="post-toc-text">利用 frp 内网穿透</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#配置-frp-服务端"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">配置 frp 服务端</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#配置-frp-客户端"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">配置 frp 客户端</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#运行-frp"><span class="post-toc-number">3.0.3.</span> <span class="post-toc-text">运行 frp</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ssh-连接"><span class="post-toc-number">3.0.4.</span> <span class="post-toc-text">ssh 连接</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#安装发行版-linux"><span class="post-toc-number">4.</span> <span class="post-toc-text">安装发行版 linux</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#下载-atilo"><span class="post-toc-number">4.0.1.</span> <span class="post-toc-text">下载 atilo</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#安装系统"><span class="post-toc-number">4.0.2.</span> <span class="post-toc-text">安装系统</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#删除系统"><span class="post-toc-number">4.0.3.</span> <span class="post-toc-text">删除系统</span></a></li></ol></li></ol></li></ol>
 		
 <!--			<li class="mdl-menu__item">Some Action</li>-->
 	</ul>
@@ -231,11 +231,22 @@
                 
 	<!-- Paradox Post Header -->
 	
-		<!-- Custom Thumbnail -->
-		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(https://raw.githubusercontent.com/cockroachdb/cockroach/master/docs/media/cockroach_db.png)">
+		
+			<!-- Random Thumbnail -->
+			<div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
+				<script>
+    
+    var randomNum;
+    randomNum = Math.floor(Math.random() * 6 + 1);
+    
+    $(".post_thumbnail-random").css('background-image', 'url(' + '/img/random/' + randomNum + '.png' + ')');
+    
+</script>
+
+		
 	
         <p class="article-headline-p">
-            初探 Cockroachdb
+            Android手机作为linux服务器
         </p>
     </div>
 
@@ -253,7 +264,7 @@
     <!-- Author Name & Date -->
     <div>
         <strong>Jsharkc</strong>
-        <span>3月 17, 2017</span>
+        <span>11月 16, 2019</span>
     </div>
     
     <div class="section-spacer"></div>
@@ -273,7 +284,7 @@
     </button>
     <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="article-functions-viewtags-button">
         <li class="mdl-menu__item">
-        <a class="post_tag-link" href="/tags/cockroach/">cockroach</a>
+        <a class="post_tag-link" href="/tags/Android/">Android</a></li><li class="mdl-menu__item"><a class="post_tag-link" href="/tags/Termux/">Termux</a></li><li class="mdl-menu__item"><a class="post_tag-link" href="/tags/linux/">linux</a></li><li class="mdl-menu__item"><a class="post_tag-link" href="/tags/ssh/">ssh</a></li><li class="mdl-menu__item"><a class="post_tag-link" href="/tags/服务器/">服务器</a>
     </ul>
     
     <!-- Share -->
@@ -297,21 +308,21 @@
     
     
     <!-- Share Twitter -->
-    <a class="post_share-link" href="https://twitter.com/intent/tweet?text=初探 Cockroachdb&url=http://yoursite.com//2017/03/17/cockroachdb/index.html&via=Jsharkc" target="_blank">
+    <a class="post_share-link" href="https://twitter.com/intent/tweet?text=Android手机作为linux服务器&url=http://yoursite.com//2019/11/16/Android-Phone-as-linux-server/index.html&via=Jsharkc" target="_blank">
         <li class="mdl-menu__item">
             分享到 Twitter
         </li>
     </a>
     
     <!-- Share Google+ -->
-    <a class="post_share-link" href="https://plus.google.com/share?url=http://yoursite.com//2017/03/17/cockroachdb/index.html" target="_blank">
+    <a class="post_share-link" href="https://plus.google.com/share?url=http://yoursite.com//2019/11/16/Android-Phone-as-linux-server/index.html" target="_blank">
         <li class="mdl-menu__item">
             分享到 Google+
         </li>
     </a>
     
     <!-- Share Weibo -->
-    <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=初探 Cockroachdb&url=http://yoursite.com//2017/03/17/cockroachdb/index.html&pic=&searchPic=false&style=simple" target="_blank">
+    <a class="post_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=Android手机作为linux服务器&url=http://yoursite.com//2019/11/16/Android-Phone-as-linux-server/index.html&pic=&searchPic=false&style=simple" target="_blank">
         <li class="mdl-menu__item">
             分享到微博
         </li>
@@ -323,46 +334,42 @@
                 <!-- Post Content -->
                 <div id="post-content" class="markdown-Github mdl-color-text--grey-700 mdl-card__supporting-text fade out">
 	
-		<h1 id="初探-Cockroachdb"><a href="#初探-Cockroachdb" class="headerlink" title="初探 Cockroachdb"></a>初探 Cockroachdb</h1><h2 id="1-创建网桥"><a href="#1-创建网桥" class="headerlink" title="1.创建网桥"></a>1.创建网桥</h2><p>由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network create -d bridge roachnet</span><br></pre></td></tr></table></figure>
-<p>我们在 <code>roachnet</code> 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。</p>
-<h2 id="2-启动第一个节点"><a href="#2-启动第一个节点" class="headerlink" title="2.启动第一个节点"></a>2.启动第一个节点</h2><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">run</span><span class="bash"> -d \</span></span><br><span class="line"><span class="bash">--name=roach1 \</span></span><br><span class="line"><span class="bash">--hostname=roach1 \</span></span><br><span class="line"><span class="bash">--net=roachnet \</span></span><br><span class="line"><span class="bash">-p 26257:26257 -p 8080:8080  \</span></span><br><span class="line"><span class="bash">-v <span class="string">"<span class="variable">$&#123;PWD&#125;</span>/cockroach-data/roach1:/cockroach/cockroach-data"</span>  \</span></span><br><span class="line"><span class="bash">cockroachdb/cockroach:v1.0.4 start --insecure</span></span><br></pre></td></tr></table></figure>
-<p>此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：</p>
-<p><code>docker run</code>：Docker 命令启动一个新的容器。</p>
-<p><code>-d</code>：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。</p>
-<p><code>--name</code>：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。</p>
-<p><code>--hostname</code>：容器的主机名。您将使用它将其他容器/节点连接到集群。</p>
-<p><code>--net</code>：用于容器加入的网桥。有关详细信息，请参阅步骤1。</p>
-<p><code>-p 26257:26257 -p 8080:8080</code>：这些标志将用于节点间和客户端节点通信（<code>26257</code>）的默认端口和 <code>8080</code> 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。</p>
-<p><code>-v &quot;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&quot;</code>：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 <code>${PWD}/cockroach-data/roach1</code> 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。<br><code>cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB</code> 命令以不安全的方式启动容器中的一个节点。</p>
-<h2 id="3-将节点添加到集群"><a href="#3-将节点添加到集群" class="headerlink" title="3.将节点添加到集群"></a>3.将节点添加到集群</h2><p>在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。</p>
-<p>要模拟真正的部署，通过添加另外两个节点来扩展集群：</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Start the second container/node:</span></span><br><span class="line">docker <span class="keyword">run</span><span class="bash"> -d \</span></span><br><span class="line"><span class="bash">--name=roach2 \</span></span><br><span class="line"><span class="bash">--hostname=roach2 \</span></span><br><span class="line"><span class="bash">--net=roachnet \</span></span><br><span class="line"><span class="bash">-v <span class="string">"<span class="variable">$&#123;PWD&#125;</span>/cockroach-data/roach2:/cockroach/cockroach-data"</span> \</span></span><br><span class="line"><span class="bash">cockroachdb/cockroach:v1.0.4 start --insecure --join=roach1</span></span><br><span class="line"><span class="bash"></span></span><br><span class="line"><span class="bash"><span class="comment"># Start the third container/node:</span></span></span><br><span class="line"><span class="bash">docker run -d \</span></span><br><span class="line"><span class="bash">--name=roach3 \</span></span><br><span class="line"><span class="bash">--hostname=roach3 \</span></span><br><span class="line"><span class="bash">--net=roachnet \</span></span><br><span class="line"><span class="bash">-v <span class="string">"<span class="variable">$&#123;PWD&#125;</span>/cockroach-data/roach3:/cockroach/cockroach-data"</span> \</span></span><br><span class="line"><span class="bash">cockroachdb/cockroach:v1.0.4 start --insecure --join=roach1</span></span><br></pre></td></tr></table></figure>
-<p>这些命令添加了两个容器，并在其中启动 CockroachDB 节点，并将它们连接到第一个节点。从步骤2中只需要注意几点：</p>
-<p><code>-v</code>：该标志挂载作为数据卷的主机目录。数据和日志这些节点将被存储在 <code>${PWD}/cockroach-data/roach2与${PWD}/cockroach-data/roach3</code> 主机上和容器停止或删除之后将继续存在。<br><code>--join</code>：该标志使用第一个容器将新节点连接到集群 <code>hostname</code>。否则，所有 <code>cockroach start</code> 默认值都被接受。请注意，由于每个节点都在唯一的容器中，所以使用相同的默认端口不会引起冲突。</p>
-<h2 id="4-测试集群"><a href="#4-测试集群" class="headerlink" title="4.测试集群"></a>4.测试集群</h2><p>现在已经扩展到3个节点，可以使用任何节点作为集群的 SQL 网关。为了演示这一点，使用 docker exec 命令在第一个容器中启动内置的 SQL shell：</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it roach1 ./cockroach sql --insecure</span><br><span class="line"><span class="comment"># Welcome to the cockroach SQL interface.</span></span><br><span class="line"><span class="comment"># All statements must be terminated by a semicolon.</span></span><br><span class="line"><span class="comment"># To exit: CTRL + D.</span></span><br></pre></td></tr></table></figure>
-<p>运行一些基本的 CockroachDB SQL 语句：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; CREATE DATABASE bank;</span><br><span class="line"></span><br><span class="line">&gt; CREATE TABLE bank.accounts (id INT PRIMARY KEY, balance DECIMAL);</span><br><span class="line"></span><br><span class="line">&gt; INSERT INTO bank.accounts VALUES (1, 1000.50);</span><br><span class="line"></span><br><span class="line">&gt; SELECT * FROM bank.accounts;</span><br></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+---------+</span></span><br><span class="line">| id | balance |</span><br><span class="line">+<span class="comment">----+---------+</span></span><br><span class="line">|  1 |  1000.5 |</span><br><span class="line">+<span class="comment">----+---------+</span></span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure>
-<p>退出节点1上的 SQL shell：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; \q</span><br></pre></td></tr></table></figure>
-<p>然后在第二个容器中启动 SQL shell：</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it roach2 ./cockroach sql --insecure</span><br><span class="line"><span class="comment"># Welcome to the cockroach SQL interface.</span></span><br><span class="line"><span class="comment"># All statements must be terminated by a semicolon.</span></span><br><span class="line"><span class="comment"># To exit: CTRL + D.</span></span><br></pre></td></tr></table></figure>
-<p>现在运行相同的 SELECT 查询：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; SELECT * FROM bank.accounts;</span><br></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+---------+</span></span><br><span class="line">| id | balance |</span><br><span class="line">+<span class="comment">----+---------+</span></span><br><span class="line">|  1 |  1000.5 |</span><br><span class="line">+<span class="comment">----+---------+</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; (1 row)</span><br></pre></td></tr></table></figure>
-<p>如您所见，节点1和节点2的行为与 SQL 网关相同。</p>
-<p>完成后，退出节点2上的 SQL shell：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; \q</span><br></pre></td></tr></table></figure>
-<h2 id="5-监控集群"><a href="#5-监控集群" class="headerlink" title="5.监控集群"></a>5.监控集群</h2><p>当启动第一个容器/节点时，将节点的默认HTTP端口映射8080到8080主机上的端口。要查看集群的管理UI，请将浏览器指向该端口localhost，即 <a href="http://localhost:8080。" target="_blank" rel="noopener">http://localhost:8080。</a></p>
-<p><img src="https://www.cockroachlabs.com/docs/images/admin_ui.png" alt="CockroachDB管理界面"></p>
-<p>如前所述，CockroachDB会自动将您的数据复制到幕后。要验证上一步中写入的数据是否已成功复制，请向下滚动到每个商店的副本图表并将其悬停在该行上：</p>
-<p><img src="https://www.cockroachlabs.com/docs/images/admin_ui_replicas.png" alt="CockroachDB管理界面"></p>
-<p>每个节点上的副本计数相同，表示集群中的所有数据都被复制3次（默认值）。</p>
-<h2 id="6-停止集群"><a href="#6-停止集群" class="headerlink" title="6.停止集群"></a>6.停止集群</h2><p>使用 docker stop 和 docker rm 命令停止和删除容器（因此集群）：</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Stop the containers:</span></span><br><span class="line">docker stop roach1 roach2 roach3</span><br><span class="line"></span><br><span class="line"><span class="comment"># Remove the containers:</span></span><br><span class="line">docker rm roach1 roach2 roach3</span><br></pre></td></tr></table></figure>
+		<p>有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。</p>
+<h2 id="下载-Termux"><a href="#下载-Termux" class="headerlink" title="下载 Termux"></a>下载 Termux</h2><p><a href="https://www.coolapk.com/apk/com.termux" target="_blank" rel="noopener">Termux 下载地址</a></p>
+<p>下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。</p>
+<h2 id="配置-Termux"><a href="#配置-Termux" class="headerlink" title="配置 Termux"></a>配置 Termux</h2><p>Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">apt update</span><br><span class="line">apt upgrade</span><br><span class="line"></span><br><span class="line">apt install openssh</span><br><span class="line">pkg install termux-auth</span><br></pre></td></tr></table></figure>
+<p>查看用户名，ip，设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">whoami</span><br><span class="line"># 结果为：u0_a150，你的可能不一样，用自己的</span><br><span class="line">ifconfig</span><br><span class="line"># 找到 inet addr，我的是 192.168.0.104，也是用你自己的</span><br><span class="line">passwd</span><br><span class="line"># 这个是设置密码</span><br><span class="line">sshd -p 9999</span><br><span class="line"># 让 ssh 监听 9999 端口</span><br></pre></td></tr></table></figure>
+<p>设置好后，用电脑登录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh u0_a150@192.168.0.104 -p 9999</span><br><span class="line"># 回车，输入密码就行了</span><br></pre></td></tr></table></figure>
+<p>之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 <code>termux-setup-storage</code> 插件把手机目录挂载到 <code>/data/data/com.termux/files/home/storage/shared</code>目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">termux-setup-storage</span><br></pre></td></tr></table></figure>
+<p>当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了</p>
+<h2 id="利用-frp-内网穿透"><a href="#利用-frp-内网穿透" class="headerlink" title="利用 frp 内网穿透"></a>利用 frp 内网穿透</h2><p>安装 <code>Golang</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pkg install golang</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/fatedier/frp/releases" target="_blank" rel="noopener">frp 下载地址</a></p>
+<p>Android 下载以arm结尾的，服务器端根据自己的服务器选。</p>
+<p>写个 Hello world http 服务</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">        <span class="string">"fmt"</span></span><br><span class="line">        <span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">        http.HandleFunc(<span class="string">"/"</span>, <span class="function"><span class="keyword">func</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;</span><br><span class="line">                fmt.Fprintf(w, <span class="string">"Hello World"</span>)</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">        http.ListenAndServe(<span class="string">":8085"</span>, <span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="配置-frp-服务端"><a href="#配置-frp-服务端" class="headerlink" title="配置 frp 服务端"></a>配置 frp 服务端</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># frps.ini</span><br><span class="line">[common]</span><br><span class="line">bind_port = 7001       # frp 服务绑定的端口</span><br><span class="line">vhost_http_port = 8082 # 外网可访问的 web 服务端口</span><br></pre></td></tr></table></figure>
+<h4 id="配置-frp-客户端"><a href="#配置-frp-客户端" class="headerlink" title="配置 frp 客户端"></a>配置 frp 客户端</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># frpc.ini</span><br><span class="line">[common]</span><br><span class="line">server_addr = xx.xx.xx.xx  # 你的服务器地址</span><br><span class="line">server_port = 7001         # 服务器绑定的端口，与服务端配置 bind_port 一致</span><br><span class="line"></span><br><span class="line">[ssh]</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 9999          # 本地 ssh 监听端口</span><br><span class="line">remote_port = 6000         # 远程连接用的端口</span><br><span class="line"></span><br><span class="line">[web]</span><br><span class="line">type = http</span><br><span class="line">local_port = 8085          # 本地 web 服务监听端口</span><br><span class="line">custom_domains = xx.xx.xx  # 服务器域名，有域名写域名，没域名写 ip</span><br></pre></td></tr></table></figure>
+<h4 id="运行-frp"><a href="#运行-frp" class="headerlink" title="运行 frp"></a>运行 frp</h4><p><strong>服务端</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./frps -c ./frps.ini</span><br></pre></td></tr></table></figure>
+<p><strong>客户端</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./frpc -c ./frpc.ini</span><br></pre></td></tr></table></figure>
+<p><strong>测试</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl http://xx.xx.xx:8082</span><br><span class="line"># 可以看到 Hello world</span><br></pre></td></tr></table></figure>
+<h4 id="ssh-连接"><a href="#ssh-连接" class="headerlink" title="ssh 连接"></a>ssh 连接</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh u0_a150@xx.xx.xx.xx -oPort=6000</span><br></pre></td></tr></table></figure>
+<p>格式：ssh  [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]</p>
+<h2 id="安装发行版-linux"><a href="#安装发行版-linux" class="headerlink" title="安装发行版 linux"></a>安装发行版 linux</h2><p>可以再 Termux 上安装发行版 linux，包括 fedora、debian、alpine、aosc、arch、ubuntu、centos。</p>
+<h4 id="下载-atilo"><a href="#下载-atilo" class="headerlink" title="下载 atilo"></a>下载 atilo</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://funs.ml/file/atilo</span><br></pre></td></tr></table></figure>
+<p>给 atilo 加权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x atilo</span><br></pre></td></tr></table></figure>
+<p>atilo 就可以用了</p>
+<h4 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./atilo centos</span><br></pre></td></tr></table></figure>
+<h4 id="删除系统"><a href="#删除系统" class="headerlink" title="删除系统"></a>删除系统</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./atilo -r centos</span><br></pre></td></tr></table></figure>
+
 	
 	
 	
@@ -408,21 +415,13 @@
     
     <!-- Prev Nav -->
     
-        <a href="/2017/04/02/Linux防火墙-iptables/" id="post_nav-newer" class="prev-content">
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                <i class="material-icons">arrow_back</i>
-            </button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            新篇
-        </a>
-    
 
     <!-- Section Spacer -->
     <div class="section-spacer"></div>
 
     <!-- Next Nav -->
     
-        <a href="/2017/03/12/go性能优化pprof/" id="post_nav-older" class="next-content">
+        <a href="/2019/11/15/文件描述符/" id="post_nav-older" class="next-content">
             旧篇
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
