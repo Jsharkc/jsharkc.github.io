@@ -1,0 +1,345 @@
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Docker Note | Jacobc's blog</title>
+<meta name=keywords content="Docker">
+<meta name=description content="Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为<none>的为虚悬镜像：
+<none>	<none>	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
+​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
+$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。">
+<meta name=author content="Jsharkc">
+<link rel=canonical href=https://jsharkc.github.io/post/docker-note/>
+<meta name=google-site-verification content="XYZabc">
+<meta name=yandex-verification content="XYZabc">
+<meta name=msvalidate.01 content="XYZabc">
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.86.1">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+</noscript><meta property="og:title" content="Docker Note">
+<meta property="og:description" content="Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为<none>的为虚悬镜像：
+<none>	<none>	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
+​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
+$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jsharkc.github.io/post/docker-note/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2017-04-12T16:52:24+00:00">
+<meta property="article:modified_time" content="2017-04-12T16:52:24+00:00"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name=twitter:title content="Docker Note">
+<meta name=twitter:description content="Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为<none>的为虚悬镜像：
+<none>	<none>	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
+​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
+$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Docker Note","item":"https://jsharkc.github.io/post/docker-note/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Docker Note","name":"Docker Note","description":"Docker Note 镜像 虚悬镜像 ​\t没有仓库名，也没有标签，均为\u0026lt;none\u0026gt;的为虚悬镜像：\n\u0026lt;none\u0026gt;\t\u0026lt;none\u0026gt;\t00285df0df87\t5 days ago\t342 MB ​\t由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为\u0026lt;none\u0026gt;，可用下面的命令专门显示这类镜像：\n$ docker images -f dangling=ture REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE \u0026lt;none\u0026gt;\t\u0026lt;none\u0026gt;\t00285df0df87\t5 days ago 342 MB ​\t一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。\n$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f\n​\tdocker images 还支持强大的过滤器参数 --filter\t，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：\n$ docker images -f since=mongo:3.2 REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE redis\tlatest\t5f515359c7f8\t5 days ago\t183 MB nginx\tlatest\t05a60462f8ba\t5 days ago\t181 MB ​\t想查看某个位置之前的镜像也可以，只需要吧since换成before即可。","keywords":["Docker"],"articleBody":"Docker Note 镜像 虚悬镜像 ​\t没有仓库名，也没有标签，均为的为虚悬镜像：\n\t\t00285df0df87\t5 days ago\t342 MB ​\t由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为，可用下面的命令专门显示这类镜像：\n$ docker images -f dangling=ture REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE \t\t00285df0df87\t5 days ago 342 MB ​\t一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。\n$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f\n​\tdocker images 还支持强大的过滤器参数 --filter\t，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：\n$ docker images -f since=mongo:3.2 REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE redis\tlatest\t5f515359c7f8\t5 days ago\t183 MB nginx\tlatest\t05a60462f8ba\t5 days ago\t181 MB ​\t想查看某个位置之前的镜像也可以，只需要吧since换成before即可。\n####以特定格式显示镜像\n​\t把所有的虚悬镜像的 ID 列出来\n$ docker images -q 5f515359c7f8 05a60462f8ba fe9198c04d62 00285df0df87 f753707788c5 f753707788c5 1e0c3dd64ccd ​\t以自己想要的格式显示，比如显示镜像 ID 和仓库名：\n$ docker images --format \"{{.ID}}: {{.Repository}}\" 5f515359c7f8: redis 05a60462f8ba: nginx fe9198c04d62: mongo 00285df0df87:  f753707788c5: ubuntu f753707788c5: ubuntu 1e0c3dd64ccd: ubuntu ​\t以表格等距显示，并且有标题行\n$ docker images --format \"table {{.ID}}\\t{{.Repository}}\\t{{.Tag}}\" IMAGE ID REPOSITORY TAG 5f515359c7f8 redis latest 05a60462f8ba nginx latest fe9198c04d62 mongo 3.2 00285df0df87   f753707788c5 ubuntu 16.04 f753707788c5 ubuntu latest 1e0c3dd64ccd ubuntu 14.04 Dockerfile 定制镜像 ​\tDockerfile 中每一个指令都会建立一层，RUN 也不例外。每一个 RUN 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，commit 这一层的修改，构成新的镜像。\nContext 上下文 ​\t当构建的时候，用户会指定构建镜像上下文的路径，docker build 命令得知这个路径后，会将路径下的所有内容打包，然后上传给 Docker 引擎。这样 Docker 引擎收到这个上下文包后，展开就会获得构建镜像所需的一切文件。\nDockerfile 指令详解 ####COPY 复制文件\n格式：\n COPY ...  COPY [\"\",... \"\"]  和 RUN 指令一样，也有两种格式，一种类似于命令行，一种类似于函数调用。\nCOPY 指令将从构建上下文目录中  的文件/目录复制到新的一层的镜像内的  位置。比如：\nCOPY package.json /usr/src/app/  可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 filepath.Match 规则，如：\nCOPY hom* /mydir/ COPY hom?.txt /mydir/  可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 WORKDIR指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。\n此外，还需要注意一点，使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。\n####CMD 容器启动命令\nCMD 指令的格式和 RUN 相似，也是两种格式：\n shell 格式：CMD  exec 格式：CMD [\"可执行文件\", \"参数1\", \"参数2\"...] 参数列表格式：CMD [\"参数1\", \"参数2\"...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。  之前介绍容器的时候曾经说过，Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。CMD 指令就是用于指定__默认__的__容器主进程__的__启动命令__的。\n在指令格式上，一般推荐使用 exec 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 \"，而不要使用单引号。\n如果使用 shell 格式的话，实际的命令会被包装为 sh -c 的参数的形式进行执行。比如：\nCMD echo $HOME 在实际执行中，会将其变更为：\nCMD [ \"sh\", \"-c\", \"echo $HOME\" ] ENTRYPOINT 入口点 ENTRYPOINT 的格式和 RUN 指令格式一样，分为 exec 格式和 shell 格式。\nENTRYPOINT 的目的和 CMD 一样，都是在指定容器启动程序及参数。ENTRYPOINT 在运行时也可以替代，不过比 CMD 要略显繁琐，需要通过 docker run 的参数 --entrypoint 来指定。\n当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令，换句话说实际执行时，将变为：\n \"\" ENV 设置环境变量 格式有两种：\n ENV   ENV = =...  这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如 RUN，还是运行时的应用，都可以直接使用这里定义的环境变量。\nENV VERSION=1.0 DEBUG=on \\ NAME=\"Happy Feet\" ARG 构建参数 格式：ARG [=]\n构建参数和 ENV 的效果一样，都是设置环境变量。所不同的是，ARG 所设置的构建环境的环境变量，在将来__容器运行时__是__不会存在这些环境变量__的。但是不要因此就使用 ARG 保存密码之类的信息，因为 docker history 还是可以看到所有值的。\nDockerfile 中的 ARG 指令是定义参数名称，以及定义其默认值。该默认值可以在构建命令 docker build 中用 --build-arg = 来覆盖。\n在 1.13 之前的版本，要求 --build-arg 中的参数名，必须在 Dockerfile 中用 ARG 定义过了，换句话说，就是 --build-arg 指定的参数，必须在 Dockerfile 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 Dockerfile 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。\nVOLUME 定义匿名卷 格式为：\n VOLUME [\"\", \"\"...] VOLUME   之前我们说过，容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，后面的章节我们会进一步介绍 Docker 卷的概念。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。\nVOLUME /data 这里的 /data 目录就会在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：\ndocker run -d -v mydata:/data xxxx 在这行命令中，就使用了 mydata 这个命名卷挂载到了 /data 这个位置，替代了 Dockerfile 中定义的匿名卷的挂载配置。\nEXPOSE 声明端口 格式为 EXPOSE  [...]。\nEXPOSE 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 docker run -P时，会自动随机映射 EXPOSE 的端口。\nWORKDIR 指定工作目录 格式为 WORKDIR 。\n使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。\nONBUILD 为他人做嫁衣裳 格式：ONBUILD 。\nONBUILD 是一个特殊的指令，它后面跟的是其它指令，比如 RUN, COPY 等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。\n仓库 Docker Hub docker search 查找的时候通过 -s N 参数可以指定仅显示评价为 N 星以上的镜像（新版本Docker推荐使用--filter=stars=N参数）。\ndocker search centos --filter=stars=20 NAME DESCRIPTION STARS OFFICIAL AUTOMATED centos The official build of CentOS. 3631 [OK] ansible/centos7-ansible Ansible on Centos7 101 [OK] jdeathe/centos-ssh CentOS-6 6.9 ... 83 [OK] tutum/centos Simple CentOS docker 33 imagine10255/centos6-lnmp-php56 centos6-lnmp-php56 30 [OK] gluster/gluster-centos Official GlusterFS Image [ CentOS-7 + Glu... 20 [OK] 网络 容器互联 --link参数可以让容器之间安全的进行交互\n--link 参数的格式为 --link name:alias，其中 name 是要链接的容器的名称，alias 是这个连接的别名。\n","wordCount":"494","inLanguage":"en","datePublished":"2017-04-12T16:52:24Z","dateModified":"2017-04-12T16:52:24Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/docker-note/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+</head>
+<body class=dark id=top>
+<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
+</div>
+<ul id=menu>
+<li>
+<a href=https://jsharkc.github.io/archives/ title=Archives>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/categories title=Categories>
+<span>Categories</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/tags title=Tags>
+<span>Tags</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
+<span>Search</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/post/>Posts</a></div>
+<h1 class=post-title>
+Docker Note
+</h1>
+<div class=post-meta>April 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/post/Docker%20Note.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+</div>
+</header> <div class=toc>
+<details open>
+<summary accesskey=c title="(Alt + C)">
+<span class=details>Table of Contents</span>
+</summary>
+<div class=inner><ul>
+<li>
+<a href=#docker-note aria-label="Docker Note">Docker Note</a><ul>
+<li>
+<a href=#%e9%95%9c%e5%83%8f aria-label=镜像>镜像</a><ul>
+<li>
+<a href=#%e8%99%9a%e6%82%ac%e9%95%9c%e5%83%8f aria-label=虚悬镜像>虚悬镜像</a></li>
+<li>
+<a href=#docker-images aria-label="docker images">docker images</a></li>
+<li>
+<a href=#dockerfile-%e5%ae%9a%e5%88%b6%e9%95%9c%e5%83%8f aria-label="Dockerfile 定制镜像">Dockerfile 定制镜像</a><ul>
+<li>
+<a href=#context-%e4%b8%8a%e4%b8%8b%e6%96%87 aria-label="Context 上下文">Context 上下文</a></li></ul>
+</li>
+<li>
+<a href=#dockerfile-%e6%8c%87%e4%bb%a4%e8%af%a6%e8%a7%a3 aria-label="Dockerfile 指令详解">Dockerfile 指令详解</a><ul>
+<li>
+<a href=#entrypoint-%e5%85%a5%e5%8f%a3%e7%82%b9 aria-label="ENTRYPOINT 入口点">ENTRYPOINT 入口点</a></li>
+<li>
+<a href=#env-%e8%ae%be%e7%bd%ae%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f aria-label="ENV 设置环境变量">ENV 设置环境变量</a></li>
+<li>
+<a href=#arg-%e6%9e%84%e5%bb%ba%e5%8f%82%e6%95%b0 aria-label="ARG 构建参数">ARG 构建参数</a></li>
+<li>
+<a href=#volume-%e5%ae%9a%e4%b9%89%e5%8c%bf%e5%90%8d%e5%8d%b7 aria-label="VOLUME 定义匿名卷">VOLUME 定义匿名卷</a></li>
+<li>
+<a href=#expose-%e5%a3%b0%e6%98%8e%e7%ab%af%e5%8f%a3 aria-label="EXPOSE 声明端口">EXPOSE 声明端口</a></li>
+<li>
+<a href=#workdir-%e6%8c%87%e5%ae%9a%e5%b7%a5%e4%bd%9c%e7%9b%ae%e5%bd%95 aria-label="WORKDIR 指定工作目录">WORKDIR 指定工作目录</a></li>
+<li>
+<a href=#onbuild-%e4%b8%ba%e4%bb%96%e4%ba%ba%e5%81%9a%e5%ab%81%e8%a1%a3%e8%a3%b3 aria-label="ONBUILD 为他人做嫁衣裳">ONBUILD 为他人做嫁衣裳</a></li></ul>
+</li></ul>
+</li>
+<li>
+<a href=#%e4%bb%93%e5%ba%93 aria-label=仓库>仓库</a><ul>
+<li>
+<a href=#docker-hub aria-label="Docker Hub">Docker Hub</a><ul>
+<li>
+<a href=#docker-search aria-label="docker search">docker search</a></li></ul>
+</li>
+<li>
+<a href=#%e7%bd%91%e7%bb%9c aria-label=网络>网络</a><ul>
+<li>
+<a href=#%e5%ae%b9%e5%99%a8%e4%ba%92%e8%81%94 aria-label=容器互联>容器互联</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</details>
+</div>
+<div class=post-content><h1 id=docker-note>Docker Note<a hidden class=anchor aria-hidden=true href=#docker-note>#</a></h1>
+<h2 id=镜像>镜像<a hidden class=anchor aria-hidden=true href=#镜像>#</a></h2>
+<h3 id=虚悬镜像>虚悬镜像<a hidden class=anchor aria-hidden=true href=#虚悬镜像>#</a></h3>
+<p>​ 没有仓库名，也没有标签，均为<code>&lt;none></code>的为虚悬镜像：</p>
+<pre><code>&lt;none&gt;		&lt;none&gt;			00285df0df87		5 days ago		342 MB
+</code></pre><p>​ 由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<code>&lt;none></code>，可用下面的命令专门显示这类镜像：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>$ docker images -f dangling<span style=color:#f92672>=</span>ture
+REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
+&lt;none&gt;			&lt;none&gt;		00285df0df87		<span style=color:#ae81ff>5</span> days ago 			<span style=color:#ae81ff>342</span> MB
+</code></pre></div><p>​ 一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker rmi <span style=color:#66d9ef>$(</span>docker images -q -f dangling<span style=color:#f92672>=</span>ture<span style=color:#66d9ef>)</span>
+</code></pre></div><h3 id=docker-images>docker images<a hidden class=anchor aria-hidden=true href=#docker-images>#</a></h3>
+<p>####—filter -f</p>
+<p>​ <code>docker images</code> 还支持强大的过滤器参数 <code>--filter</code> ，或者简写<code>-f</code>。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在<code>mongo:3.2</code>之后建立的镜像，可以用下面的命令：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images -f since<span style=color:#f92672>=</span>mongo:3.2
+REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
+redis			latest		5f515359c7f8		<span style=color:#ae81ff>5</span> days ago			<span style=color:#ae81ff>183</span> MB
+nginx			latest		05a60462f8ba		<span style=color:#ae81ff>5</span> days ago			<span style=color:#ae81ff>181</span> MB
+</code></pre></div><p>​ 想查看某个位置之前的镜像也可以，只需要吧<code>since</code>换成<code>before</code>即可。</p>
+<p>####以特定格式显示镜像</p>
+<p>​ 把所有的虚悬镜像的 ID 列出来</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images -q
+5f515359c7f8
+05a60462f8ba
+fe9198c04d62
+00285df0df87
+f753707788c5
+f753707788c5
+1e0c3dd64ccd
+</code></pre></div><p>​ 以自己想要的格式显示，比如显示镜像 ID 和仓库名：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images --format <span style=color:#e6db74>&#34;{{.ID}}: {{.Repository}}&#34;</span>
+5f515359c7f8: redis
+05a60462f8ba: nginx
+fe9198c04d62: mongo
+00285df0df87: &lt;none&gt;
+f753707788c5: ubuntu
+f753707788c5: ubuntu
+1e0c3dd64ccd: ubuntu
+</code></pre></div><p>​ 以表格等距显示，并且有标题行</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images --format <span style=color:#e6db74>&#34;table {{.ID}}\t{{.Repository}}\t{{.Tag}}&#34;</span>
+IMAGE ID            REPOSITORY          TAG
+5f515359c7f8        redis               latest
+05a60462f8ba        nginx               latest
+fe9198c04d62        mongo               3.2
+00285df0df87        &lt;none&gt;              &lt;none&gt;
+f753707788c5        ubuntu              16.04
+f753707788c5        ubuntu              latest
+1e0c3dd64ccd        ubuntu              14.04
+</code></pre></div><h3 id=dockerfile-定制镜像>Dockerfile 定制镜像<a hidden class=anchor aria-hidden=true href=#dockerfile-定制镜像>#</a></h3>
+<p>​ Dockerfile 中每一个指令都会建立一层，<code>RUN</code> 也不例外。每一个 <code>RUN</code> 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，<code>commit</code> 这一层的修改，构成新的镜像。</p>
+<h4 id=context-上下文>Context 上下文<a hidden class=anchor aria-hidden=true href=#context-上下文>#</a></h4>
+<p>​ 当构建的时候，用户会指定构建镜像上下文的路径，<code>docker build</code> 命令得知这个路径后，会将路径下的所有内容打包，然后上传给 Docker 引擎。这样 Docker 引擎收到这个上下文包后，展开就会获得构建镜像所需的一切文件。</p>
+<h3 id=dockerfile-指令详解>Dockerfile 指令详解<a hidden class=anchor aria-hidden=true href=#dockerfile-指令详解>#</a></h3>
+<p>####COPY 复制文件</p>
+<p>格式：</p>
+<ul>
+<li><code>COPY &lt;源路径>... &lt;目标路径></code></li>
+<li><code>COPY ["&lt;源路径1>",... "&lt;目标路径>"]</code></li>
+</ul>
+<p>和 <code>RUN</code> 指令一样，也有两种格式，一种类似于命令行，一种类似于函数调用。</p>
+<p><code>COPY</code> 指令将从构建上下文目录中 <code>&lt;源路径></code> 的文件/目录复制到新的一层的镜像内的 <code>&lt;目标路径></code> 位置。比如：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>COPY package.json /usr/src/app/
+</code></pre></div><p><code>&lt;源路径></code> 可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 <a href=https://golang.org/pkg/path/filepath/#Match><code>filepath.Match</code></a> 规则，如：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>COPY hom* /mydir/
+COPY hom?.txt /mydir/
+</code></pre></div><p><code>&lt;目标路径></code> 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 <code>WORKDIR</code>指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</p>
+<p>此外，还需要注意一点，使用 <code>COPY</code> 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。</p>
+<p>####CMD 容器启动命令</p>
+<p><code>CMD</code> 指令的格式和 <code>RUN</code> 相似，也是两种格式：</p>
+<ul>
+<li><code>shell</code> 格式：<code>CMD &lt;命令></code></li>
+<li><code>exec</code> 格式：<code>CMD ["可执行文件", "参数1", "参数2"...]</code></li>
+<li>参数列表格式：<code>CMD ["参数1", "参数2"...]</code>。在指定了 <code>ENTRYPOINT</code> 指令后，用 <code>CMD</code> 指定具体的参数。</li>
+</ul>
+<p>之前介绍容器的时候曾经说过，Docker 不是虚拟机，<strong>容器就是进程</strong>。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。<code>CMD</code> 指令就是用于指定__默认__的__容器主进程__的__启动命令__的。</p>
+<p>在指令格式上，一般推荐使用 <code>exec</code> 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 <code>"</code>，而不要使用单引号。</p>
+<p>如果使用 <code>shell</code> 格式的话，实际的命令会被包装为 <code>sh -c</code> 的参数的形式进行执行。比如：</p>
+<pre><code>CMD echo $HOME
+
+</code></pre><p>在实际执行中，会将其变更为：</p>
+<pre><code>CMD [ &quot;sh&quot;, &quot;-c&quot;, &quot;echo $HOME&quot; ]
+</code></pre><h4 id=entrypoint-入口点>ENTRYPOINT 入口点<a hidden class=anchor aria-hidden=true href=#entrypoint-入口点>#</a></h4>
+<p><code>ENTRYPOINT</code> 的格式和 <code>RUN</code> 指令格式一样，分为 <code>exec</code> 格式和 <code>shell</code> 格式。</p>
+<p><code>ENTRYPOINT</code> 的目的和 <code>CMD</code> 一样，都是在指定容器启动程序及参数。<code>ENTRYPOINT</code> 在运行时也可以替代，不过比 <code>CMD</code> 要略显繁琐，需要通过 <code>docker run</code> 的参数 <code>--entrypoint</code> 来指定。</p>
+<p>当指定了 <code>ENTRYPOINT</code> 后，<code>CMD</code> 的含义就发生了改变，不再是直接的运行其命令，而是将 <code>CMD</code> 的内容作为参数传给 <code>ENTRYPOINT</code> 指令，换句话说实际执行时，将变为：</p>
+<pre><code>&lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
+</code></pre><h4 id=env-设置环境变量>ENV 设置环境变量<a hidden class=anchor aria-hidden=true href=#env-设置环境变量>#</a></h4>
+<p>格式有两种：</p>
+<ul>
+<li><code>ENV &lt;key> &lt;value></code></li>
+<li><code>ENV &lt;key1>=&lt;value1> &lt;key2>=&lt;value2>...</code></li>
+</ul>
+<p>这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如 <code>RUN</code>，还是运行时的应用，都可以直接使用这里定义的环境变量。</p>
+<pre><code>ENV VERSION=1.0 DEBUG=on \
+    NAME=&quot;Happy Feet&quot;
+
+</code></pre><h4 id=arg-构建参数>ARG 构建参数<a hidden class=anchor aria-hidden=true href=#arg-构建参数>#</a></h4>
+<p>格式：<code>ARG &lt;参数名>[=&lt;默认值>]</code></p>
+<p>构建参数和 <code>ENV</code> 的效果一样，都是设置环境变量。所不同的是，<code>ARG</code> 所设置的构建环境的环境变量，在将来__容器运行时__是__不会存在这些环境变量__的。但是不要因此就使用 <code>ARG</code> 保存密码之类的信息，因为 <code>docker history</code> 还是可以看到所有值的。</p>
+<p><code>Dockerfile</code> 中的 <code>ARG</code> 指令是定义参数名称，以及定义其默认值。该默认值可以在构建命令 <code>docker build</code> 中用 <code>--build-arg &lt;参数名>=&lt;值></code> 来覆盖。</p>
+<p>在 1.13 之前的版本，要求 <code>--build-arg</code> 中的参数名，必须在 <code>Dockerfile</code> 中用 <code>ARG</code> 定义过了，换句话说，就是 <code>--build-arg</code> 指定的参数，必须在 <code>Dockerfile</code> 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 <code>Dockerfile</code> 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。</p>
+<h4 id=volume-定义匿名卷>VOLUME 定义匿名卷<a hidden class=anchor aria-hidden=true href=#volume-定义匿名卷>#</a></h4>
+<p>格式为：</p>
+<ul>
+<li><code>VOLUME ["&lt;路径1>", "&lt;路径2>"...]</code></li>
+<li><code>VOLUME &lt;路径></code></li>
+</ul>
+<p>之前我们说过，容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，后面的章节我们会进一步介绍 Docker 卷的概念。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 <code>Dockerfile</code> 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</p>
+<pre><code>VOLUME /data
+
+</code></pre><p>这里的 <code>/data</code> 目录就会在运行时自动挂载为匿名卷，任何向 <code>/data</code> 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：</p>
+<pre><code>docker run -d -v mydata:/data xxxx
+
+</code></pre><p>在这行命令中，就使用了 <code>mydata</code> 这个命名卷挂载到了 <code>/data</code> 这个位置，替代了 <code>Dockerfile</code> 中定义的匿名卷的挂载配置。</p>
+<h4 id=expose-声明端口>EXPOSE 声明端口<a hidden class=anchor aria-hidden=true href=#expose-声明端口>#</a></h4>
+<p>格式为 <code>EXPOSE &lt;端口1> [&lt;端口2>...]</code>。</p>
+<p><code>EXPOSE</code> 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 <code>docker run -P</code>时，会自动随机映射 <code>EXPOSE</code> 的端口。</p>
+<h4 id=workdir-指定工作目录>WORKDIR 指定工作目录<a hidden class=anchor aria-hidden=true href=#workdir-指定工作目录>#</a></h4>
+<p>格式为 <code>WORKDIR &lt;工作目录路径></code>。</p>
+<p>使用 <code>WORKDIR</code> 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，<code>WORKDIR</code> 会帮你建立目录。</p>
+<h4 id=onbuild-为他人做嫁衣裳>ONBUILD 为他人做嫁衣裳<a hidden class=anchor aria-hidden=true href=#onbuild-为他人做嫁衣裳>#</a></h4>
+<p>格式：<code>ONBUILD &lt;其它指令></code>。</p>
+<p><code>ONBUILD</code> 是一个特殊的指令，它后面跟的是其它指令，比如 <code>RUN</code>, <code>COPY</code> 等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。</p>
+<h2 id=仓库>仓库<a hidden class=anchor aria-hidden=true href=#仓库>#</a></h2>
+<h3 id=docker-hub>Docker Hub<a hidden class=anchor aria-hidden=true href=#docker-hub>#</a></h3>
+<h4 id=docker-search>docker search<a hidden class=anchor aria-hidden=true href=#docker-search>#</a></h4>
+<p>查找的时候通过 <code>-s N</code> 参数可以指定仅显示评价为 <code>N</code> 星以上的镜像（新版本Docker推荐使用<code>--filter=stars=N</code>参数）。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker search centos --filter<span style=color:#f92672>=</span>stars<span style=color:#f92672>=</span><span style=color:#ae81ff>20</span>
+NAME                       DESCRIPTION                  STARS     OFFICIAL   AUTOMATED
+centos                    The official build of CentOS.  <span style=color:#ae81ff>3631</span>      <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>       
+ansible/centos7-ansible   Ansible on Centos7             <span style=color:#ae81ff>101</span>                  <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
+jdeathe/centos-ssh        CentOS-6 6.9 ...               <span style=color:#ae81ff>83</span>                   <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
+tutum/centos              Simple CentOS docker           <span style=color:#ae81ff>33</span>                   
+imagine10255/centos6-lnmp-php56 centos6-lnmp-php56       <span style=color:#ae81ff>30</span>                   <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
+gluster/gluster-centos    Official GlusterFS Image <span style=color:#f92672>[</span> CentOS-7 +  Glu... <span style=color:#ae81ff>20</span>    <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
+
+</code></pre></div><h3 id=网络>网络<a hidden class=anchor aria-hidden=true href=#网络>#</a></h3>
+<h4 id=容器互联>容器互联<a hidden class=anchor aria-hidden=true href=#容器互联>#</a></h4>
+<p><code>--link</code>参数可以让容器之间安全的进行交互</p>
+<p><code>--link</code> 参数的格式为 <code>--link name:alias</code>，其中 <code>name</code> 是要链接的容器的名称，<code>alias</code> 是这个连接的别名。</p>
+</div>
+<footer class=post-footer>
+<ul class=post-tags>
+<li><a href=https://jsharkc.github.io/tags/docker/>Docker</a></li>
+</ul>
+<nav class=paginav>
+<a class=prev href=https://jsharkc.github.io/post/golang%E4%B8%8D%E5%AD%98%E5%9C%A8%E5%BC%95%E7%94%A8%E4%BC%A0%E5%80%BC/>
+<span class=title>« Prev Page</span>
+<br>
+<span>Golang 中不存在引用传参</span>
+</a>
+<a class=next href=https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/>
+<span class=title>Next Page »</span>
+<br>
+<span>Linux防火墙-iptables</span>
+</a>
+</nav>
+<div class=share-buttons>
+<a target=_blank rel="noopener noreferrer" aria-label="share Docker Note on twitter" href="https://twitter.com/intent/tweet/?text=Docker%20Note&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fdocker-note%2f&hashtags=Docker"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Docker Note on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fdocker-note%2f&title=Docker%20Note&summary=Docker%20Note&source=https%3a%2f%2fjsharkc.github.io%2fpost%2fdocker-note%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Docker Note on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fjsharkc.github.io%2fpost%2fdocker-note%2f&title=Docker%20Note"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Docker Note on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fjsharkc.github.io%2fpost%2fdocker-note%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Docker Note on whatsapp" href="https://api.whatsapp.com/send?text=Docker%20Note%20-%20https%3a%2f%2fjsharkc.github.io%2fpost%2fdocker-note%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Docker Note on telegram" href="https://telegram.me/share/url?text=Docker%20Note&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fdocker-note%2f"><svg viewBox="2 2 28 28"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg>
+</a>
+</div>
+</footer>
+</article>
+</main>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
+</footer>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
+</body>
+</html>

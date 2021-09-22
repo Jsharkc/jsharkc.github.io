@@ -1,0 +1,354 @@
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Cobra - 一个 Golang 命令行项目生成工具 | Jacobc's blog</title>
+<meta name=keywords content="Golang">
+<meta name=description content="Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
+组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
+type Command struct { Use string // The one-line usage message.  Short string // The short description shown in the 'help' output.  Long string // The long message shown in the 'help<this-command>' output.  Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。
+安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。">
+<meta name=author content="Jsharkc">
+<link rel=canonical href=https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/>
+<meta name=google-site-verification content="XYZabc">
+<meta name=yandex-verification content="XYZabc">
+<meta name=msvalidate.01 content="XYZabc">
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.86.1">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+</noscript><meta property="og:title" content="Cobra - 一个 Golang 命令行项目生成工具">
+<meta property="og:description" content="Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
+组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
+type Command struct { Use string // The one-line usage message.  Short string // The short description shown in the 'help' output.  Long string // The long message shown in the 'help<this-command>' output.  Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。
+安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2017-07-17T15:07:14+00:00">
+<meta property="article:modified_time" content="2017-07-17T15:07:14+00:00"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name=twitter:title content="Cobra - 一个 Golang 命令行项目生成工具">
+<meta name=twitter:description content="Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
+组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
+type Command struct { Use string // The one-line usage message.  Short string // The short description shown in the 'help' output.  Long string // The long message shown in the 'help<this-command>' output.  Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。
+安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Cobra - 一个 Golang 命令行项目生成工具","item":"https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Cobra - 一个 Golang 命令行项目生成工具","name":"Cobra - 一个 Golang 命令行项目生成工具","description":"Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。\n组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。\ntype Command struct { Use string // The one-line usage message.  Short string // The short description shown in the \u0026#39;help\u0026#39; output.  Long string // The long message shown in the \u0026#39;help\u0026lt;this-command\u0026gt;\u0026#39; output.  Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。\n安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。","keywords":["Golang"],"articleBody":"Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。\n组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。\ntype Command struct { Use string // The one-line usage message.  Short string // The short description shown in the 'help' output.  Long string // The long message shown in the 'help' output.  Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。\n安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。\ngo get -u github.com/spf13/cobra/cobra 然后，把 Cobra 添加到你的 app 中：\nimport \"github.com/spf13/cobra\" 快速开始 一般用 cobra 命令生成d的项目结构如下：\n▾ appName/ ▾ cmd/ add.go your.go commands.go here.go main.go main 函数中非常简洁，只有一个目的：初始化 Cobra.\npackage main import ( \"fmt\" \"os\" \"{pathToYourApp}/cmd\" ) func main() { if err := cmd.RootCmd.Execute(); err != nil { fmt.Println(err) os.Exit(1) } } 用 Cobra 工具生成项目框架 cobra init cobra init [yourAppName] ，这个命令可以让你的程序有一个正确的结构，你立刻能够感受到 Cobra 带给你的快乐，你可以配置它自动生成你需要的开源协议。\ncobra init newAppName newAppName 是你的项目名称。它会在你的 GOPATH 目录下面生成项目。\n我们看一下 main.go 函数\npackage main import \"cobra_exp1/cmd\" func main() { cmd.Execute() } main 调用 cmd.Execute()，那我们找到这个地方，cmd/root.go 文件：\npackage cmd import ( \"fmt\" \"os\" \"github.com/spf13/cobra\" \"github.com/spf13/viper\" ) var cfgFile string // RootCmd represents the base command when called without any subcommands var RootCmd = \u0026cobra.Command{ Use: \"cobra_exp1\", Short: \"A brief description of your application\", Long: `A longer description that spans multiple lines and likely contains examples and usage of using your application. For example: Cobra is a CLI library for Go that empowers applications. This application is a tool to generate the needed files to quickly create a Cobra application.`, // Uncomment the following line if your bare application // has an action associated with it: // Run: func(cmd *cobra.Command, args []string) { }, } // Execute adds all child commands to the root command sets flags appropriately. // This is called by main.main(). It only needs to happen once to the rootCmd. func Execute() { if err := RootCmd.Execute(); err != nil { fmt.Println(err) os.Exit(-1) } } func init() { cobra.OnInitialize(initConfig) // Here you will define your flags and configuration settings.  // Cobra supports Persistent Flags, which, if defined here,  // will be global for your application.  RootCmd.PersistentFlags().StringVar(\u0026cfgFile, \"config\", \"\", \"config file (default is $HOME/.cobra_exp1.yaml)\") // Cobra also supports local flags, which will only run  // when this action is called directly.  RootCmd.Flags().BoolP(\"toggle\", \"t\", false, \"Help message for toggle\") } // initConfig reads in config file and ENV variables if set. func initConfig() { if cfgFile != \"\" { // enable ability to specify config file via flag  viper.SetConfigFile(cfgFile) } viper.SetConfigName(\".cobra_exp1\") // name of config file (without extension)  viper.AddConfigPath(\"$HOME\") // adding home directory as first search path  viper.AutomaticEnv() // read in environment variables that match  // If a config file is found, read it in.  if err := viper.ReadInConfig(); err == nil { fmt.Println(\"Using config file:\", viper.ConfigFileUsed()) } } 我们看到 Execute() 函数中调用 RootCmd.Execute()，RootCmd 是开始讲组成 Command 结构的一个实例。\n我们运行看看：\n go run main.go A longer description that spans multiple lines and likely contains examples and usage of using your application. For example: Cobra is a CLI library for Go that empowers applications. This application is a tool to generate the needed files to quickly create a Cobra application. 空空如也，还什么也没有，那接下来我们来添加一些子命令。\ncobra add 这个命令用来创建子命令，子命令就是像下面这样：\n app serve app config app config create  在你项目的目录下，运行下面这些命令：\ncobra add serve cobra add config cobra add create -p 'configCmd' 这样以后，你就可以运行上面那些 app serve 之类的命令了。项目目录如下：\n▾ app/ ▾ cmd/ serve.go config.go create.go main.go 然后再运行程序：\n❯ go run main.go A longer description that spans multiple lines and likely contains examples and usage of using your application. For example: Cobra is a CLI library for Go that empowers applications. This application is a tool to generate the needed files to quickly create a Cobra application. Usage: llleon [command] Available Commands: config A brief description of your command help Help about any command serve A brief description of your command Flags: --config string config file (default is $HOME/.llleon.yaml) -h, --help help for llleon -t, --toggle Help message for toggle Use \"llleon [command] --help\" for more information about a command. 现在我们有了三个子命令，并且都可以使用，然后只要添加命令逻辑就能真正用了。\nFlag cobra 有两种 flag，一个是全局变量，一个是局部变量。全局什么意思呢，就是所以子命令都可以用。局部的只有自己能用。先看全局的：\nRootCmd.PersistentFlags().StringVar(\u0026cfgFile, \"config\", \"\", \"config file (default is $HOME/.cobra_exp1.yaml)\") 在看局部的：\nRootCmd.Flags().BoolP(\"toggle\", \"t\", false, \"Help message for toggle\") 区别就在 RootCmd 后面的是 Flags 还是 PersistentFlags。\n好了，入门教程到此结束，感兴趣的童鞋可以到 Cobra 深入研究一番。\n","wordCount":"675","inLanguage":"en","datePublished":"2017-07-17T15:07:14Z","dateModified":"2017-07-17T15:07:14Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+</head>
+<body class=dark id=top>
+<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
+</div>
+<ul id=menu>
+<li>
+<a href=https://jsharkc.github.io/archives/ title=Archives>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/categories title=Categories>
+<span>Categories</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/tags title=Tags>
+<span>Tags</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
+<span>Search</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/post/>Posts</a></div>
+<h1 class=post-title>
+Cobra - 一个 Golang 命令行项目生成工具
+</h1>
+<div class=post-meta>July 17, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/post/cobra%e5%85%a5%e9%97%a8%e5%b0%8f%e6%95%99%e7%a8%8b.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+</div>
+</header> <div class=toc>
+<details open>
+<summary accesskey=c title="(Alt + C)">
+<span class=details>Table of Contents</span>
+</summary>
+<div class=inner><ul>
+<li>
+<a href=#cobra---golang-%e5%91%bd%e4%bb%a4%e8%a1%8c%e5%ba%93 aria-label="Cobra - Golang 命令行库">Cobra - Golang 命令行库</a><ul>
+<ul>
+<li>
+<a href=#%e7%ae%80%e4%bb%8b aria-label=简介：>简介：</a></li>
+<li>
+<a href=#%e7%bb%84%e6%88%90 aria-label=组成：>组成：</a></li>
+<li>
+<a href=#%e5%ae%89%e8%a3%85 aria-label=安装>安装</a></li>
+<li>
+<a href=#%e5%bf%ab%e9%80%9f%e5%bc%80%e5%a7%8b aria-label=快速开始>快速开始</a></li>
+<li>
+<a href=#%e7%94%a8-cobra-%e5%b7%a5%e5%85%b7%e7%94%9f%e6%88%90%e9%a1%b9%e7%9b%ae%e6%a1%86%e6%9e%b6 aria-label="用 Cobra 工具生成项目框架">用 Cobra 工具生成项目框架</a><ul>
+<li>
+<a href=#cobra-init aria-label="cobra init">cobra init</a></li>
+<li>
+<a href=#cobra-add aria-label="cobra add">cobra add</a></li>
+<li>
+<a href=#flag aria-label=Flag>Flag</a>
+</li>
+</ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</details>
+</div>
+<div class=post-content><h1 id=cobra---golang-命令行库>Cobra - Golang 命令行库<a hidden class=anchor aria-hidden=true href=#cobra---golang-命令行库>#</a></h1>
+<h3 id=简介>简介：<a hidden class=anchor aria-hidden=true href=#简介>#</a></h3>
+<p>Cobra 是一个创建 CLI 命令行的 golang 库。</p>
+<h3 id=组成>组成：<a hidden class=anchor aria-hidden=true href=#组成>#</a></h3>
+<p>Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Command</span> <span style=color:#66d9ef>struct</span> {
+    <span style=color:#a6e22e>Use</span>   <span style=color:#66d9ef>string</span>  <span style=color:#75715e>// The one-line usage message.
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>Short</span> <span style=color:#66d9ef>string</span>  <span style=color:#75715e>// The short description shown in the &#39;help&#39; output.
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>Long</span>  <span style=color:#66d9ef>string</span>  <span style=color:#75715e>// The long message shown in the &#39;help&lt;this-command&gt;&#39; output.
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>Run</span>   <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>cmd</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>Command</span>, <span style=color:#a6e22e>args</span> []<span style=color:#66d9ef>string</span>)  <span style=color:#75715e>// Run runs the command.
+</span><span style=color:#75715e></span>}
+</code></pre></div><p>前三个是不同场景下的说明，最后一个是要执行的函数。</p>
+<h3 id=安装>安装<a hidden class=anchor aria-hidden=true href=#安装>#</a></h3>
+<p>安装 Cobra 很简单，首先，用 <code>go get</code> 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>go</span> <span style=color:#a6e22e>get</span> <span style=color:#f92672>-</span><span style=color:#a6e22e>u</span> <span style=color:#a6e22e>github</span>.<span style=color:#a6e22e>com</span><span style=color:#f92672>/</span><span style=color:#a6e22e>spf13</span><span style=color:#f92672>/</span><span style=color:#a6e22e>cobra</span><span style=color:#f92672>/</span><span style=color:#a6e22e>cobra</span>
+</code></pre></div><p>然后，把 Cobra 添加到你的 app 中：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;github.com/spf13/cobra&#34;</span>
+</code></pre></div><h3 id=快速开始>快速开始<a hidden class=anchor aria-hidden=true href=#快速开始>#</a></h3>
+<p>一般用 cobra 命令生成d的项目结构如下：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go> <span style=color:#960050;background-color:#1e0010>▾</span> <span style=color:#a6e22e>appName</span><span style=color:#f92672>/</span>
+    <span style=color:#960050;background-color:#1e0010>▾</span> <span style=color:#a6e22e>cmd</span><span style=color:#f92672>/</span>
+        <span style=color:#a6e22e>add</span>.<span style=color:#66d9ef>go</span>
+        <span style=color:#a6e22e>your</span>.<span style=color:#66d9ef>go</span>
+        <span style=color:#a6e22e>commands</span>.<span style=color:#66d9ef>go</span>
+        <span style=color:#a6e22e>here</span>.<span style=color:#66d9ef>go</span>
+      <span style=color:#a6e22e>main</span>.<span style=color:#66d9ef>go</span>
+</code></pre></div><p>main 函数中非常简洁，只有一个目的：初始化 Cobra.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+
+<span style=color:#f92672>import</span> (
+	<span style=color:#e6db74>&#34;fmt&#34;</span>
+	<span style=color:#e6db74>&#34;os&#34;</span>
+
+	<span style=color:#e6db74>&#34;{pathToYourApp}/cmd&#34;</span>
+)
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+	<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>cmd</span>.<span style=color:#a6e22e>RootCmd</span>.<span style=color:#a6e22e>Execute</span>(); <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+		<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>err</span>)
+		<span style=color:#a6e22e>os</span>.<span style=color:#a6e22e>Exit</span>(<span style=color:#ae81ff>1</span>)
+	}
+}
+</code></pre></div><h3 id=用-cobra-工具生成项目框架>用 Cobra 工具生成项目框架<a hidden class=anchor aria-hidden=true href=#用-cobra-工具生成项目框架>#</a></h3>
+<h4 id=cobra-init>cobra init<a hidden class=anchor aria-hidden=true href=#cobra-init>#</a></h4>
+<p><code>cobra init [yourAppName]</code> ，这个命令可以让你的程序有一个正确的结构，你立刻能够感受到 Cobra 带给你的快乐，你可以配置它自动生成你需要的开源协议。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#a6e22e>cobra</span> <span style=color:#a6e22e>init</span> <span style=color:#a6e22e>newAppName</span>
+</code></pre></div><p>newAppName 是你的项目名称。它会在你的 GOPATH 目录下面生成项目。</p>
+<p>我们看一下 main.go 函数</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#e6db74>&#34;cobra_exp1/cmd&#34;</span>
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+    <span style=color:#a6e22e>cmd</span>.<span style=color:#a6e22e>Execute</span>()
+}
+</code></pre></div><p>main 调用 cmd.Execute()，那我们找到这个地方，cmd/root.go 文件：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>cmd</span>
+
+<span style=color:#f92672>import</span> (
+    <span style=color:#e6db74>&#34;fmt&#34;</span>
+    <span style=color:#e6db74>&#34;os&#34;</span>
+
+    <span style=color:#e6db74>&#34;github.com/spf13/cobra&#34;</span>
+    <span style=color:#e6db74>&#34;github.com/spf13/viper&#34;</span>
+)
+
+<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>cfgFile</span> <span style=color:#66d9ef>string</span>
+
+<span style=color:#75715e>// RootCmd represents the base command when called without any subcommands
+</span><span style=color:#75715e></span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>RootCmd</span> = <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>cobra</span>.<span style=color:#a6e22e>Command</span>{
+    <span style=color:#a6e22e>Use</span>:   <span style=color:#e6db74>&#34;cobra_exp1&#34;</span>,
+    <span style=color:#a6e22e>Short</span>: <span style=color:#e6db74>&#34;A brief description of your application&#34;</span>,
+    <span style=color:#a6e22e>Long</span>: <span style=color:#e6db74>`A longer description that spans multiple lines and likely contains
+</span><span style=color:#e6db74>examples and usage of using your application. For example:
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>Cobra is a CLI library for Go that empowers applications.
+</span><span style=color:#e6db74>This application is a tool to generate the needed files
+</span><span style=color:#e6db74>to quickly create a Cobra application.`</span>,
+<span style=color:#75715e>// Uncomment the following line if your bare application
+</span><span style=color:#75715e>// has an action associated with it:
+</span><span style=color:#75715e>//    Run: func(cmd *cobra.Command, args []string) { },
+</span><span style=color:#75715e></span>}
+
+<span style=color:#75715e>// Execute adds all child commands to the root command sets flags appropriately.
+</span><span style=color:#75715e>// This is called by main.main(). It only needs to happen once to the rootCmd.
+</span><span style=color:#75715e></span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Execute</span>() {
+    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>RootCmd</span>.<span style=color:#a6e22e>Execute</span>(); <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+        <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>err</span>)
+        <span style=color:#a6e22e>os</span>.<span style=color:#a6e22e>Exit</span>(<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+    }
+}
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>init</span>() {
+    <span style=color:#a6e22e>cobra</span>.<span style=color:#a6e22e>OnInitialize</span>(<span style=color:#a6e22e>initConfig</span>)
+
+    <span style=color:#75715e>// Here you will define your flags and configuration settings.
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Cobra supports Persistent Flags, which, if defined here,
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// will be global for your application.
+</span><span style=color:#75715e></span>
+    <span style=color:#a6e22e>RootCmd</span>.<span style=color:#a6e22e>PersistentFlags</span>().<span style=color:#a6e22e>StringVar</span>(<span style=color:#f92672>&amp;</span><span style=color:#a6e22e>cfgFile</span>, <span style=color:#e6db74>&#34;config&#34;</span>, <span style=color:#e6db74>&#34;&#34;</span>, <span style=color:#e6db74>&#34;config file (default is $HOME/.cobra_exp1.yaml)&#34;</span>)
+    <span style=color:#75715e>// Cobra also supports local flags, which will only run
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// when this action is called directly.
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>RootCmd</span>.<span style=color:#a6e22e>Flags</span>().<span style=color:#a6e22e>BoolP</span>(<span style=color:#e6db74>&#34;toggle&#34;</span>, <span style=color:#e6db74>&#34;t&#34;</span>, <span style=color:#66d9ef>false</span>, <span style=color:#e6db74>&#34;Help message for toggle&#34;</span>)
+}
+
+<span style=color:#75715e>// initConfig reads in config file and ENV variables if set.
+</span><span style=color:#75715e></span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>initConfig</span>() {
+    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>cfgFile</span> <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#34;&#34;</span> { <span style=color:#75715e>// enable ability to specify config file via flag
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>SetConfigFile</span>(<span style=color:#a6e22e>cfgFile</span>)
+    }
+
+    <span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>SetConfigName</span>(<span style=color:#e6db74>&#34;.cobra_exp1&#34;</span>) <span style=color:#75715e>// name of config file (without extension)
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>AddConfigPath</span>(<span style=color:#e6db74>&#34;$HOME&#34;</span>)  <span style=color:#75715e>// adding home directory as first search path
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>AutomaticEnv</span>()          <span style=color:#75715e>// read in environment variables that match
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>// If a config file is found, read it in.
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>ReadInConfig</span>(); <span style=color:#a6e22e>err</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>nil</span> {
+        <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;Using config file:&#34;</span>, <span style=color:#a6e22e>viper</span>.<span style=color:#a6e22e>ConfigFileUsed</span>())
+    }
+}
+</code></pre></div><p>我们看到 Execute() 函数中调用 RootCmd.Execute()，RootCmd 是开始讲组成 Command 结构的一个实例。</p>
+<p>我们运行看看：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; go run main.go 
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library <span style=color:#66d9ef>for</span> Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+</code></pre></div><p>空空如也，还什么也没有，那接下来我们来添加一些子命令。</p>
+<h4 id=cobra-add>cobra add<a hidden class=anchor aria-hidden=true href=#cobra-add>#</a></h4>
+<p>这个命令用来创建子命令，子命令就是像下面这样：</p>
+<ul>
+<li>app serve</li>
+<li>app config</li>
+<li>app config create</li>
+</ul>
+<p>在你项目的目录下，运行下面这些命令：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#a6e22e>cobra</span> <span style=color:#a6e22e>add</span> <span style=color:#a6e22e>serve</span>
+<span style=color:#a6e22e>cobra</span> <span style=color:#a6e22e>add</span> <span style=color:#a6e22e>config</span>
+<span style=color:#a6e22e>cobra</span> <span style=color:#a6e22e>add</span> <span style=color:#a6e22e>create</span> <span style=color:#f92672>-</span><span style=color:#a6e22e>p</span> <span style=color:#960050;background-color:#1e0010>&#39;</span><span style=color:#a6e22e>configCmd</span><span style=color:#960050;background-color:#1e0010>&#39;</span>
+</code></pre></div><p>这样以后，你就可以运行上面那些 app serve 之类的命令了。项目目录如下：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>  ▾ app/
+    ▾ cmd/
+        serve.go
+        config.go
+        create.go
+      main.go
+</code></pre></div><p>然后再运行程序：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>❯ go run main.go 
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library <span style=color:#66d9ef>for</span> Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  llleon <span style=color:#f92672>[</span>command<span style=color:#f92672>]</span>
+
+Available Commands:
+  config      A brief description of your command
+  help        Help about any command
+  serve       A brief description of your command
+
+Flags:
+      --config string   config file <span style=color:#f92672>(</span>default is $HOME/.llleon.yaml<span style=color:#f92672>)</span>
+  -h, --help            help <span style=color:#66d9ef>for</span> llleon
+  -t, --toggle          Help message <span style=color:#66d9ef>for</span> toggle
+
+Use <span style=color:#e6db74>&#34;llleon [command] --help&#34;</span> <span style=color:#66d9ef>for</span> more information about a command.
+</code></pre></div><p>现在我们有了三个子命令，并且都可以使用，然后只要添加命令逻辑就能真正用了。</p>
+<h4 id=flag>Flag<a hidden class=anchor aria-hidden=true href=#flag>#</a></h4>
+<p>cobra 有两种 flag，一个是全局变量，一个是局部变量。全局什么意思呢，就是所以子命令都可以用。局部的只有自己能用。先看全局的：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#a6e22e>RootCmd</span>.<span style=color:#a6e22e>PersistentFlags</span>().<span style=color:#a6e22e>StringVar</span>(<span style=color:#f92672>&amp;</span><span style=color:#a6e22e>cfgFile</span>, <span style=color:#e6db74>&#34;config&#34;</span>, <span style=color:#e6db74>&#34;&#34;</span>, <span style=color:#e6db74>&#34;config file (default is $HOME/.cobra_exp1.yaml)&#34;</span>)
+</code></pre></div><p>在看局部的：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#a6e22e>RootCmd</span>.<span style=color:#a6e22e>Flags</span>().<span style=color:#a6e22e>BoolP</span>(<span style=color:#e6db74>&#34;toggle&#34;</span>, <span style=color:#e6db74>&#34;t&#34;</span>, <span style=color:#66d9ef>false</span>, <span style=color:#e6db74>&#34;Help message for toggle&#34;</span>)
+</code></pre></div><p>区别就在 RootCmd 后面的是 Flags 还是 PersistentFlags。</p>
+<p>好了，入门教程到此结束，感兴趣的童鞋可以到 <a href=https://github.com/spf13/cobra>Cobra</a> 深入研究一番。</p>
+</div>
+<footer class=post-footer>
+<ul class=post-tags>
+<li><a href=https://jsharkc.github.io/tags/golang/>Golang</a></li>
+</ul>
+<nav class=paginav>
+<a class=prev href=https://jsharkc.github.io/post/create-react-app-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%B7%BB%E5%8A%A0-less-%E6%94%AF%E6%8C%81%E5%92%8C-antd-%E6%A0%B7%E5%BC%8F%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/>
+<span class=title>« Prev Page</span>
+<br>
+<span>create-react-app 脚手架添加 less 支持和 antd 样式按需加载</span>
+</a>
+<a class=next href=https://jsharkc.github.io/post/slice%E6%9C%BA%E5%88%B6/>
+<span class=title>Next Page »</span>
+<br>
+<span>Golang slice 切片原理</span>
+</a>
+</nav>
+<div class=share-buttons>
+<a target=_blank rel="noopener noreferrer" aria-label="share Cobra - 一个 Golang 命令行项目生成工具 on twitter" href="https://twitter.com/intent/tweet/?text=Cobra%20-%20%e4%b8%80%e4%b8%aa%20Golang%20%e5%91%bd%e4%bb%a4%e8%a1%8c%e9%a1%b9%e7%9b%ae%e7%94%9f%e6%88%90%e5%b7%a5%e5%85%b7&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcobra%25E5%2585%25A5%25E9%2597%25A8%25E5%25B0%258F%25E6%2595%2599%25E7%25A8%258B%2f&hashtags=Golang"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Cobra - 一个 Golang 命令行项目生成工具 on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcobra%25E5%2585%25A5%25E9%2597%25A8%25E5%25B0%258F%25E6%2595%2599%25E7%25A8%258B%2f&title=Cobra%20-%20%e4%b8%80%e4%b8%aa%20Golang%20%e5%91%bd%e4%bb%a4%e8%a1%8c%e9%a1%b9%e7%9b%ae%e7%94%9f%e6%88%90%e5%b7%a5%e5%85%b7&summary=Cobra%20-%20%e4%b8%80%e4%b8%aa%20Golang%20%e5%91%bd%e4%bb%a4%e8%a1%8c%e9%a1%b9%e7%9b%ae%e7%94%9f%e6%88%90%e5%b7%a5%e5%85%b7&source=https%3a%2f%2fjsharkc.github.io%2fpost%2fcobra%25E5%2585%25A5%25E9%2597%25A8%25E5%25B0%258F%25E6%2595%2599%25E7%25A8%258B%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Cobra - 一个 Golang 命令行项目生成工具 on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcobra%25E5%2585%25A5%25E9%2597%25A8%25E5%25B0%258F%25E6%2595%2599%25E7%25A8%258B%2f&title=Cobra%20-%20%e4%b8%80%e4%b8%aa%20Golang%20%e5%91%bd%e4%bb%a4%e8%a1%8c%e9%a1%b9%e7%9b%ae%e7%94%9f%e6%88%90%e5%b7%a5%e5%85%b7"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Cobra - 一个 Golang 命令行项目生成工具 on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fjsharkc.github.io%2fpost%2fcobra%25E5%2585%25A5%25E9%2597%25A8%25E5%25B0%258F%25E6%2595%2599%25E7%25A8%258B%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Cobra - 一个 Golang 命令行项目生成工具 on whatsapp" href="https://api.whatsapp.com/send?text=Cobra%20-%20%e4%b8%80%e4%b8%aa%20Golang%20%e5%91%bd%e4%bb%a4%e8%a1%8c%e9%a1%b9%e7%9b%ae%e7%94%9f%e6%88%90%e5%b7%a5%e5%85%b7%20-%20https%3a%2f%2fjsharkc.github.io%2fpost%2fcobra%25E5%2585%25A5%25E9%2597%25A8%25E5%25B0%258F%25E6%2595%2599%25E7%25A8%258B%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Cobra - 一个 Golang 命令行项目生成工具 on telegram" href="https://telegram.me/share/url?text=Cobra%20-%20%e4%b8%80%e4%b8%aa%20Golang%20%e5%91%bd%e4%bb%a4%e8%a1%8c%e9%a1%b9%e7%9b%ae%e7%94%9f%e6%88%90%e5%b7%a5%e5%85%b7&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcobra%25E5%2585%25A5%25E9%2597%25A8%25E5%25B0%258F%25E6%2595%2599%25E7%25A8%258B%2f"><svg viewBox="2 2 28 28"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg>
+</a>
+</div>
+</footer>
+</article>
+</main>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
+</footer>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
+</body>
+</html>

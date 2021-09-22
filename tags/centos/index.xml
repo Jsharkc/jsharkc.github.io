@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>centos on Jacobc&#39;s blog</title>
+    <link>https://jsharkc.github.io/tags/centos/</link>
+    <description>Recent content in centos on Jacobc&#39;s blog</description>
+    <image>
+      <url>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 14:29:38 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/centos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Centos 安装 oh-my-zsh</title>
+      <link>https://jsharkc.github.io/post/centos-install-oh-my-zsh/</link>
+      <pubDate>Sun, 17 Nov 2019 14:29:38 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/centos-install-oh-my-zsh/</guid>
+      <description>查看、安装 zsh 查看是否安装了 zsh
+# 方法一： chsh -l # 方法二： cat /etc/shells # 可能结果： /bin/sh /bin/bash /sbin/nologin /usr/bin/sh /usr/bin/bash /usr/sbin/nologin /bin/zsh # 如果有 /bin/zsh 代表已经安装，反之则没有 安装 zsh
+yum install -y zsh 切换 shell 为 zsh
+chsh -s /bin/zsh 安装 oh-my-zsh 安装需要 git，没有安装需要先安装：
+yum install -y git 1、可以通过别人已经写好的脚本安装，用 curl 或者 wget 下载脚本来安装：
+ 通过 curl  sh -c &amp;#34;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&amp;#34;  通过 wget  sh -c &amp;#34;$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&amp;#34; 2、也可以自己用 git 安装</description>
+    </item>
+    
+  </channel>
+</rss>

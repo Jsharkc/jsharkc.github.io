@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on Jacobc&#39;s blog</title>
+    <link>https://jsharkc.github.io/post/</link>
+    <description>Recent content in Posts on Jacobc&#39;s blog</description>
+    <image>
+      <url>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 13 Jul 2021 17:41:23 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>有进程为什么还创造线程</title>
+      <link>https://jsharkc.github.io/post/%E6%9C%89%E8%BF%9B%E7%A8%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E8%A6%81%E7%BA%BF%E7%A8%8B/</link>
+      <pubDate>Tue, 13 Jul 2021 17:41:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/%E6%9C%89%E8%BF%9B%E7%A8%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E8%A6%81%E7%BA%BF%E7%A8%8B/</guid>
+      <description>有进程为什么还创造线程 原因： 进程属于在CPU和系统资源等方面提供的抽象，能够有效提高CPU的利用率。
+线程是在进程这个层次上提供的一层并发的抽象：
+（1）能够使系统在同一时间能够做多件事情；
+（2）当进程遇到阻塞时，例如等待输入，线程能够使不依赖输入数据的工作继续执行
+（3）可以有效地利用多处理器和多核计算机，在没有线程之前，多核并不能让一个进程的执行速度提高
+进程是什么？ 程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行，而这种执行的程序就称之为进程。程序和进程的区别就在于：程序是指令的集合，它是进程运行的静态描述文本；进程是程序的一次执行活动，属于动态概念。
+在多道编程中，我们允许多个程序同时加载到内存中，在操作系统的调度下，可以实现并发地执行。这是这样的设计，大大提高了CPU的利用率。进程的出现让每个用户感觉到自己独享CPU，因此，进程就是为了在CPU上实现多道编程而提出的。
+有了进程为什么还要线程？ 进程有很多优点，它提供了多道编程，让我们感觉我们每个人都拥有自己的CPU和其他资源，可以提高计算机的利用率。很多人就不理解了，既然进程这么优秀，为什么还要线程呢？其实，仔细观察就会发现进程还是有很多缺陷的，主要体现在两点上：
+ 进程只能在一个时间干一件事，如果想同时干两件事或多件事，进程就无能为力了。 进程在执行的过程中如果阻塞，例如等待输入，整个进程就会挂起，即使进程中有些工作不依赖于输入的数据，也将无法执行。  如果这两个缺点理解比较困难的话，举个现实的例子也许你就清楚了：如果把我们上课的过程看成一个进程的话，那么我们要做的是耳朵听老师讲课，手上还 要记笔记，脑子还要思考问题，这样才能高效的完成听课的任务。而如果只提供进程这个机制的话，上面这三件事将不能同时执行，同一时间只能做一件事，听的时 候就不能记笔记，也不能用脑子思考，这是其一；如果老师在黑板上写演算过程，我们开始记笔记，而老师突然有一步推不下去了，阻塞住了，他在那边思考着，而 我们呢，也不能干其他事，即使你想趁此时思考一下刚才没听懂的一个问题都不行，这是其二。
+现在你应该明白了进程的缺陷了，而解决的办法很简单，我们完全可以让听、写、思三个独立的过程，并行起来，这样很明显可以提高听课的效率。而实际的操作系统中，也同样引入了这种类似的机制——线程。
+线程的优点 因为要并发，我们发明了进程，又进一步发明了线程。只不过进程和线程的并发层次不同：进程属于在处理器这一层上提供的抽象；线程则属于在进程这个层 次上再提供了一层并发的抽象。如果我们进入计算机体系结构里，就会发现，流水线提供的也是一种并发，不过是指令级的并发。这样，流水线、线程、进程就从低 到高在三个层次上提供我们所迫切需要的并发！
+除了提高进程的并发度，线程还有个好处，就是可以有效地利用多处理器和多核计算机。现在的处理器有个趋势就是朝着多核方向发展，在没有线程之前，多 核并不能让一个进程的执行速度提高，原因还是上面所有的两点限制。但如果讲一个进程分解为若干个线程，则可以让不同的线程运行在不同的核上，从而提高了进 程的执行速度。
+例如：我们经常使用微软的Word进行文字排版，实际上就打开了多个线程。这些线程一个负责显示，一个接受键盘的输入，一个进行存盘等等。这些线程 一起运行，让我们感觉到我们输入和屏幕显示同时发生，而不是输入一些字符，过一段时间才能看到显示出来。在我们不经意间，还进行了自动存盘操作。这就是线 程给我们带来的方便之处。
+进程与线程的区别  进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动,进程是系统进行资源分配和调度的一个独立单位。 线程是进程的一个实体, 是CPU调度和分派的基本单位,它是比进程更小的能独立运行的基本单位.线程自己基本上不拥有系统资源,只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈),但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。 一个线程可以创建和撤销另一个线程，同一个进程中的多个线程之间可以并发执行。  进程和线程的主要差别在于它们是不同的操作系统资源管理方式。进程有独立的地址空间，一个进程崩溃后，在保护模式下不会对其它进程产生影响，而线程 只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线 程的程序 健壮，但在进程切换时，耗费资源较大，效率要差一些。但对于一些要求同时进行并且又要共享某些变量的并发操作，只能用线程，不能用进程。
+注：前一阵子去淘宝面试，面试官就问了我这个问题：进程与线程的区别是什么？我当时说了一大堆，但感觉还是没说关键的点上，最后他又问最本质的区别是什么？我傻了一会，难道刚我说的没有说到吗？嘿嘿，确实有点囧啊~~
+原文链接：
+https://www.cnblogs.com/Berryxiong/p/6429723.html
+参考文献：
+【1】 邹恒明. 计算机的心智 操作系统之哲学原理. 机械工业出版社
+【2】 Andrew著 陈向群译. 现代操作系统. 机械工业出版社
+【3】 http://blog.csdn.net/zengjibing/archive/2009/02/22/3923357.aspx</description>
+    </item>
+    
+    <item>
+      <title>Centos 安装 oh-my-zsh</title>
+      <link>https://jsharkc.github.io/post/centos-install-oh-my-zsh/</link>
+      <pubDate>Sun, 17 Nov 2019 14:29:38 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/centos-install-oh-my-zsh/</guid>
+      <description>查看、安装 zsh 查看是否安装了 zsh
+# 方法一： chsh -l # 方法二： cat /etc/shells # 可能结果： /bin/sh /bin/bash /sbin/nologin /usr/bin/sh /usr/bin/bash /usr/sbin/nologin /bin/zsh # 如果有 /bin/zsh 代表已经安装，反之则没有 安装 zsh
+yum install -y zsh 切换 shell 为 zsh
+chsh -s /bin/zsh 安装 oh-my-zsh 安装需要 git，没有安装需要先安装：
+yum install -y git 1、可以通过别人已经写好的脚本安装，用 curl 或者 wget 下载脚本来安装：
+ 通过 curl  sh -c &amp;#34;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&amp;#34;  通过 wget  sh -c &amp;#34;$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&amp;#34; 2、也可以自己用 git 安装</description>
+    </item>
+    
+    <item>
+      <title>Mac安装破解版 Charles</title>
+      <link>https://jsharkc.github.io/post/mac-install-charles/</link>
+      <pubDate>Sun, 17 Nov 2019 12:40:56 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mac-install-charles/</guid>
+      <description>文章转自 https://www.jianshu.com/p/4f0573f3c5db
+步骤  下载Charles安装包 双击dmg文件，将charles拖入应用程序中 在应用程序中右键 Charles，选择「显示包内容」，打开目录「Contents」=&amp;gt; 「Java」，用下载的 charles.jar (在 dmg 文件中) 替换目录中的 charles.jar 打开 Charles，在菜单中找到 Help =&amp;gt; Register Charles&amp;hellip;，随便输入信息完成注册 重启 Charles  可能遇到的问题 1. 打不开xxx软件,因为它不是从app store下载的 解决方法：
+左上角苹果标志 =&amp;gt; 系统偏好设置 =&amp;gt; 安全性与隐私
+选择&amp;quot;仍要打开&amp;quot;，就可以安装了
+2. 破解之后显示软件已损坏 其实并没有损坏,只是软件来自身份不明的开发者(见上图)，然后苹果就告诉你，它是坏的&amp;hellip;..
+解决方法：
+打开终端，输入命令: sudo spctl --master-disable 会让你输入密码，输入后按回车就好 再看一下安全性与隐私里面
+多出一个任何来源，现在打开软件就没有任何问题了</description>
+    </item>
+    
+    <item>
+      <title>Android手机作为linux服务器</title>
+      <link>https://jsharkc.github.io/post/android-phone-as-linux-server/</link>
+      <pubDate>Sat, 16 Nov 2019 12:59:00 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/android-phone-as-linux-server/</guid>
+      <description>有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。
+下载 Termux Termux 下载地址
+下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
+配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
+apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
+whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
+ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.</description>
+    </item>
+    
+    <item>
+      <title>文件描述符 fd</title>
+      <link>https://jsharkc.github.io/post/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</link>
+      <pubDate>Fri, 15 Nov 2019 18:13:00 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</guid>
+      <description>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。
+文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于 UNIX、Linux 这样的操作系统。
+Linux下两个进程打开同一个文件返回的文件描述符一样吗？ 答案：不一样
+ 两个进程中分别产生生成两个独立的fd 两个进程可以任意对文件进行读写操作，操作系统并不保证写的原子性 进程可以通过系统调用对文件加锁，从而实现对文件内容的保护 任何一个进程删除该文件时，另外一个进程不会立即出现读写失败 两个进程可以分别读取文件的不同部分而不会相互影响 一个进程对文件长度和内容的修改另外一个进程可以立即感知  文件描述符与打开文件的关系  内核中，对应于每个进程都有一个文件描述符表，表示这个进程打开的所有文件。 文件描述表中每一项都是一个指针，指向一个用于描述打开的文件的数据块——file对象，file对象中描述了文件的打开模式，读写位置等重要信息，当进程打开一个文件时，内核就会创建一个新的file对象。 file对象不是专属于某个进程的，不同进程的文件描述符表中的指针可以指向相同的file对象，从而共享这个打开的文件。 file对象有引用计数，记录了引用这个对象的文件描述符个数，只有当引用计数为0时，内核才销毁file对象，因此某个进程关闭文件，不影响与之共享同一个file对象的进程。  参考文章：
+ linux下两个进程可以同时打开同一个文件吗？返回的文件描述符一样吗？ Linux IO模式及 select、poll、epoll详解  </description>
+    </item>
+    
+    <item>
+      <title>Mysql update 结合另一个表更新数据</title>
+      <link>https://jsharkc.github.io/post/mysql-update-%E7%BB%93%E5%90%88%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE/</link>
+      <pubDate>Wed, 30 Oct 2019 14:50:32 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mysql-update-%E7%BB%93%E5%90%88%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE/</guid>
+      <description>有时 update 更新语句会需要根据另一个表进行更新，举例如下：
+-- 方式一： update tableA a, tableB b set a.Name=b.Name, a.Age=b.Age where a.IDCard=b.IDCard; -- 方式二: update tableA a inner join tableB b on a.IDCard=b.IDCard set a.Name=b.Name, a.Age=b.Age; </description>
+    </item>
+    
+    <item>
+      <title>Flutter 返回按钮返回桌面</title>
+      <link>https://jsharkc.github.io/post/flutter-%E8%BF%94%E5%9B%9E%E6%A1%8C%E9%9D%A2/</link>
+      <pubDate>Tue, 29 Oct 2019 21:42:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/flutter-%E8%BF%94%E5%9B%9E%E6%A1%8C%E9%9D%A2/</guid>
+      <description>Flutter 返回按钮返回桌面 想实现点击返回按钮，直接返回桌面，本想 flutter 有方法的话，直接用，然而好像没有，所以采用调用本地方法返回桌面
+Android 端 MainActivity 代码如下 package com.dreamreal.example; import android.os.Bundle; import io.flutter.app.FlutterActivity; import io.flutter.plugin.common.MethodChannel; import io.flutter.plugins.GeneratedPluginRegistrant; public class MainActivity extends FlutterActivity { // 字符串常量，回到手机桌面  private final String chanel = &amp;#34;back/desktop&amp;#34;; // 返回到桌面事件  static final String backDesktopEvent = &amp;#34;backDesktop&amp;#34;; @Override protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); GeneratedPluginRegistrant.registerWith(this); MethodChannel(getFlutterView(), chanel).setMethodCallHandler( (methodCall, result) -&amp;gt; { if (methodCall.method.equals(backDesktopEvent)) { moveTaskToBack(false); result.success(true); } } ); } } 如果是 kotlin 的话，如下：</description>
+    </item>
+    
+    <item>
+      <title>Mac 使用 V2ray 科学上网</title>
+      <link>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
+      <pubDate>Sat, 07 Apr 2018 21:42:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
+      <description>Mac 使用 V2ray 科学上网 Install v2ray-core step 1: Add official tap
+brew tap v2ray/v2ray step 2: Install v2ray-core:
+brew install v2ray-core Update v2ray-core step 1: update tap
+brew update step 2: update v2ray-core
+brew upgrade v2ray-core 使用 直接在命令行上输入 v2ray 就可以运行 v2ray-core。（配置文件在当前目录则不用写参数，直接 v2ray）
+默认配置文件位于：/usr/local/etc/config.json
+编辑默认配置文件：
+vim /usr/local/etc/config.json 配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
+config.json 添加 http 代理：
+&amp;#34;inboundDetour&amp;#34;: [{ &amp;#34;protocol&amp;#34;: &amp;#34;http&amp;#34;, &amp;#34;port&amp;#34;: 1081, &amp;#34;settings&amp;#34;: { &amp;#34;udp&amp;#34;: true } }], .zshrc 添加
+# proxy alias proxy=&#39;export https_proxy=http://127.</description>
+    </item>
+    
+    <item>
+      <title>create-react-app 脚手架添加 less 支持和 antd 样式按需加载</title>
+      <link>https://jsharkc.github.io/post/create-react-app-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%B7%BB%E5%8A%A0-less-%E6%94%AF%E6%8C%81%E5%92%8C-antd-%E6%A0%B7%E5%BC%8F%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/</link>
+      <pubDate>Sat, 03 Feb 2018 17:42:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/create-react-app-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%B7%BB%E5%8A%A0-less-%E6%94%AF%E6%8C%81%E5%92%8C-antd-%E6%A0%B7%E5%BC%8F%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/</guid>
+      <description>create-react-app 脚手架添加 less 支持和 antd 样式按需加载 1. 创建项目 npm install -g create-react-app /* 安装create-react-app，建议使用cnpm */ create-react-app react-test /* 使用命令创建应用，myapp为项目名称 */ cd react-test /* 进入目录，然后启动 */ npm start 2.create-react-app 把 webpack 配置文件暴露出来 create-react-app 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：
+npm run eject 3. 添加 babel-plugin-import babel-plugin-import 是一个用于 按需加载 组件代码和样式 的 babel 插件（原理）。
+npm install babel-plugin-import --save-dev 4.添加 less 、less-loader npm install less less-loader --save-dev 5.修改 webpack 配置文件 修改 webpack.config.dev.js 和 webpack.config-prod.js 配置文件
+ test: /\.css$/ 改为 /\.</description>
+    </item>
+    
+    <item>
+      <title>Cobra - 一个 Golang 命令行项目生成工具</title>
+      <link>https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Mon, 17 Jul 2017 15:07:14 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/</guid>
+      <description>Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
+组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
+type Command struct { Use string // The one-line usage message.  Short string // The short description shown in the &amp;#39;help&amp;#39; output.  Long string // The long message shown in the &amp;#39;help&amp;lt;this-command&amp;gt;&amp;#39; output.  Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。
+安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。</description>
+    </item>
+    
+    <item>
+      <title>Golang slice 切片原理</title>
+      <link>https://jsharkc.github.io/post/slice%E6%9C%BA%E5%88%B6/</link>
+      <pubDate>Mon, 10 Jul 2017 19:27:43 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/slice%E6%9C%BA%E5%88%B6/</guid>
+      <description>Golang slice 切片原理 ​	golang 中的 slice 是比较好用的一种结构，能根据需求变长，相对于 array 的死板，slice 更加灵活也更加常用，有道说：知其然，知其所以然。现在，我们就看看 slice 到底是怎样一种结构。
+slice源码 type slice struct { array unsafe.Pointer len int cap int } ​	根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。
+​	有同学可能不知道 unsafe.Pointer是什么，那么我们一并在这讲解一下。
+package unsafe type ArbitraryType int //	- A pointer value of any type can be converted to a Pointer. //	- A Pointer can be converted to a pointer value of any type.</description>
+    </item>
+    
+    <item>
+      <title>Jobrunner 源码解析</title>
+      <link>https://jsharkc.github.io/post/jobrunner/</link>
+      <pubDate>Tue, 27 Jun 2017 11:07:35 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/jobrunner/</guid>
+      <description>安装 go get github.com/bamzi/jobrunner 使用 eg1 package main import &amp;#34;github.com/bamzi/jobrunner&amp;#34; func main() { jobrunner.Start() jobrunner.Schedule(&amp;#34;@every 5s&amp;#34;, ReminderEmails{}) select{} } type ReminderEmails struct {} func (e ReminderEmails) Run() { fmt.Printf(&amp;#34;Every 5 sec send reminder emails \n&amp;#34;) } ***解析：***在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。
+Jobrunner 支持两种时间格式：
+  &amp;ldquo;@XXX&amp;rdquo;
+ &amp;ldquo;@yearly&amp;rdquo;, &amp;ldquo;@annually&amp;rdquo; 每年 &amp;ldquo;@monthly&amp;rdquo; 每月 &amp;ldquo;@weekly&amp;rdquo; 每星期 &amp;ldquo;@daily&amp;rdquo;, &amp;ldquo;@midnight&amp;rdquo; 每天 &amp;ldquo;@hourly&amp;rdquo; 每小时 &amp;ldquo;@every 5s&amp;rdquo; 支持 &amp;ldquo;ns&amp;rdquo;, &amp;ldquo;us&amp;rdquo; (or &amp;ldquo;µs&amp;rdquo;), &amp;ldquo;ms&amp;rdquo;, &amp;ldquo;s&amp;rdquo;, &amp;ldquo;m&amp;rdquo;, &amp;ldquo;h&amp;rdquo;。    &amp;ldquo;x x x x x x&amp;rdquo;</description>
+    </item>
+    
+    <item>
+      <title>Golang Interface 解析</title>
+      <link>https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Sat, 17 Jun 2017 19:27:43 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/</guid>
+      <description>Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856
+先看一段代码：
+func Foo(x interface{}) { if x == nil { fmt.Println(&amp;#34;empty interface&amp;#34;) return } fmt.Println(&amp;#34;non-empty interface&amp;#34;) } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下
+$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
+interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。
+type eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size  ptrdata uintptr // size of memory prefix holding all pointers  hash uint32 // hash of type; avoids computation in hash tables  tflag tflag // extra type information flags  align uint8 // alignment of variable with this type  fieldalign uint8 // alignment of struct field with this type  kind uint8 // enumeration for C  alg *typeAlg // algorithm table  gcdata *byte // garbage collection data  str nameOff // string form  ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.</description>
+    </item>
+    
+    <item>
+      <title>十条有用的 GO 技术</title>
+      <link>https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/</link>
+      <pubDate>Fri, 26 May 2017 09:42:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/</guid>
+      <description>十条有用的 Go 技术 转自 mikespook.com
+这里是我过去几年中编写的大量 Go 代码的经验总结而来的自己的最佳实践。我相信它们具有弹性的。这里的弹性是指： 某个应用需要适配一个灵活的环境。你不希望每过 3 到 4 个月就不得不将它们全部重构一遍。添加新的特性应当很容易。许多人参与开发该应用，它应当可以被理解，且维护简单。许多人使用该应用，bug 应该容易被发现并且可以快速的修复。我用了很长的时间学到了这些事情。其中的一些很微小，但对于许多事情都会有影响。所有这些都仅仅是建议，具体情况具体对待，并且如果有帮助的话务必告诉我。随时留言:)
+1. 使用单一的 GOPATH 多个 GOPATH 的情况并不具有弹性。GOPATH 本身就是高度自我完备的（通过导入路径）。有多个 GOPATH 会导致某些副作用，例如可能使用了给定的库的不同的版本。你可能在某个地方升级了它，但是其他地方却没有升级。而且，我还没遇到过任何一个需要使用多个 GOPATH 的情况。所以只使用单一的 GOPATH，这会提升你 Go 的开发进度。
+许多人不同意这一观点，接下来我会做一些澄清。像 etcd 或 camlistore 这样的大项目使用了像 godep 这样的工具，将所有依赖保存到某个目录中。也就是说，这些项目自身有一个单一的 GOPATH。它们只能在这个目录里找到对应的版本。除非你的项目很大并且极为重要，否则不要为每个项目使用不同的 GOPATH。如果你认为项目需要一个自己的 GOPATH 目录，那么就创建它，否则不要尝试使用多个 GOPATH。它只会拖慢你的进度。
+2. 将 for-select 封装到函数中 如果在某个条件下，你需要从 for-select 中退出，就需要使用标签。例如：
+func main() { L: for { select { case &amp;lt;-time.After(time.Second): fmt.Println(&amp;#34;hello&amp;#34;) default: break L } } fmt.Println(&amp;#34;ending&amp;#34;) } 如你所见，需要联合break使用标签。这有其用途，不过我不喜欢。这个例子中的 for 循环看起来很小，但是通常它们会更大，而判断break的条件也更为冗长。
+如果需要退出循环，我会将 for-select 封装到函数中：</description>
+    </item>
+    
+    <item>
+      <title>Golang 中不存在引用传参</title>
+      <link>https://jsharkc.github.io/post/golang%E4%B8%8D%E5%AD%98%E5%9C%A8%E5%BC%95%E7%94%A8%E4%BC%A0%E5%80%BC/</link>
+      <pubDate>Wed, 03 May 2017 13:27:43 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/golang%E4%B8%8D%E5%AD%98%E5%9C%A8%E5%BC%95%E7%94%A8%E4%BC%A0%E5%80%BC/</guid>
+      <description>Golang 中不存在引用传参 ​	原文链接
+​	翻译：Jsharkc
+什么是引用变量 ? 在 C++ 语言中，你可以为已存在的变量声明一个别名，这就是引用变量：
+#include &amp;lt;stdio.h&amp;gt; int main() { int a = 10; int &amp;amp;b = a; int &amp;amp;c = b; printf(&amp;#34;%p %p %p\n&amp;#34;, &amp;amp;a, &amp;amp;b, &amp;amp;c); // 0x7ffe114f0b14 0x7ffe114f0b14 0x7ffe114f0b14  return 0; } 可以看到，a、b、c 三个变量的地址是相同的，也就是说它们是同一个内存地址的变量，只不过有三个别名。就好比你有一个大名，一个小名，不管别人叫大名还是小名叫的都是你，如果改变 a 变量，b、c 变量也会跟着变。当你声明一个引用变量在不同的函数作用域中这是非常有用的。
+Golang 没有引用变量 与 C++ 不同，在 Golang 中声明的每个变量都只能占用不同的内存空间的。
+package main import &amp;#34;fmt&amp;#34; func main() { var a, b, c int fmt.Println(&amp;amp;a, &amp;amp;b, &amp;amp;c) // 0x1040a124 0x1040a128 0x1040a12c } 在 Golang 项目中不可能存在两个变量共享一块内存，但是可以创建两个变量指向相同的内存地址，但这和两个变量共享一块内存是不一样的。</description>
+    </item>
+    
+    <item>
+      <title>Docker Note</title>
+      <link>https://jsharkc.github.io/post/docker-note/</link>
+      <pubDate>Wed, 12 Apr 2017 16:52:24 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/docker-note/</guid>
+      <description>Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为&amp;lt;none&amp;gt;的为虚悬镜像：
+&amp;lt;none&amp;gt;	&amp;lt;none&amp;gt;	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为&amp;lt;none&amp;gt;，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE &amp;lt;none&amp;gt;	&amp;lt;none&amp;gt;	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
+​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
+$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。</description>
+    </item>
+    
+    <item>
+      <title>Linux防火墙-iptables</title>
+      <link>https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/</link>
+      <pubDate>Sun, 02 Apr 2017 09:42:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/</guid>
+      <description>Linux防火墙&amp;ndash;iptables学习 转自简书
+iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。
+一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。
+规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。
+配置iptables实际上就是增删修改这些规则。
+2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。
+3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。
+如下图所示，各个表相关的链：
+raw表有2条链：PREROUTING、OUTPUT
+mangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
+nat表有3条链：PREROUTING、POSTROUTING、OUTPUT
+filter表有3条链：INPUT、FORWARD、OUTPUT
+4个表的优先级为：raw &amp;gt; mangle &amp;gt; nat &amp;gt; filter
+二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。
+ 如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。  \2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。
+综上，数据包在iptables中的传输链路有两种情况：
+第一种：PREROUTING -&amp;gt; FORWARD -&amp;gt; POSTROUTING
+第二种：PREROUTING -&amp;gt; INPUT -&amp;gt; LOCALHOST -&amp;gt; OUTPUT -&amp;gt; PUSTROUTING
+所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。
+（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -&amp;gt; FORWARD链 -&amp;gt; POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）
+三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）
+注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。
+iptables -F：清除所有的规则
+iptables -F -t nat：清除nat表的规则
+iptables -P INPUT DROP：配置INPUT链的默认规则为DROP</description>
+    </item>
+    
+    <item>
+      <title>初探 Cockroachdb</title>
+      <link>https://jsharkc.github.io/post/cockroachdb/</link>
+      <pubDate>Fri, 17 Mar 2017 14:50:37 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/cockroachdb/</guid>
+      <description>初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
+docker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
+2.启动第一个节点 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &amp;#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&amp;#34; \ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
+docker run：Docker 命令启动一个新的容器。
+-d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
+--name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
+--hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
+--net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
+-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。
+-v &amp;quot;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&amp;quot;：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。
+3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。</description>
+    </item>
+    
+    <item>
+      <title>Go 程序的性能优化及 pprof 的使用</title>
+      <link>https://jsharkc.github.io/post/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96pprof/</link>
+      <pubDate>Sun, 12 Mar 2017 11:07:35 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96pprof/</guid>
+      <description>Go 程序的性能优化及 pprof 的使用 转自snowInPluto
+程序的性能优化无非就是对程序占用资源的优化。对于服务器而言，最重要的两项资源莫过于 CPU 和内存。性能优化，就是在对于不影响程序数据处理能力的情况下，我们通常要求程序的 CPU 的内存占用尽量低。反过来说，也就是当程序 CPU 和内存占用不变的情况下，尽量地提高程序的数据处理能力或者说是吞吐量。
+Go 的原生工具链中提供了非常多丰富的工具供开发者使用，其中包括 pprof。
+对于 pprof 的使用要分成下面两部分来说。
+Web 程序使用 pprof 先写一个简单的 Web 服务程序。程序在 9876 端口上接收请求。
+package main import ( &amp;quot;bytes&amp;quot; &amp;quot;io/ioutil&amp;quot; &amp;quot;log&amp;quot; &amp;quot;math/rand&amp;quot; &amp;quot;net/http&amp;quot; _ &amp;quot;net/http/pprof&amp;quot; ) func main() { http.HandleFunc(&amp;quot;/test&amp;quot;, handler) log.Fatal(http.ListenAndServe(&amp;quot;:9876&amp;quot;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { err := r.ParseForm() if nil != err { w.Write([]byte(err.Error())) return } doSomeThingOne(10000) buff := genSomeBytes() b, err := ioutil.</description>
+    </item>
+    
+    <item>
+      <title>跨域资源共享 CORS 详解</title>
+      <link>https://jsharkc.github.io/post/cors/</link>
+      <pubDate>Mon, 30 Jan 2017 15:07:00 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/cors/</guid>
+      <description>&lt;h1 id=&#34;跨域资源共享-cors-详解&#34;&gt;跨域资源共享 CORS 详解&lt;/h1&gt;
+&lt;p&gt;CORS是一个W3C标准，全称是&amp;quot;跨域资源共享&amp;quot;（Cross-origin resource sharing）。
+它允许浏览器向跨源服务器，发出&lt;code&gt;XMLHttpRequest&lt;/code&gt;请求，从而克服了AJAX只能&lt;strong&gt;同源&lt;/strong&gt;使用的限制。
+本文详细介绍CORS的内部机制。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Centos7 安装 Docker-CE 社区版</title>
+      <link>https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/</link>
+      <pubDate>Sun, 15 Jan 2017 17:42:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/</guid>
+      <description>Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
+安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
+&amp;gt; yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+&amp;gt; yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo &amp;gt; yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
+&amp;gt; yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
+&amp;gt; yum-config-manager --disable docker-ce-edge ##安装 Docker
+&amp;gt; sudo yum makecache fast &amp;gt; sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.</description>
+    </item>
+    
+    <item>
+      <title>Git命令清单</title>
+      <link>https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/</link>
+      <pubDate>Wed, 28 Dec 2016 09:49:10 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/</guid>
+      <description>Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url] 二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）
+# 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.name &amp;quot;[name]&amp;quot; $ git config [--global] user.email &amp;quot;[email address]&amp;quot; 三、增加 / 删除文件 # 添加制定文件到暂存区 $ git add [file1] [file2] ... # 添加制定目录到暂存区，包括子目录 $ git add [dir] # 添加每个变化前，都会要求确认 # 对于同一个文件的多处变化，可以实现分次提交 $ git add -p # 删除工作区文件，并且将这次删除放入暂存区 $ git rm [file1] [file2].</description>
+    </item>
+    
+    <item>
+      <title>Golang I/O 包的妙用</title>
+      <link>https://jsharkc.github.io/post/golang_io%E5%8C%85_%E5%A6%99%E7%94%A8/</link>
+      <pubDate>Wed, 14 Dec 2016 10:35:43 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/golang_io%E5%8C%85_%E5%A6%99%E7%94%A8/</guid>
+      <description>Golang I/O 包的妙用 作者：icexin 转自简书
+golang标准库对io的抽象非常精巧，各个组件可以随意组合，可以作为接口设计的典范。这篇文章结合一个实际的例子来和大家分享一下。
+背景 以一个RPC的协议包来说，每个包有如下结构
+type Packet struct { TotalSize uint32 Magic [4]byte Payload []byte Checksum uint32 } 其中TotalSize是整个包除去TotalSize后的字节数， Magic是一个固定长度的字串，Payload是包的实际内容，包含业务逻辑的数据。 Checksum是对Magic和Payload的adler32校验和。
+编码(encode) 我们使用一个原型为func EncodePacket(w io.Writer, payload []byte) error的函数来把数据打包，结合encoding/binary我们很容易写出第一版，演示需要，错误处理方面就简化处理了。
+var RPC_MAGIC = [4]byte{&amp;#39;p&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;x&amp;#39;, &amp;#39;i&amp;#39;} func EncodePacket(w io.Writer, payload []byte) error { // len(Magic) + len(Checksum) == 8  totalsize := uint32(len(payload) + 8) // write total size  binary.Write(w, binary.BigEndian, totalsize) // write magic bytes  binary.</description>
+    </item>
+    
+    <item>
+      <title>MongoDB 的正确打开方式 Part1</title>
+      <link>https://jsharkc.github.io/post/mongodb%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F/</link>
+      <pubDate>Mon, 21 Nov 2016 16:52:24 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mongodb%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F/</guid>
+      <description>MongoDB 的正确打开方式 Part1 在关系型数据库中，处理关系时，总是会有一张关系表，不论关系的规模，但在 MongoDB 数据库中，需要考虑关系的规模，我们用一对多关系举例：
+ 一对很少 一对许多 一对非常多  当关系规模不同时，处理也是有差别的。
+一对很少 针对个人需要保存多个地址进行建模的场景下使用内嵌文档是很合适，可以在person文档中嵌入addresses数组文档：
+这种设计具有内嵌文档设计中所有的优缺点。最主要的优点就是不需要单独执行一条语句去获取内嵌的内容。最主要的缺点是你无法把这些内嵌文档当做单独的实体去访问。
+例如，如果你是在对一个任务跟踪系统进行建模，每个用户将会被分配若干个任务。内嵌这些任务到用户文档在遇到“查询昨天所有的任务”这样的问题时将会非常困难。
+一对许多 以产品零件订货系统为例。每个商品有数百个可替换的零件，但是不会超过数千个。这个用例很适合使用间接引用&amp;mdash;将零件的objectid作为数组存放在商品文档中(在这个例子中的ObjectID我使用更加易读的2字节，现实世界中他们可能是由12个字节组成的)。
+每个零件都将有他们自己的文档对象
+每个产品的文档对象中 parts 数组中将会存放多个零件的 ObjectID：
+在获取特定产品中所有零件，需要一个应用层级别的join
+为了能快速的执行查询，必须确保products.catalog_number有索引。当然由于零件中parts._id一定是有索引的，所以这也会很高效。
+这种引用的方式是对内嵌优缺点的补充。每个零件是个单独的文档，可以很容易的独立去搜索和更新他们。需要一条单独的语句去获取零件的具体内容是使用这种建模方式需要考虑的一个问题（请仔细思考这个问题，在第二章反反范式化中，我们还会讨论这个问题）
+这种建模方式中的零件部分可以被多个产品使用，所以在多对多时不需要一张单独的连接表。
+一对非常多 我们用一个收集各种机器日志的例子来讨论一对非常多的问题。由于每个mongodb的文档有16M的大小限制，所以即使你是存储ObjectID也是不够的。我们可以使用很经典的处理方法“父级引用”&amp;mdash;用一个文档存储主机，在每个日志文档中保存这个主机的ObjectID。
+所以，即使这种简单的讨论也有能察觉出mongobd的建模和关系模型建模的不同之处。你必须要注意一下两个因素：
+Will the entities on the “N” side of the One-to-N ever need to stand alone?
+一对多中的多是否需要一个单独的实体。
+What is the cardinality of the relationship: is it one-to-few; one-to-many; or one-to-squillions?
+这个关系中集合的规模是一对很少，很多，还是非常多。
+Based on these factors, you can pick one of the three basic One-to-N schema designs:</description>
+    </item>
+    
+    <item>
+      <title>Go注意点总结</title>
+      <link>https://jsharkc.github.io/post/gonote/</link>
+      <pubDate>Tue, 15 Nov 2016 21:34:10 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/gonote/</guid>
+      <description>Go &amp;gt;注意点&amp;lt; 总结 1. 布尔类型 ​ 布尔类型 不能 接受其他类型的赋值，不支持 自动或者强制的类型转换
+var b bool b = 1 // 编译错误  b = bool(1) // 编译错误  2. int与int32 ​ **注意：**int和int32在Go语言里被认为是两种不同的类型，编译器也不会帮你自动做类型转换
+var value2 int32 value1:= 64 // value1将会被自动推导为int类型  value2 = value1 // 编译错误  // 可用强制转换解决这个编译错误：  value2 = int32(value1) // 编译通过  3. 整数值比较 ​ 两种 不同 类型的整型数 不能 直接比较，比如 int8 类型的数和 int 类型的数不能直接比较，但各种类型的整型变量都可以直接与字面常量 ( literal ) 进行比较
+ 4. ^x 表示对 x 取反  5.</description>
+    </item>
+    
+  </channel>
+</rss>

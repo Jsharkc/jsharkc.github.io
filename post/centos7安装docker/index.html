@@ -1,0 +1,288 @@
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Centos7 安装 Docker-CE 社区版 | Jacobc's blog</title>
+<meta name=keywords content="Docker">
+<meta name=description content="Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
+安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
+> yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+> yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
+> yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
+> yum-config-manager --disable docker-ce-edge ##安装 Docker
+> sudo yum makecache fast > sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.">
+<meta name=author content="Jsharkc">
+<link rel=canonical href=https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/>
+<meta name=google-site-verification content="XYZabc">
+<meta name=yandex-verification content="XYZabc">
+<meta name=msvalidate.01 content="XYZabc">
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.86.1">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+</noscript><meta property="og:title" content="Centos7 安装 Docker-CE 社区版">
+<meta property="og:description" content="Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
+安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
+> yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+> yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
+> yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
+> yum-config-manager --disable docker-ce-edge ##安装 Docker
+> sudo yum makecache fast > sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2017-01-15T17:42:23+00:00">
+<meta property="article:modified_time" content="2017-01-15T17:42:23+00:00"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name=twitter:title content="Centos7 安装 Docker-CE 社区版">
+<meta name=twitter:description content="Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
+安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
+> yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+> yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
+> yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
+> yum-config-manager --disable docker-ce-edge ##安装 Docker
+> sudo yum makecache fast > sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Centos7 安装 Docker-CE 社区版","item":"https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Centos7 安装 Docker-CE 社区版","name":"Centos7 安装 Docker-CE 社区版","description":"Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。\n安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.\n\u0026gt; yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版\n\u0026gt; yum-config-manager \\  --add-repo \\  https://download.docker.com/linux/centos/docker-ce.repo \u0026gt; yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.\n\u0026gt; yum-config-manager \\  --add-repo \\  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令\n\u0026gt; yum-config-manager --disable docker-ce-edge ##安装 Docker\n\u0026gt; sudo yum makecache fast \u0026gt; sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.","keywords":["Docker"],"articleBody":"Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。\n安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.\n yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版\n yum-config-manager \\  --add-repo \\  https://download.docker.com/linux/centos/docker-ce.repo  yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.\n yum-config-manager \\  --add-repo \\  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令\n yum-config-manager --disable docker-ce-edge ##安装 Docker\n sudo yum makecache fast  sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.12-2.gite7096ce.el7.noarch 出现冲突, 原因是直接安装过docker.\n yum list docker Installed Packages docker.x86_64 2:1.12.6-28.git1398f24.el7.centos @extras  sudo yum erase docker.x86_64 Removed: docker.x86_64 2:1.12.6-28.git1398f24.el7.centos  sudo yum list container-selinux-2.12-2.gite7096ce.el7.noarch  sudo yum erase container-selinux.noarch 删除老版本 docker\n yum list installed | grep docker docker-client.x86_64 2:1.12.6-28.git1398f24.el7.centos docker-common.x86_64 2:1.12.6-28.git1398f24.el7.centos  sudo yum erase -y docker-client.x86_64  sudo yum erase -y docker-common.x86_64  sudo yum remove docker \\  docker-common \\  container-selinux \\  docker-selinux \\  docker-engine 再安装\n[zhouhh@mainServer ~]$ sudo yum install docker-ce Loaded plugins: fastestmirror, langpacks Installing: docker-ce x86_64 17.05.0.ce-1.el7.centos docker-ce-edge 19 M Installing for dependencies: docker-ce-selinux noarch 17.05.0.ce-1.el7.centos docker-ce-edge 28 k Complete! 如果生产系统需要稳定版本, 需要 yum list 进行查询. 但yum list只会显示二进制包, 加上.x86_64会显示包含源码包的全部的包. sort -r会按版本倒序排序.\n yum list docker-ce.x86_64 --showduplicates |sort -r * updates: mirrors.tuna.tsinghua.edu.cn Loading mirror speeds from cached hostfile Loaded plugins: fastestmirror, langpacks * extras: mirror.bit.edu.cn docker-ce.x86_64 17.05.0.ce-1.el7.centos docker-ce-edge docker-ce.x86_64 17.04.0.ce-1.el7.centos docker-ce-edge docker-ce.x86_64 17.03.1.ce-1.el7.centos docker-ce-stable docker-ce.x86_64 17.03.0.ce-1.el7.centos docker-ce-stable * base: mirror.bit.edu.cn 第二列是版本号. el7表示centos7. 第三列是库名.\n安装指定版本: sudo yum install docker-ce-\n安装稳定版本:\n sudo yum install docker-ce-17.03.1.ce-1.el7.centos Installed: docker-ce.x86_64 0:17.03.1.ce-1.el7.centos Dependency Installed: docker-ce-selinux.noarch 0:17.05.0.ce-1.el7.centos Complete! 删除 docker-ce 版和镜像  sudo yum remove docker-ce  sudo rm -rf /var/lib/docker 启动测试 docker Hello world的镜像启动后会打印”Hello from Docker!”然后退出.\n sudo systemctl start docker  docker run hello-world Unable to find image 'hello-world:latest' locally latest: Pulling from library/hello-world 78445dd45222: Pull complete Digest: sha256:c5515758d4c5e1e838e9cd307f6c6a0d620b5e07e6f927b07d05f6d12a1ac8d7 Status: Downloaded newer image for hello-world:latest Hello from Docker! This message shows that your installation appears to be working correctly. 非root用户启动docker 默认情况下，docker 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 root 用户和 docker 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 root 用户。因此，更好地做法是将需要使用 docker 的用户加入 docker 用户组。\n建立 docker 组：\n$ sudo groupadd docker 将当前用户加入 docker 组：\n$ sudo usermod -aG docker $USER 设置自启动 大部分最新的linux发行版(RHEL, CentOS, Fedora, Ubuntu 16.04 以上), 都用sytemd来管理启动.\n[zhouhh@mainServer ~]$ sudo systemctl enable docker Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service. 禁止自启动 [zhouhh@mainServer ~]$ sudo systemctl disable docker ","wordCount":"364","inLanguage":"en","datePublished":"2017-01-15T17:42:23Z","dateModified":"2017-01-15T17:42:23Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+</head>
+<body class=dark id=top>
+<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
+</div>
+<ul id=menu>
+<li>
+<a href=https://jsharkc.github.io/archives/ title=Archives>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/categories title=Categories>
+<span>Categories</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/tags title=Tags>
+<span>Tags</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
+<span>Search</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/post/>Posts</a></div>
+<h1 class=post-title>
+Centos7 安装 Docker-CE 社区版
+</h1>
+<div class=post-meta>January 15, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/post/CentOS7%e5%ae%89%e8%a3%85Docker.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+</div>
+</header> <div class=toc>
+<details open>
+<summary accesskey=c title="(Alt + C)">
+<span class=details>Table of Contents</span>
+</summary>
+<div class=inner><ul>
+<li>
+<a href=#centos7-%e5%ae%89%e8%a3%85-docker-ce-%e7%a4%be%e5%8c%ba%e7%89%88 aria-label="Centos7 安装 Docker-CE 社区版">Centos7 安装 Docker-CE 社区版</a><ul>
+<li>
+<a href=#%e5%ae%89%e8%a3%85%e7%9b%b8%e5%85%b3%e4%be%9d%e8%b5%96 aria-label=安装相关依赖>安装相关依赖</a></li>
+<li>
+<a href=#%e9%85%8d%e7%bd%ae%e7%89%88%e6%9c%ac%e9%95%9c%e5%83%8f%e5%ba%93 aria-label=配置版本镜像库>配置版本镜像库</a></li>
+<li>
+<a href=#%e5%88%a0%e9%99%a4-docker-ce-%e7%89%88%e5%92%8c%e9%95%9c%e5%83%8f aria-label="删除 docker-ce 版和镜像">删除 docker-ce 版和镜像</a></li>
+<li>
+<a href=#%e5%90%af%e5%8a%a8%e6%b5%8b%e8%af%95-docker aria-label="启动测试 docker">启动测试 docker</a></li>
+<li>
+<a href=#%e9%9d%9eroot%e7%94%a8%e6%88%b7%e5%90%af%e5%8a%a8docker aria-label=非root用户启动docker>非root用户启动docker</a></li>
+<li>
+<a href=#%e8%ae%be%e7%bd%ae%e8%87%aa%e5%90%af%e5%8a%a8 aria-label=设置自启动>设置自启动</a></li>
+<li>
+<a href=#%e7%a6%81%e6%ad%a2%e8%87%aa%e5%90%af%e5%8a%a8 aria-label=禁止自启动>禁止自启动</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</details>
+</div>
+<div class=post-content><h1 id=centos7-安装-docker-ce-社区版>Centos7 安装 Docker-CE 社区版<a hidden class=anchor aria-hidden=true href=#centos7-安装-docker-ce-社区版>#</a></h1>
+<p>今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。</p>
+<h2 id=安装相关依赖>安装相关依赖<a hidden class=anchor aria-hidden=true href=#安装相关依赖>#</a></h2>
+<p>yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum install -y yum-utils device-mapper-persistent-data lvm2
+</code></pre></div><h2 id=配置版本镜像库>配置版本镜像库<a hidden class=anchor aria-hidden=true href=#配置版本镜像库>#</a></h2>
+<p>季度更新的稳定stable版和月度更新的edge版</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; yum-config-manager <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>     --add-repo <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>     https://download.docker.com/linux/centos/docker-ce.repo
+&gt; yum-config-manager --enable docker-ce-edge
+
+</code></pre></div><p>由于docker.com服务器下载很慢,所以改为国内镜像.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; yum-config-manager <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --add-repo <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</code></pre></div><p>如需禁止edge版本, 可以执行下面的命令</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum-config-manager --disable docker-ce-edge
+</code></pre></div><p>##安装 Docker</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; sudo yum makecache fast
+
+&gt; sudo yum install docker-ce
+Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64
+Error: docker-ce-selinux conflicts with 2:container-selinux-2.12-2.gite7096ce.el7.noarch
+
+</code></pre></div><p>出现冲突, 原因是直接安装过docker.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum list docker
+
+Installed Packages
+docker.x86_64                      2:1.12.6-28.git1398f24.el7.centos                      @extras
+&gt; sudo yum erase docker.x86_64
+Removed:
+  docker.x86_64 2:1.12.6-28.git1398f24.el7.centos
+&gt; sudo yum list container-selinux-2.12-2.gite7096ce.el7.noarch
+
+&gt; sudo yum erase container-selinux.noarch
+</code></pre></div><p>删除老版本 docker</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; yum list installed | grep docker
+docker-client.x86_64                   2:1.12.6-28.git1398f24.el7.centos
+docker-common.x86_64                   2:1.12.6-28.git1398f24.el7.centos
+&gt; sudo yum erase -y docker-client.x86_64
+&gt; sudo yum erase -y docker-common.x86_64
+
+&gt; sudo yum remove docker <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  docker-common <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  container-selinux <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  docker-selinux <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  docker-engine
+</code></pre></div><p>再安装</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#f92672>[</span>zhouhh@mainServer ~<span style=color:#f92672>]</span>$ sudo yum install docker-ce
+Loaded plugins: fastestmirror, langpacks
+Installing:
+ docker-ce               x86_64       17.05.0.ce-1.el7.centos         docker-ce-edge        <span style=color:#ae81ff>19</span> M
+Installing <span style=color:#66d9ef>for</span> dependencies:
+ docker-ce-selinux       noarch       17.05.0.ce-1.el7.centos         docker-ce-edge        <span style=color:#ae81ff>28</span> k
+
+Complete!
+
+</code></pre></div><p>如果生产系统需要稳定版本, 需要 <code>yum list</code> 进行查询. 但yum list只会显示二进制包, 加上.x86_64会显示包含源码包的全部的包. sort -r会按版本倒序排序.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum list docker-ce.x86_64  --showduplicates |sort -r
+ * updates: mirrors.tuna.tsinghua.edu.cn
+Loading mirror speeds from cached hostfile
+Loaded plugins: fastestmirror, langpacks
+ * extras: mirror.bit.edu.cn
+docker-ce.x86_64            17.05.0.ce-1.el7.centos             docker-ce-edge
+docker-ce.x86_64            17.04.0.ce-1.el7.centos             docker-ce-edge
+docker-ce.x86_64            17.03.1.ce-1.el7.centos             docker-ce-stable
+docker-ce.x86_64            17.03.0.ce-1.el7.centos             docker-ce-stable
+ * base: mirror.bit.edu.cn
+</code></pre></div><p>第二列是版本号. el7表示centos7. 第三列是库名.</p>
+<p>安装指定版本: sudo yum install docker-ce-</p>
+<p>安装稳定版本:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; sudo yum install docker-ce-17.03.1.ce-1.el7.centos
+Installed:
+  docker-ce.x86_64 0:17.03.1.ce-1.el7.centos
+
+Dependency Installed:
+  docker-ce-selinux.noarch 0:17.05.0.ce-1.el7.centos
+
+Complete!
+</code></pre></div><h2 id=删除-docker-ce-版和镜像>删除 docker-ce 版和镜像<a hidden class=anchor aria-hidden=true href=#删除-docker-ce-版和镜像>#</a></h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; sudo yum remove docker-ce
+&gt; sudo rm -rf /var/lib/docker
+</code></pre></div><h2 id=启动测试-docker>启动测试 docker<a hidden class=anchor aria-hidden=true href=#启动测试-docker>#</a></h2>
+<p>Hello world的镜像启动后会打印”Hello from Docker!”然后退出.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; sudo systemctl start docker
+&gt; docker run hello-world
+Unable to find image <span style=color:#e6db74>&#39;hello-world:latest&#39;</span> locally
+latest: Pulling from library/hello-world
+78445dd45222: Pull complete
+Digest: sha256:c5515758d4c5e1e838e9cd307f6c6a0d620b5e07e6f927b07d05f6d12a1ac8d7
+Status: Downloaded newer image <span style=color:#66d9ef>for</span> hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+</code></pre></div><h2 id=非root用户启动docker>非root用户启动docker<a hidden class=anchor aria-hidden=true href=#非root用户启动docker>#</a></h2>
+<p>默认情况下，<code>docker</code> 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 <code>root</code> 用户和 <code>docker</code> 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 <code>root</code> 用户。因此，更好地做法是将需要使用 <code>docker</code> 的用户加入 <code>docker</code> 用户组。</p>
+<p>建立 <code>docker</code> 组：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>$ sudo groupadd docker
+</code></pre></div><p>将当前用户加入 <code>docker</code> 组：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ sudo usermod -aG docker $USER
+</code></pre></div><h2 id=设置自启动>设置自启动<a hidden class=anchor aria-hidden=true href=#设置自启动>#</a></h2>
+<p>大部分最新的linux发行版(RHEL, CentOS, Fedora, Ubuntu 16.04 以上), 都用sytemd来管理启动.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh><span style=color:#f92672>[</span>zhouhh@mainServer ~<span style=color:#f92672>]</span>$ sudo systemctl enable docker
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+
+</code></pre></div><h2 id=禁止自启动>禁止自启动<a hidden class=anchor aria-hidden=true href=#禁止自启动>#</a></h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh><span style=color:#f92672>[</span>zhouhh@mainServer ~<span style=color:#f92672>]</span>$ sudo systemctl disable docker
+</code></pre></div>
+</div>
+<footer class=post-footer>
+<ul class=post-tags>
+<li><a href=https://jsharkc.github.io/tags/docker/>Docker</a></li>
+</ul>
+<nav class=paginav>
+<a class=prev href=https://jsharkc.github.io/post/cors/>
+<span class=title>« Prev Page</span>
+<br>
+<span>跨域资源共享 CORS 详解</span>
+</a>
+<a class=next href=https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/>
+<span class=title>Next Page »</span>
+<br>
+<span>Git命令清单</span>
+</a>
+</nav>
+<div class=share-buttons>
+<a target=_blank rel="noopener noreferrer" aria-label="share Centos7 安装 Docker-CE 社区版 on twitter" href="https://twitter.com/intent/tweet/?text=Centos7%20%e5%ae%89%e8%a3%85%20Docker-CE%20%e7%a4%be%e5%8c%ba%e7%89%88&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcentos7%25E5%25AE%2589%25E8%25A3%2585docker%2f&hashtags=Docker"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Centos7 安装 Docker-CE 社区版 on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcentos7%25E5%25AE%2589%25E8%25A3%2585docker%2f&title=Centos7%20%e5%ae%89%e8%a3%85%20Docker-CE%20%e7%a4%be%e5%8c%ba%e7%89%88&summary=Centos7%20%e5%ae%89%e8%a3%85%20Docker-CE%20%e7%a4%be%e5%8c%ba%e7%89%88&source=https%3a%2f%2fjsharkc.github.io%2fpost%2fcentos7%25E5%25AE%2589%25E8%25A3%2585docker%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Centos7 安装 Docker-CE 社区版 on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcentos7%25E5%25AE%2589%25E8%25A3%2585docker%2f&title=Centos7%20%e5%ae%89%e8%a3%85%20Docker-CE%20%e7%a4%be%e5%8c%ba%e7%89%88"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Centos7 安装 Docker-CE 社区版 on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fjsharkc.github.io%2fpost%2fcentos7%25E5%25AE%2589%25E8%25A3%2585docker%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Centos7 安装 Docker-CE 社区版 on whatsapp" href="https://api.whatsapp.com/send?text=Centos7%20%e5%ae%89%e8%a3%85%20Docker-CE%20%e7%a4%be%e5%8c%ba%e7%89%88%20-%20https%3a%2f%2fjsharkc.github.io%2fpost%2fcentos7%25E5%25AE%2589%25E8%25A3%2585docker%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Centos7 安装 Docker-CE 社区版 on telegram" href="https://telegram.me/share/url?text=Centos7%20%e5%ae%89%e8%a3%85%20Docker-CE%20%e7%a4%be%e5%8c%ba%e7%89%88&url=https%3a%2f%2fjsharkc.github.io%2fpost%2fcentos7%25E5%25AE%2589%25E8%25A3%2585docker%2f"><svg viewBox="2 2 28 28"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg>
+</a>
+</div>
+</footer>
+</article>
+</main>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
+</footer>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Golang Interface 解析 | Jacobc's blog</title>
+<meta name=keywords content="Golang">
+<meta name=description content="Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856
+先看一段代码：
+func Foo(x interface{}) { if x == nil { fmt.Println(&#34;empty interface&#34;) return } fmt.Println(&#34;non-empty interface&#34;) } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下
+$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
+interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。
+type eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size  ptrdata uintptr // size of memory prefix holding all pointers  hash uint32 // hash of type; avoids computation in hash tables  tflag tflag // extra type information flags  align uint8 // alignment of variable with this type  fieldalign uint8 // alignment of struct field with this type  kind uint8 // enumeration for C  alg *typeAlg // algorithm table  gcdata *byte // garbage collection data  str nameOff // string form  ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.">
+<meta name=author content="Jsharkc">
+<link rel=canonical href=https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/>
+<meta name=google-site-verification content="XYZabc">
+<meta name=yandex-verification content="XYZabc">
+<meta name=msvalidate.01 content="XYZabc">
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.86.1">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+</noscript><meta property="og:title" content="Golang Interface 解析">
+<meta property="og:description" content="Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856
+先看一段代码：
+func Foo(x interface{}) { if x == nil { fmt.Println(&#34;empty interface&#34;) return } fmt.Println(&#34;non-empty interface&#34;) } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下
+$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
+interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。
+type eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size  ptrdata uintptr // size of memory prefix holding all pointers  hash uint32 // hash of type; avoids computation in hash tables  tflag tflag // extra type information flags  align uint8 // alignment of variable with this type  fieldalign uint8 // alignment of struct field with this type  kind uint8 // enumeration for C  alg *typeAlg // algorithm table  gcdata *byte // garbage collection data  str nameOff // string form  ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2017-06-17T19:27:43+00:00">
+<meta property="article:modified_time" content="2017-06-17T19:27:43+00:00"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name=twitter:title content="Golang Interface 解析">
+<meta name=twitter:description content="Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856
+先看一段代码：
+func Foo(x interface{}) { if x == nil { fmt.Println(&#34;empty interface&#34;) return } fmt.Println(&#34;non-empty interface&#34;) } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下
+$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
+interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。
+type eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size  ptrdata uintptr // size of memory prefix holding all pointers  hash uint32 // hash of type; avoids computation in hash tables  tflag tflag // extra type information flags  align uint8 // alignment of variable with this type  fieldalign uint8 // alignment of struct field with this type  kind uint8 // enumeration for C  alg *typeAlg // algorithm table  gcdata *byte // garbage collection data  str nameOff // string form  ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Golang Interface 解析","item":"https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Golang Interface 解析","name":"Golang Interface 解析","description":"Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856\n先看一段代码：\nfunc Foo(x interface{}) { if x == nil { fmt.Println(\u0026#34;empty interface\u0026#34;) return } fmt.Println(\u0026#34;non-empty interface\u0026#34;) } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下\n$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。\ninterface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。\ntype eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size  ptrdata uintptr // size of memory prefix holding all pointers  hash uint32 // hash of type; avoids computation in hash tables  tflag tflag // extra type information flags  align uint8 // alignment of variable with this type  fieldalign uint8 // alignment of struct field with this type  kind uint8 // enumeration for C  alg *typeAlg // algorithm table  gcdata *byte // garbage collection data  str nameOff // string form  ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.","keywords":["Golang"],"articleBody":"Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856\n先看一段代码：\nfunc Foo(x interface{}) { if x == nil { fmt.Println(\"empty interface\") return } fmt.Println(\"non-empty interface\") } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下\n$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。\ninterface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。\ntype eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size  ptrdata uintptr // size of memory prefix holding all pointers  hash uint32 // hash of type; avoids computation in hash tables  tflag tflag // extra type information flags  align uint8 // alignment of variable with this type  fieldalign uint8 // alignment of struct field with this type  kind uint8 // enumeration for C  alg *typeAlg // algorithm table  gcdata *byte // garbage collection data  str nameOff // string form  ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.fun 变量里。如果 interface 包含多个 method，这里只有一个 fun 变量怎么存呢？这个下面再细说。\ntype iface struct { tab *itab data unsafe.Pointer } // layout of Itab known to compilers // allocated in non-garbage-collected memory // Needs to be in sync with // ../cmd/compile/internal/gc/reflect.go:/^func.dumptypestructs. type itab struct { inter *interfacetype _type *_type link *itab bad int32 inhash int32 // has this itab been added to hash?  fun [1]uintptr // variable sized } 我们使用实际程序来看一下。\npackage main import ( \"fmt\" ) type MyInterface interface { Print() } type MyStruct struct{} func (ms MyStruct) Print() {} func main() { x := 1 var y interface{} = x var s MyStruct var t MyInterface = s fmt.Println(y, z) } 查看汇编代码。\n$ go build -gcflags '-l' -o interface11 interface11.go $ go tool objdump -s \"main\\.main\" interface11 TEXT main.main(SB) /Users/kltao/code/go/examples/interface11.go interface11.go:15 0x10870f0 65488b0c25a0080000 GS MOVQ GS:0x8a0, CX interface11.go:15 0x10870f9 483b6110 CMPQ 0x10(CX), SP interface11.go:15 0x10870fd 0f86de000000 JBE 0x10871e1 interface11.go:15 0x1087103 4883ec70 SUBQ $0x70, SP interface11.go:15 0x1087107 48896c2468 MOVQ BP, 0x68(SP) interface11.go:15 0x108710c 488d6c2468 LEAQ 0x68(SP), BP interface11.go:17 0x1087111 48c744243001000000 MOVQ $0x1, 0x30(SP) interface11.go:17 0x108711a 488d057fde0000 LEAQ 0xde7f(IP), AX interface11.go:17 0x1087121 48890424 MOVQ AX, 0(SP) interface11.go:17 0x1087125 488d442430 LEAQ 0x30(SP), AX interface11.go:17 0x108712a 4889442408 MOVQ AX, 0x8(SP) interface11.go:17 0x108712f e87c45f8ff CALL runtime.convT2E(SB) interface11.go:17 0x1087134 488b442410 MOVQ 0x10(SP), AX interface11.go:17 0x1087139 4889442438 MOVQ AX, 0x38(SP) interface11.go:17 0x108713e 488b4c2418 MOVQ 0x18(SP), CX interface11.go:17 0x1087143 48894c2440 MOVQ CX, 0x40(SP) interface11.go:19 0x1087148 488d15b1000800 LEAQ 0x800b1(IP), DX interface11.go:19 0x108714f 48891424 MOVQ DX, 0(SP) interface11.go:19 0x1087153 488d542430 LEAQ 0x30(SP), DX interface11.go:19 0x1087158 4889542408 MOVQ DX, 0x8(SP) interface11.go:19 0x108715d e8fe45f8ff CALL runtime.convT2I(SB) 代码 17 行 var y interface{} = x 调用了函数 runtime.convT2E，将 int 类型的 x 转换成 empty interface。代码 19 行 var t MyInterface = s 将 MyStruct 类型转换成 non-empty interface: MyInterface。\nfunc convT2E(t *_type, elem unsafe.Pointer) (e eface) { ... x := newobject(t) typedmemmove(t, x, elem) e._type = t e.data = x return } func convT2I(tab *itab, elem unsafe.Pointer) (i iface) { t := tab._type ... x := newobject(t) typedmemmove(t, x, elem) i.tab = tab i.data = x return } 看上面的函数原型，可以看出中间过程编译器将根据我们的转换目标类型的 empty interface 还是 non-empty interface，来对原数据类型进行转换（转换成 或者 ）。这里对于 struct 满不满足 interface 的类型要求（也就是 struct 是否实现了 interface 的所有 method），是由编译器来检测的。\nitab iface 结构中最重要的是 itab 结构。itab 可以理解为 pair。当然 itab 里面还包含一些其他信息，比如 interface 里面包含的 method 的具体实现。下面细说。itab 的结构如下。\ntype itab struct { inter *interfacetype _type *_type link *itab bad int32 inhash int32 // has this itab been added to hash? fun [1]uintptr // variable sized } 其中 interfacetype 包含了一些关于 interface 本身的信息，比如 package path，包含的 method。上面提到的 iface 和 eface 是数据类型（built-in 和 type-define）转换成 interface 之后的实体的 struct 结构，而这里的 interfacetype 是我们定义 interface 时候的一种抽象表示。\ntype interfacetype struct { typ _type pkgpath name mhdr []imethod } type imethod struct { //这里的 method 只是一种函数声明的抽象，比如 func Print() error name nameOff ityp typeOff } _type 表示 concrete type。fun 表示的 interface 里面的 method 的具体实现。比如 interface type 包含了 method A, B，则通过 fun 就可以找到这两个 method 的具体实现。这里有个问题 fun 是长度为 1 的 uintptr 数组，那么怎么表示多个 method 呢？看一下测试程序。\npackage main type MyInterface interface { Print() Hello() World() AWK() } func Foo(me MyInterface) { me.Print() me.Hello() me.World() me.AWK() } type MyStruct struct {} func (me MyStruct) Print() {} func (me MyStruct) Hello() {} func (me MyStruct) World() {} func (me MyStruct) AWK() {} func main() { var me MyStruct Foo(me) } 看一下函数调用对应的汇编代码。\n$ go build -gcflags '-l' -o interface8 interface8.go $ go tool objdump -s \"main\\.Foo\" interface8 TEXT main.Foo(SB) /Users/kltao/code/go/examples/interface8.go interface8.go:10 0x104c060 65488b0c25a0080000 GS MOVQ GS:0x8a0, CX interface8.go:10 0x104c069 483b6110 CMPQ 0x10(CX), SP interface8.go:10 0x104c06d 7668 JBE 0x104c0d7 interface8.go:10 0x104c06f 4883ec10 SUBQ $0x10, SP interface8.go:10 0x104c073 48896c2408 MOVQ BP, 0x8(SP) interface8.go:10 0x104c078 488d6c2408 LEAQ 0x8(SP), BP interface8.go:11 0x104c07d 488b442418 MOVQ 0x18(SP), AX interface8.go:11 0x104c082 488b4830 MOVQ 0x30(AX), CX //取得 Print 函数地址 interface8.go:11 0x104c086 488b542420 MOVQ 0x20(SP), DX interface8.go:11 0x104c08b 48891424 MOVQ DX, 0(SP) interface8.go:11 0x104c08f ffd1 CALL CX // 调用 Print() interface8.go:12 0x104c091 488b442418 MOVQ 0x18(SP), AX interface8.go:12 0x104c096 488b4828 MOVQ 0x28(AX), CX //取得 Hello 函数地址 interface8.go:12 0x104c09a 488b542420 MOVQ 0x20(SP), DX interface8.go:12 0x104c09f 48891424 MOVQ DX, 0(SP) interface8.go:12 0x104c0a3 ffd1 CALL CX //调用 Hello() interface8.go:13 0x104c0a5 488b442418 MOVQ 0x18(SP), AX interface8.go:13 0x104c0aa 488b4838 MOVQ 0x38(AX), CX //取得 World 函数地址 interface8.go:13 0x104c0ae 488b542420 MOVQ 0x20(SP), DX interface8.go:13 0x104c0b3 48891424 MOVQ DX, 0(SP) interface8.go:13 0x104c0b7 ffd1 CALL CX //调用 World() interface8.go:14 0x104c0b9 488b442418 MOVQ 0x18(SP), AX interface8.go:14 0x104c0be 488b4020 MOVQ 0x20(AX), AX //取得 AWK 函数地址 interface8.go:14 0x104c0c2 488b4c2420 MOVQ 0x20(SP), CX interface8.go:14 0x104c0c7 48890c24 MOVQ CX, 0(SP) interface8.go:14 0x104c0cb ffd0 CALL AX //调用 AWK() interface8.go:15 0x104c0cd 488b6c2408 MOVQ 0x8(SP), BP interface8.go:15 0x104c0d2 4883c410 ADDQ $0x10, SP interface8.go:15 0x104c0d6 c3 RET interface8.go:10 0x104c0d7 e8f48bffff CALL runtime.morestack_noctxt(SB) interface8.go:10 0x104c0dc eb82 JMP main.Foo(SB) 其中 0x18(SP) 对应的 itab 的地址。fun 在 x86-64 机器上对应 itab 内的地址偏移为 8+8+8+4+4 = 32 = 0x20，也就是 0x20(AX) 对应的 fun 的值，此时存放的 AWK 函数地址。然后 0x28(AX) = \u0026Hello，0x30(AX) = \u0026Print，0x38(AX) = \u0026World。对的，每次函数是按字典序排序存放的。\n我们再来看一下函数地址究竟是怎么写入的？首先 Golang 中的 uintptr 一般用来存放指针的值，这里对应的就是函数指针的值（也就是函数的调用地址）。但是这里的 fun 是一个长度为 1 的 uintptr 数组。我们看一下 runtime 包的 additab 函数。\nfunc additab(m *itab, locked, canfail bool) { ... *(*unsafe.Pointer)(add(unsafe.Pointer(\u0026m.fun[0]), uintptr(k)*sys.PtrSize)) = ifn ... } 上面的代码的意思是在 fun[0] 的地址后面依次写入其他 method 对应的函数指针。熟悉 C++ 的同学可以类比 C++ 的虚函数表指针来看。\n剩下的还有 bad，link，inhash。其中 bad 是一个表征 itab 状态的变量。而这里的 link 是 *itab 类型，是不是表示 interface 的嵌套呢？并不是，interface 的嵌套也是把 method 平铺而已。link 要和 inhash 一起来说。在 runtime 包里面有一个 hash 表，通过 hash[hashitab(interface_type, concrete_type)] 可以取得 itab，这是出于性能方面的考虑。主要代码如下，这里就不再赘述了。\nconst ( hashSize = 1009 ) var ( ifaceLock mutex // lock for accessing hash hash [hashSize]*itab ) func itabhash(inter *interfacetype, typ *_type) uint32 { // compiler has provided some good hash codes for us. h := inter.typ.hash h += 17 * typ.hash // TODO(rsc): h += 23 * x.mhash ? return h % hashSize } func additab(...) { ... h := itabhash(inter, typ) m.link = hash[h] m.inhash = 1 atomicstorep(unsafe.Pointer(\u0026hash[h]), unsafe.Pointer(m)) } 3. Type Assertion 我们知道使用 interface type assertion (中文一般叫断言) 的时候需要注意，不然很容易引入 panic。\nfunc do(v interface{}) { n := v.(int) // might panic } func do(v interface{}) { n, ok := v.(int) if !ok { // 断言失败处理 } } 这个过程体现在下面的几个函数上。\n// The assertXXX functions may fail (either panicking or returning false, // depending on whether they are 1-result or 2-result). func assertI2I(inter *interfacetype, i iface) (r iface) { tab := i.tab if tab == nil { // explicit conversions require non-nil interface value. panic(\u0026TypeAssertionError{\"\", \"\", inter.typ.string(), \"\"}) } if tab.inter == inter { r.tab = tab r.data = i.data return } r.tab = getitab(inter, tab._type, false) r.data = i.data return } func assertI2I2(inter *interfacetype, i iface) (r iface, b bool) { tab := i.tab if tab == nil { return } if tab.inter != inter { tab = getitab(inter, tab._type, true) if tab == nil { return } } r.tab = tab r.data = i.data b = true return } // 类似 func assertE2I(inter *interfacetype, e eface) (r iface) func assertE2I2(inter *interfacetype, e eface) (r iface, b bool) 4. 总结 从某种意义上来说，Golang 的 interface 也是一种多态的体现。对比其他支持多态特性的语言，实现还是略有差异，很难说谁好谁坏。\n","wordCount":"1257","inLanguage":"en","datePublished":"2017-06-17T19:27:43Z","dateModified":"2017-06-17T19:27:43Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+</head>
+<body class=dark id=top>
+<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
+</div>
+<ul id=menu>
+<li>
+<a href=https://jsharkc.github.io/archives/ title=Archives>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/categories title=Categories>
+<span>Categories</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/tags title=Tags>
+<span>Tags</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
+<span>Search</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/post/>Posts</a></div>
+<h1 class=post-title>
+Golang Interface 解析
+</h1>
+<div class=post-meta>June 17, 2017&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/post/Interface%e8%a7%a3%e6%9e%90.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+</div>
+</header> <div class=toc>
+<details open>
+<summary accesskey=c title="(Alt + C)">
+<span class=details>Table of Contents</span>
+</summary>
+<div class=inner><ul>
+<li>
+<a href=#interface-%e8%a7%a3%e6%9e%90 aria-label="Interface 解析">Interface 解析</a><ul>
+<ul>
+<li>
+<a href=#interface-%e5%ba%95%e5%b1%82%e7%bb%93%e6%9e%84 aria-label="interface 底层结构">interface 底层结构</a></li>
+<li>
+<a href=#itab aria-label=itab>itab</a></li></ul>
+<li>
+<a href=#3-type-assertion aria-label="3. Type Assertion"><strong>3. Type Assertion</strong></a></li>
+<li>
+<a href=#4-%e6%80%bb%e7%bb%93 aria-label="4. 总结"><strong>4. 总结</strong></a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</details>
+</div>
+<div class=post-content><h1 id=interface-解析>Interface 解析<a hidden class=anchor aria-hidden=true href=#interface-解析>#</a></h1>
+<p>转自 <a href=https://zhuanlan.zhihu.com/p/27652856>https://zhuanlan.zhihu.com/p/27652856</a></p>
+<p>先看一段代码：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Foo</span>(<span style=color:#a6e22e>x</span> <span style=color:#66d9ef>interface</span>{}) {
+    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>x</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>nil</span> {
+        <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;empty interface&#34;</span>)
+        <span style=color:#66d9ef>return</span>
+    }
+    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#e6db74>&#34;non-empty interface&#34;</span>)
+}
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>x</span> <span style=color:#f92672>*</span><span style=color:#66d9ef>int</span> = <span style=color:#66d9ef>nil</span>
+    <span style=color:#a6e22e>Foo</span>(<span style=color:#a6e22e>x</span>)
+}
+</code></pre></div><p>上面的例子的输出结果如下</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Go data-lang=Go><span style=color:#960050;background-color:#1e0010>$</span> <span style=color:#66d9ef>go</span> <span style=color:#a6e22e>run</span> <span style=color:#a6e22e>test_interface</span>.<span style=color:#66d9ef>go</span>
+<span style=color:#a6e22e>non</span><span style=color:#f92672>-</span><span style=color:#a6e22e>empty</span> <span style=color:#66d9ef>interface</span>
+</code></pre></div><p>可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。</p>
+<h3 id=interface-底层结构>interface 底层结构<a hidden class=anchor aria-hidden=true href=#interface-底层结构>#</a></h3>
+<p>根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>eface</span> <span style=color:#66d9ef>struct</span> {
+    <span style=color:#a6e22e>_type</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>_type</span>
+    <span style=color:#a6e22e>data</span>  <span style=color:#a6e22e>unsafe</span>.<span style=color:#a6e22e>Pointer</span>
+}
+
+<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>_type</span> <span style=color:#66d9ef>struct</span> {
+    <span style=color:#a6e22e>size</span>       <span style=color:#66d9ef>uintptr</span> <span style=color:#75715e>// type size
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>ptrdata</span>    <span style=color:#66d9ef>uintptr</span> <span style=color:#75715e>// size of memory prefix holding all pointers
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>hash</span>       <span style=color:#66d9ef>uint32</span>  <span style=color:#75715e>// hash of type; avoids computation in hash tables
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>tflag</span>      <span style=color:#a6e22e>tflag</span>   <span style=color:#75715e>// extra type information flags
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>align</span>      <span style=color:#66d9ef>uint8</span>   <span style=color:#75715e>// alignment of variable with this type
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>fieldalign</span> <span style=color:#66d9ef>uint8</span>   <span style=color:#75715e>// alignment of struct field with this type
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>kind</span>       <span style=color:#66d9ef>uint8</span>   <span style=color:#75715e>// enumeration for C
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>alg</span>        <span style=color:#f92672>*</span><span style=color:#a6e22e>typeAlg</span>  <span style=color:#75715e>// algorithm table
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>gcdata</span>    <span style=color:#f92672>*</span><span style=color:#66d9ef>byte</span>    <span style=color:#75715e>// garbage collection data
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>str</span>       <span style=color:#a6e22e>nameOff</span>  <span style=color:#75715e>// string form
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>ptrToThis</span> <span style=color:#a6e22e>typeOff</span>  <span style=color:#75715e>// type for pointer to this type, may be zero
+</span><span style=color:#75715e></span>}
+</code></pre></div><p>iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.fun 变量里。如果 interface 包含多个 method，这里只有一个 fun 变量怎么存呢？这个下面再细说。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>iface</span> <span style=color:#66d9ef>struct</span> {
+    <span style=color:#a6e22e>tab</span>  <span style=color:#f92672>*</span><span style=color:#a6e22e>itab</span>
+    <span style=color:#a6e22e>data</span> <span style=color:#a6e22e>unsafe</span>.<span style=color:#a6e22e>Pointer</span>
+}
+
+<span style=color:#75715e>// layout of Itab known to compilers
+</span><span style=color:#75715e>// allocated in non-garbage-collected memory
+</span><span style=color:#75715e>// Needs to be in sync with
+</span><span style=color:#75715e>// ../cmd/compile/internal/gc/reflect.go:/^func.dumptypestructs.
+</span><span style=color:#75715e></span><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>itab</span> <span style=color:#66d9ef>struct</span> {
+    <span style=color:#a6e22e>inter</span>  <span style=color:#f92672>*</span><span style=color:#a6e22e>interfacetype</span>
+    <span style=color:#a6e22e>_type</span>  <span style=color:#f92672>*</span><span style=color:#a6e22e>_type</span>
+    <span style=color:#a6e22e>link</span>   <span style=color:#f92672>*</span><span style=color:#a6e22e>itab</span>
+    <span style=color:#a6e22e>bad</span>    <span style=color:#66d9ef>int32</span>
+    <span style=color:#a6e22e>inhash</span> <span style=color:#66d9ef>int32</span>      <span style=color:#75715e>// has this itab been added to hash?
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>fun</span>    [<span style=color:#ae81ff>1</span>]<span style=color:#66d9ef>uintptr</span> <span style=color:#75715e>// variable sized
+</span><span style=color:#75715e></span>}
+</code></pre></div><p>我们使用实际程序来看一下。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Go data-lang=Go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+
+<span style=color:#f92672>import</span> (
+    <span style=color:#e6db74>&#34;fmt&#34;</span>
+)
+
+<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>MyInterface</span> <span style=color:#66d9ef>interface</span> {
+    <span style=color:#a6e22e>Print</span>()
+}
+
+<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>MyStruct</span> <span style=color:#66d9ef>struct</span>{}
+<span style=color:#66d9ef>func</span> (<span style=color:#a6e22e>ms</span> <span style=color:#a6e22e>MyStruct</span>) <span style=color:#a6e22e>Print</span>() {}
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+    <span style=color:#a6e22e>x</span> <span style=color:#f92672>:=</span> <span style=color:#ae81ff>1</span>
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>y</span> <span style=color:#66d9ef>interface</span>{} = <span style=color:#a6e22e>x</span>
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>s</span> <span style=color:#a6e22e>MyStruct</span>
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>t</span> <span style=color:#a6e22e>MyInterface</span> = <span style=color:#a6e22e>s</span>
+    <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Println</span>(<span style=color:#a6e22e>y</span>, <span style=color:#a6e22e>z</span>)
+}
+</code></pre></div><p>查看汇编代码。</p>
+<pre><code>$ go build -gcflags '-l' -o interface11 interface11.go
+$ go tool objdump -s &quot;main\.main&quot; interface11
+TEXT main.main(SB) /Users/kltao/code/go/examples/interface11.go
+    interface11.go:15   0x10870f0   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX
+    interface11.go:15   0x10870f9   483b6110        CMPQ 0x10(CX), SP
+    interface11.go:15   0x10870fd   0f86de000000        JBE 0x10871e1
+    interface11.go:15   0x1087103   4883ec70        SUBQ $0x70, SP
+    interface11.go:15   0x1087107   48896c2468      MOVQ BP, 0x68(SP)
+    interface11.go:15   0x108710c   488d6c2468      LEAQ 0x68(SP), BP
+    interface11.go:17   0x1087111   48c744243001000000  MOVQ $0x1, 0x30(SP)
+    interface11.go:17   0x108711a   488d057fde0000      LEAQ 0xde7f(IP), AX
+    interface11.go:17   0x1087121   48890424        MOVQ AX, 0(SP)
+    interface11.go:17   0x1087125   488d442430      LEAQ 0x30(SP), AX
+    interface11.go:17   0x108712a   4889442408      MOVQ AX, 0x8(SP)
+    interface11.go:17   0x108712f   e87c45f8ff      CALL runtime.convT2E(SB)
+    interface11.go:17   0x1087134   488b442410      MOVQ 0x10(SP), AX
+    interface11.go:17   0x1087139   4889442438      MOVQ AX, 0x38(SP)
+    interface11.go:17   0x108713e   488b4c2418      MOVQ 0x18(SP), CX
+    interface11.go:17   0x1087143   48894c2440      MOVQ CX, 0x40(SP)
+    interface11.go:19   0x1087148   488d15b1000800      LEAQ 0x800b1(IP), DX
+    interface11.go:19   0x108714f   48891424        MOVQ DX, 0(SP)
+    interface11.go:19   0x1087153   488d542430      LEAQ 0x30(SP), DX
+    interface11.go:19   0x1087158   4889542408      MOVQ DX, 0x8(SP)
+    interface11.go:19   0x108715d   e8fe45f8ff      CALL runtime.convT2I(SB)
+</code></pre><p>代码 17 行 var y interface{} = x 调用了函数 runtime.convT2E，将 int 类型的 x 转换成 empty interface。代码 19 行 var t MyInterface = s 将 MyStruct 类型转换成 non-empty interface: MyInterface。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Go data-lang=Go><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>convT2E</span>(<span style=color:#a6e22e>t</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>_type</span>, <span style=color:#a6e22e>elem</span> <span style=color:#a6e22e>unsafe</span>.<span style=color:#a6e22e>Pointer</span>) (<span style=color:#a6e22e>e</span> <span style=color:#a6e22e>eface</span>) {
+    <span style=color:#f92672>...</span>
+  
+    <span style=color:#a6e22e>x</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>newobject</span>(<span style=color:#a6e22e>t</span>)
+    <span style=color:#a6e22e>typedmemmove</span>(<span style=color:#a6e22e>t</span>, <span style=color:#a6e22e>x</span>, <span style=color:#a6e22e>elem</span>)
+    <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>_type</span> = <span style=color:#a6e22e>t</span>
+    <span style=color:#a6e22e>e</span>.<span style=color:#a6e22e>data</span> = <span style=color:#a6e22e>x</span>
+    <span style=color:#66d9ef>return</span>
+}
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>convT2I</span>(<span style=color:#a6e22e>tab</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>itab</span>, <span style=color:#a6e22e>elem</span> <span style=color:#a6e22e>unsafe</span>.<span style=color:#a6e22e>Pointer</span>) (<span style=color:#a6e22e>i</span> <span style=color:#a6e22e>iface</span>) {
+    <span style=color:#a6e22e>t</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>tab</span>.<span style=color:#a6e22e>_type</span>
+    
+    <span style=color:#f92672>...</span>
+  
+    <span style=color:#a6e22e>x</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>newobject</span>(<span style=color:#a6e22e>t</span>)
+    <span style=color:#a6e22e>typedmemmove</span>(<span style=color:#a6e22e>t</span>, <span style=color:#a6e22e>x</span>, <span style=color:#a6e22e>elem</span>)
+    <span style=color:#a6e22e>i</span>.<span style=color:#a6e22e>tab</span> = <span style=color:#a6e22e>tab</span>
+    <span style=color:#a6e22e>i</span>.<span style=color:#a6e22e>data</span> = <span style=color:#a6e22e>x</span>
+    <span style=color:#66d9ef>return</span>
+}
+</code></pre></div><p>看上面的函数原型，可以看出中间过程编译器将根据我们的转换目标类型的 empty interface 还是 non-empty interface，来对原数据类型进行转换（转换成 &lt;*_type, unsafe.Pointer> 或者 &lt;*itab, unsafe.Pointer>）。这里对于 struct 满不满足 interface 的类型要求（也就是 struct 是否实现了 interface 的所有 method），是由编译器来检测的。</p>
+<h3 id=itab>itab<a hidden class=anchor aria-hidden=true href=#itab>#</a></h3>
+<p>iface 结构中最重要的是 itab 结构。itab 可以理解为 pair&lt;interface type, concrete type> 。当然 itab 里面还包含一些其他信息，比如 interface 里面包含的 method 的具体实现。下面细说。itab 的结构如下。</p>
+<pre><code>type itab struct {
+    inter  *interfacetype
+    _type  *_type
+    link   *itab
+    bad    int32
+    inhash int32      // has this itab been added to hash?
+    fun    [1]uintptr // variable sized
+}
+
+</code></pre><p>其中 interfacetype 包含了一些关于 interface 本身的信息，比如 package path，包含的 method。上面提到的 iface 和 eface 是数据类型（built-in 和 type-define）转换成 interface 之后的实体的 struct 结构，而这里的 interfacetype 是我们定义 interface 时候的一种抽象表示。</p>
+<pre><code>type interfacetype struct {
+    typ     _type
+    pkgpath name
+    mhdr    []imethod
+}
+
+type imethod struct {   //这里的 method 只是一种函数声明的抽象，比如  func Print() error
+    name nameOff
+    ityp typeOff
+}
+</code></pre><p>_type 表示 concrete type。fun 表示的 interface 里面的 method 的具体实现。比如 interface type 包含了 method A, B，则通过 fun 就可以找到这两个 method 的具体实现。这里有个问题 fun 是长度为 1 的 uintptr 数组，那么怎么表示多个 method 呢？看一下测试程序。</p>
+<pre><code>package main
+
+type MyInterface interface {
+    Print()
+    Hello()
+    World()
+    AWK()
+}
+
+func Foo(me MyInterface) {
+    me.Print()
+    me.Hello()
+    me.World()
+    me.AWK()
+}
+
+type MyStruct struct {}
+
+func (me MyStruct) Print() {}
+func (me MyStruct) Hello() {}
+func (me MyStruct) World() {}
+func (me MyStruct) AWK() {}
+
+func main() {
+    var me MyStruct
+    Foo(me)
+}
+
+</code></pre><p>看一下函数调用对应的汇编代码。</p>
+<pre><code>$ go build -gcflags '-l' -o interface8 interface8.go
+$ go tool objdump -s &quot;main\.Foo&quot; interface8
+TEXT main.Foo(SB) /Users/kltao/code/go/examples/interface8.go
+    interface8.go:10    0x104c060   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX
+    interface8.go:10    0x104c069   483b6110        CMPQ 0x10(CX), SP
+    interface8.go:10    0x104c06d   7668            JBE 0x104c0d7
+    interface8.go:10    0x104c06f   4883ec10        SUBQ $0x10, SP
+    interface8.go:10    0x104c073   48896c2408      MOVQ BP, 0x8(SP)
+    interface8.go:10    0x104c078   488d6c2408      LEAQ 0x8(SP), BP
+    interface8.go:11    0x104c07d   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:11    0x104c082   488b4830        MOVQ 0x30(AX), CX //取得 Print 函数地址
+    interface8.go:11    0x104c086   488b542420      MOVQ 0x20(SP), DX
+    interface8.go:11    0x104c08b   48891424        MOVQ DX, 0(SP)
+    interface8.go:11    0x104c08f   ffd1            CALL CX     // 调用 Print()
+    interface8.go:12    0x104c091   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:12    0x104c096   488b4828        MOVQ 0x28(AX), CX //取得 Hello 函数地址
+    interface8.go:12    0x104c09a   488b542420      MOVQ 0x20(SP), DX
+    interface8.go:12    0x104c09f   48891424        MOVQ DX, 0(SP)
+    interface8.go:12    0x104c0a3   ffd1            CALL CX           //调用 Hello()
+    interface8.go:13    0x104c0a5   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:13    0x104c0aa   488b4838        MOVQ 0x38(AX), CX //取得 World 函数地址
+    interface8.go:13    0x104c0ae   488b542420      MOVQ 0x20(SP), DX 
+    interface8.go:13    0x104c0b3   48891424        MOVQ DX, 0(SP)
+    interface8.go:13    0x104c0b7   ffd1            CALL CX           //调用 World()
+    interface8.go:14    0x104c0b9   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:14    0x104c0be   488b4020        MOVQ 0x20(AX), AX //取得 AWK 函数地址
+    interface8.go:14    0x104c0c2   488b4c2420      MOVQ 0x20(SP), CX
+    interface8.go:14    0x104c0c7   48890c24        MOVQ CX, 0(SP)
+    interface8.go:14    0x104c0cb   ffd0            CALL AX           //调用 AWK()
+    interface8.go:15    0x104c0cd   488b6c2408      MOVQ 0x8(SP), BP
+    interface8.go:15    0x104c0d2   4883c410        ADDQ $0x10, SP
+    interface8.go:15    0x104c0d6   c3          RET
+    interface8.go:10    0x104c0d7   e8f48bffff      CALL runtime.morestack_noctxt(SB)
+    interface8.go:10    0x104c0dc   eb82            JMP main.Foo(SB)
+
+</code></pre><p>其中 0x18(SP) 对应的 itab 的地址。fun 在 x86-64 机器上对应 itab 内的地址偏移为 8+8+8+4+4 = 32 = 0x20，也就是 0x20(AX) 对应的 fun 的值，此时存放的 AWK 函数地址。然后 0x28(AX) = &Hello，0x30(AX) = &Print，0x38(AX) = &World。对的，每次函数是按字典序排序存放的。</p>
+<p>我们再来看一下函数地址究竟是怎么写入的？首先 Golang 中的 uintptr 一般用来存放指针的值，这里对应的就是函数指针的值（也就是函数的调用地址）。但是这里的 fun 是一个长度为 1 的 uintptr 数组。我们看一下 runtime 包的 additab 函数。</p>
+<pre><code>func additab(m *itab, locked, canfail bool) {
+    ...
+    *(*unsafe.Pointer)(add(unsafe.Pointer(&amp;m.fun[0]), uintptr(k)*sys.PtrSize)) = ifn
+    ...
+}
+
+</code></pre><p>上面的代码的意思是在 fun[0] 的地址后面依次写入其他 method 对应的函数指针。熟悉 C++ 的同学可以类比 C++ 的虚函数表指针来看。</p>
+<p>剩下的还有 bad，link，inhash。其中 bad 是一个表征 itab 状态的变量。而这里的 link 是 *itab 类型，是不是表示 interface 的嵌套呢？并不是，interface 的嵌套也是把 method 平铺而已。link 要和 inhash 一起来说。在 runtime 包里面有一个 hash 表，通过 hash[hashitab(interface_type, concrete_type)] 可以取得 itab，这是出于性能方面的考虑。主要代码如下，这里就不再赘述了。</p>
+<pre><code>const (
+    hashSize = 1009
+)
+
+var (
+    ifaceLock mutex // lock for accessing hash
+    hash      [hashSize]*itab
+)
+
+func itabhash(inter *interfacetype, typ *_type) uint32 {
+    // compiler has provided some good hash codes for us.
+    h := inter.typ.hash
+    h += 17 * typ.hash
+    // TODO(rsc): h += 23 * x.mhash ?
+    return h % hashSize
+}
+
+func additab(...) {
+    ...
+    h := itabhash(inter, typ)
+    m.link = hash[h]
+    m.inhash = 1
+    atomicstorep(unsafe.Pointer(&amp;hash[h]), unsafe.Pointer(m))
+}
+</code></pre><h2 id=3-type-assertion><strong>3. Type Assertion</strong><a hidden class=anchor aria-hidden=true href=#3-type-assertion>#</a></h2>
+<p>我们知道使用 interface type assertion (中文一般叫断言) 的时候需要注意，不然很容易引入 panic。</p>
+<pre><code>func do(v interface{}) {
+    n := v.(int)    // might panic
+}
+
+func do(v interface{}) {
+    n, ok := v.(int)
+    if !ok {
+        // 断言失败处理
+    }
+}
+
+</code></pre><p>这个过程体现在下面的几个函数上。</p>
+<pre><code>// The assertXXX functions may fail (either panicking or returning false,
+// depending on whether they are 1-result or 2-result).
+func assertI2I(inter *interfacetype, i iface) (r iface) {
+    tab := i.tab
+    if tab == nil {
+        // explicit conversions require non-nil interface value.
+        panic(&amp;TypeAssertionError{&quot;&quot;, &quot;&quot;, inter.typ.string(), &quot;&quot;})
+    }
+    if tab.inter == inter {
+        r.tab = tab
+        r.data = i.data
+        return
+    }
+    r.tab = getitab(inter, tab._type, false)
+    r.data = i.data
+    return
+}
+func assertI2I2(inter *interfacetype, i iface) (r iface, b bool) {
+    tab := i.tab
+    if tab == nil {
+        return
+    }
+    if tab.inter != inter {
+        tab = getitab(inter, tab._type, true)
+        if tab == nil {
+            return
+        }
+    }
+    r.tab = tab
+    r.data = i.data
+    b = true
+    return
+}
+
+// 类似
+func assertE2I(inter *interfacetype, e eface) (r iface)
+func assertE2I2(inter *interfacetype, e eface) (r iface, b bool)
+
+</code></pre><h2 id=4-总结><strong>4. 总结</strong><a hidden class=anchor aria-hidden=true href=#4-总结>#</a></h2>
+<p>从某种意义上来说，Golang 的 interface 也是一种多态的体现。对比其他支持多态特性的语言，实现还是略有差异，很难说谁好谁坏。</p>
+</div>
+<footer class=post-footer>
+<ul class=post-tags>
+<li><a href=https://jsharkc.github.io/tags/golang/>Golang</a></li>
+</ul>
+<nav class=paginav>
+<a class=prev href=https://jsharkc.github.io/post/jobrunner/>
+<span class=title>« Prev Page</span>
+<br>
+<span>Jobrunner 源码解析</span>
+</a>
+<a class=next href=https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/>
+<span class=title>Next Page »</span>
+<br>
+<span>十条有用的 GO 技术</span>
+</a>
+</nav>
+<div class=share-buttons>
+<a target=_blank rel="noopener noreferrer" aria-label="share Golang Interface 解析 on twitter" href="https://twitter.com/intent/tweet/?text=Golang%20Interface%20%e8%a7%a3%e6%9e%90&url=https%3a%2f%2fjsharkc.github.io%2fpost%2finterface%25E8%25A7%25A3%25E6%259E%2590%2f&hashtags=Golang"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Golang Interface 解析 on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fjsharkc.github.io%2fpost%2finterface%25E8%25A7%25A3%25E6%259E%2590%2f&title=Golang%20Interface%20%e8%a7%a3%e6%9e%90&summary=Golang%20Interface%20%e8%a7%a3%e6%9e%90&source=https%3a%2f%2fjsharkc.github.io%2fpost%2finterface%25E8%25A7%25A3%25E6%259E%2590%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Golang Interface 解析 on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fjsharkc.github.io%2fpost%2finterface%25E8%25A7%25A3%25E6%259E%2590%2f&title=Golang%20Interface%20%e8%a7%a3%e6%9e%90"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Golang Interface 解析 on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fjsharkc.github.io%2fpost%2finterface%25E8%25A7%25A3%25E6%259E%2590%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Golang Interface 解析 on whatsapp" href="https://api.whatsapp.com/send?text=Golang%20Interface%20%e8%a7%a3%e6%9e%90%20-%20https%3a%2f%2fjsharkc.github.io%2fpost%2finterface%25E8%25A7%25A3%25E6%259E%2590%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Golang Interface 解析 on telegram" href="https://telegram.me/share/url?text=Golang%20Interface%20%e8%a7%a3%e6%9e%90&url=https%3a%2f%2fjsharkc.github.io%2fpost%2finterface%25E8%25A7%25A3%25E6%259E%2590%2f"><svg viewBox="2 2 28 28"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg>
+</a>
+</div>
+</footer>
+</article>
+</main>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
+</footer>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>软件 on Jacobc&#39;s blog</title>
+    <link>https://jsharkc.github.io/tags/%E8%BD%AF%E4%BB%B6/</link>
+    <description>Recent content in 软件 on Jacobc&#39;s blog</description>
+    <image>
+      <url>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 17 Nov 2019 12:40:56 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/%E8%BD%AF%E4%BB%B6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mac安装破解版 Charles</title>
+      <link>https://jsharkc.github.io/post/mac-install-charles/</link>
+      <pubDate>Sun, 17 Nov 2019 12:40:56 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mac-install-charles/</guid>
+      <description>文章转自 https://www.jianshu.com/p/4f0573f3c5db
+步骤  下载Charles安装包 双击dmg文件，将charles拖入应用程序中 在应用程序中右键 Charles，选择「显示包内容」，打开目录「Contents」=&amp;gt; 「Java」，用下载的 charles.jar (在 dmg 文件中) 替换目录中的 charles.jar 打开 Charles，在菜单中找到 Help =&amp;gt; Register Charles&amp;hellip;，随便输入信息完成注册 重启 Charles  可能遇到的问题 1. 打不开xxx软件,因为它不是从app store下载的 解决方法：
+左上角苹果标志 =&amp;gt; 系统偏好设置 =&amp;gt; 安全性与隐私
+选择&amp;quot;仍要打开&amp;quot;，就可以安装了
+2. 破解之后显示软件已损坏 其实并没有损坏,只是软件来自身份不明的开发者(见上图)，然后苹果就告诉你，它是坏的&amp;hellip;..
+解决方法：
+打开终端，输入命令: sudo spctl --master-disable 会让你输入密码，输入后按回车就好 再看一下安全性与隐私里面
+多出一个任何来源，现在打开软件就没有任何问题了</description>
+    </item>
+    
+  </channel>
+</rss>

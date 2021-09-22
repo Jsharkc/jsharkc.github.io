@@ -1,1097 +1,271 @@
-<!DOCTYPE html>
-<html>
-    <head>
-    <!-- Title -->
-    
-    <title>
-        Jsharkc&#39;s secret
-    </title>
-    
-    <!-- Favicons -->
-    <link rel="icon shortcut" type="image/ico" href="/img/favicon.png">
-    <link rel="icon" sizes="192x192" href="/img/favicon.png">
-    <link rel="apple-touch-icon" href="/img/favicon.png">
-    
-    <!-- Meta & INfo -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0097A7">
-    <meta name="author" content="Jsharkc">
-    <meta name="description" content="">
-    <meta name="keywords" content="Golang">
-    
-    <!--iOS -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="apple-mobile-web-app-title" content="Title">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="MobileOptimized" content="480">
-    
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Jsharkc&#39;s secret">
-    
-    <!-- The Open Graph protocol -->
-    <meta property="og:url" content="http://yoursite.com">
-    <meta property="og:type" content="blog">
-    <meta property="og:title" content="Jsharkc&#39;s secret">
-    <meta property="og:description" content="">
-    
-     <!--[if lte IE 9]>
-        <link rel="stylesheet" href="/css/ie-blocker.css">
-        
-        
-            <script src="/js/ie-blocker.zhCN.js"></script>
-        
-    <![endif]-->
-    
-    <!-- Import CSS -->
-    <link rel="stylesheet" href="/css/material.min.css">
-    <link rel="stylesheet" href="/css/style.min.css">
-    <!-- Config CSS -->
-
-
-<!-- Other Styles -->
-<style>
-	body, html{
-		font-family: Roboto, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-	}
-	
-    a{
-        color: #00838F
-    }
-    
-    .mdl-card__media,
-    #search-label,
-    #search-form-label:after,
-    #scheme-Paradox .hot_tags-count,
-    #scheme-Paradox .sidebar_archives-count,
-    #scheme-Paradox .sidebar-colored .sidebar-header,
-    #scheme-Paradox .sidebar-colored .sidebar-badge{
-        background-color: #0097A7 !important
-    }
-    
-	/* Sidebar User Drop Down Menu Text Color */
-	#scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:hover,
-    #scheme-Paradox .sidebar-colored .sidebar-nav>.dropdown>.dropdown-menu>li>a:focus{
-        color: #0097A7 !important
-    }
-    
-    #post_entry-right-info,
-    .sidebar-colored .sidebar-nav li:hover > a,
-    .sidebar-colored .sidebar-nav li:hover > a i,
-    .sidebar-colored .sidebar-nav li > a:hover,
-    .sidebar-colored .sidebar-nav li > a:hover i,
-    .sidebar-colored .sidebar-nav li > a:focus i,
-    .sidebar-colored .sidebar-nav > .open > a,
-    .sidebar-colored .sidebar-nav > .open > a:hover,
-    .sidebar-colored .sidebar-nav > .open > a:focus,
-    #ds-reset #ds-ctx .ds-ctx-entry .ds-ctx-head a{
-        color: #0097A7 !important
-    }
-    
-    .toTop{
-        background: #757575 !important
-    }
-		
-	.material-layout .material-post>.material-nav,
-	.material-layout .material-index>.material-nav,
-	.material-nav a{
-		color: #757575;
-	}
-		
-	#scheme-Paradox .MD-burger-layer {
-		background-color: #757575;
-	}
-
-	#scheme-Paradox #post-toc-trigger-btn{
-		color: #757575;
-	}
-	
-	.post-toc a:hover{
-		color: #00838F;
-		text-decoration: underline;
-	}
-</style>
-
-
-<!-- Theme Background Related-->
-
-    <style>
-        body{
-            background-image: url(/img/bg.png);
-        }
-    </style>
-
-
-
-
-<!-- Fade Effect -->
-
-    <style>
-        .fade {
-            transition: all 800ms linear;
-            -webkit-transform: translate3d(0,0,0);
-            -moz-transform: translate3d(0,0,0);
-            -ms-transform: translate3d(0,0,0);
-            -o-transform: translate3d(0,0,0);
-            transform: translate3d(0,0,0);
-            opacity: 1;
-        }
-
-        .fade.out{
-            opacity: 0;
-        }
-    </style>
-
-	<script src="/js/jquery.min.js"></script>
-	
-	<link rel="stylesheet" href="/css/highlight/solarized-white.css">
-	
-	<!-- UC Browser Compatible-->
-	<script>
-		var agent = navigator.userAgent.toLowerCase();
-		if(agent.indexOf('ucbrowser')>0) {
-			document.write('<link rel="stylesheet" href="/css/uc.css">');
-		   alert('由于 UC 浏览器使用极旧的内核，而本网站使用了一些新的特性。\n为了您能更好的浏览，推荐使用 Chrome 或 Firefox 浏览器。');
-		}
-	</script>
-    
-    <!-- Custom Head -->
-    
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Jacobc's blog</title>
+<meta name=keywords content="Blog,Portfolio,PaperMod,Jsharkc,golang">
+<meta name=description content="Jacobc's blog, welcome to my blog">
+<meta name=author content="Jsharkc">
+<link rel=canonical href=https://jsharkc.github.io/>
+<meta name=google-site-verification content="XYZabc">
+<meta name=yandex-verification content="XYZabc">
+<meta name=msvalidate.01 content="XYZabc">
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
+<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.86.1">
+<link rel=alternate type=application/rss+xml href=https://jsharkc.github.io/index.xml>
+<link rel=alternate type=application/json href=https://jsharkc.github.io/index.json>
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+</noscript><meta property="og:title" content="Jacobc's blog">
+<meta property="og:description" content="Jacobc's blog, welcome to my blog">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jsharkc.github.io/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name=twitter:title content="Jacobc's blog">
+<meta name=twitter:description content="Jacobc's blog, welcome to my blog">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"Organization","name":"Jacobc's blog","url":"https://jsharkc.github.io/","description":"Jacobc\u0026#39;s blog, welcome to my blog","thumbnailUrl":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E","sameAs":["https://github.com/Jsharkc","index.xml"]}</script>
 </head>
-	
-	
-
-    <body id="scheme-Paradox">
-
-		
-        <div class="material-layout  mdl-js-layout has-drawer is-upgraded">
-				
-			
-			
-            <!-- Main Container -->
-            <main class="material-layout__content" id="main">
-				
-                <!-- Top Anchor -->
-                <div id="top"></div>
-				
-				
-                <!-- Hamburger Button -->
-                <button class="MD-burger-icon sidebar-toggle">
-                    <span class="MD-burger-layer"></span>
-                </button>
-				
-				
-                <!-- Index Module -->
-<div class="material-index mdl-grid">
-	
-    <div class="locate-thumbnail-symbol"></div>
-    
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		<!-- Custom Thumbnail -->
-		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(https://cloud.githubusercontent.com/assets/173412/10886352/ad566232-814f-11e5-9cd0-aa101788c117.png)">
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/07/17/cobra入门小教程/">Cobra - 一个 Golang 命令行项目生成工具</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            Cobra - Golang 命令行库
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/07/17/cobra入门小教程/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>7月 17, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
+<body class="list dark" id=top>
+<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
 </div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		<!-- Custom Thumbnail -->
-		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(https://blog.bluematador.com/assets/img/mini-guide-google-golang-why-its-perfect-for-devops/golang-gopher-laptop.png)">
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/07/10/Slice机制/">Golang slice 切片原理</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            Golang slice 切片原理​    golang 中的 slice 是比较好用的...
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/07/10/Slice机制/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>7月 10, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		<!-- Custom Thumbnail -->
-		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(/img/gallery/GolangStudy.png)">
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/06/17/Interface解析/">Golang Interface 解析</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            Interface 解析转自 
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/06/17/Interface解析/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>6月 17, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		
-			<!-- Random Thumbnail -->
-			<div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
-		
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/05/26/十条有用的 GO 技术/">十条有用的 GO 技术</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            十条有用的 Go 技术转自 
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/05/26/十条有用的 GO 技术/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>5月 26, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		<!-- Custom Thumbnail -->
-		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(/img/gallery/gopherokno.png)">
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/05/03/Golang不存在引用传值/">Golang 中不存在引用传参</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            Golang 中不存在引用传参​                                  ...
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/05/03/Golang不存在引用传值/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>5月 03, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		
-			<!-- Random Thumbnail -->
-			<div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
-		
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/04/12/Docker Note/">Docker Note</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            Docker Note
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/04/12/Docker Note/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>4月 12, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		
-			<!-- Random Thumbnail -->
-			<div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
-		
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/04/02/Linux防火墙-iptables/">Linux防火墙-iptables</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            Linux防火墙–iptables学习转自
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/04/02/Linux防火墙-iptables/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>4月 02, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		<!-- Custom Thumbnail -->
-		<div class="post_thumbnail-custom mdl-card__media mdl-color-text--grey-50" style="background-image:url(https://raw.githubusercontent.com/cockroachdb/cockroach/master/docs/media/cockroach_db.png)">
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/03/17/cockroachdb/">初探 Cockroachdb</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            初探 Cockroachdb
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/03/17/cockroachdb/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>3月 17, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		
-			<!-- Random Thumbnail -->
-			<div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
-		
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/03/12/go性能优化pprof/">Go 程序的性能优化及 pprof 的使用</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            Go 程序的性能优化及 pprof 的使用转自
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/03/12/go性能优化pprof/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>3月 12, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		
-			<!-- Paradox Thumbnail -->
-        	<div class="post_entry-module mdl-card mdl-cell mdl-cell--12-col fade out">
-    
-    <!-- Post Thumbnail -->
-	
-		
-			<!-- Random Thumbnail -->
-			<div class="post_thumbnail-random mdl-card__media mdl-color-text--grey-50">
-		
-	
-				
-		<!-- Post Title -->
-		<p class="article-headline-p"><a href="/2017/01/30/CORS/">跨域资源共享 CORS 详解</a></p>
-	</div>
-
-    <!-- Post Excerpt -->
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text post_entry-content">
-        
-            跨域资源共享 CORS 详解CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。本文详细介绍CORS的内部机制。
-        
-        &nbsp;&nbsp;&nbsp;
-        <span>
-            <a href="/2017/01/30/CORS/" target="_self">继续阅读</a>
-        </span>
-    </div>
-    <!-- Post_entry Info-->
-    <div id="post_entry-info">
-        <div id="post_entry-left-info" class="mdl-card__supporting-text meta mdl-color-text--grey-600 ">
-            <!-- Author Avatar -->
-            <div id="author-avatar">
-                <img src="/img/avatar.png" width="44px" height="44px" alt="Jsharkc's avatar">
-            </div>
-            <div>
-                <strong>Jsharkc</strong>
-                <span>1月 30, 2017</span>
-            </div>
-        </div>
-        <div id="post_entry-right-info">
-            <!-- Category -->
-            <span class="post_entry-category">
-                
-            </span>
-            
-            
-            
-            <!-- Post Views -->
-            <span class="post_entry-views">
-                
-            </span>
-        </div>
-    </div>
-            
-</div>
-
-		
-		
-    
-		<!-- Index nav -->
-        <nav class="material-nav mdl-cell mdl-cell--12-col">
-            <a class="extend prev" rel="prev" href="/"><button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"><i class="material-icons" role="presentation">arrow_back</i></button></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"><i class="material-icons" role="presentation">arrow_forward</i></button></a>
-        </nav>
-    
-    
-	
-		<script>
-    
-    var randomNum;
-    
-    var locatePost = $(".locate-thumbnail-symbol").next();
-    for(var i=0; i < 10; i++){
-        
-        randomNum = Math.floor(Math.random() * 6 + 1);
-        
-        locatePost.children(".post_thumbnail-random").attr('id', 'random_thumbnail-'+randomNum);
-        locatePost.children(".post_thumbnail-random").css('background-image', 'url(' + '/img/random/' + randomNum + '.png' + ')')
-        
-        locatePost = locatePost.next();
-    }
-    
-</script>
-
-	
-
-</div>
-
-				
-				
-					<!-- Overlay For Active Sidebar -->
-<div class="sidebar-overlay "></div>
-
-<!-- Material sidebar -->
-<aside id="sidebar" class="sidebar sidebar-colored  sidebar-fixed-left" role="navigation">
-	<div id="sidebar-main">
-	    <!-- Sidebar Header -->
-		<div class="sidebar-header header-cover" style="background-image: url(/img/sidebar_header.png);">
-    <!-- Top bar -->
-    <div class="top-bar"></div>
-
-    <!-- Sidebar toggle button -->
-    <button type="button" class="sidebar-toggle mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" style="display: initial;" data-upgraded=",MaterialButton,MaterialRipple">
-    <i class="material-icons">clear_all</i>
-    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></button>
-
-    <!-- Sidebar Avatar -->
-    <div class="sidebar-image">
-        <img src="/img/avatar.png" alt="Jsharkc's avatar">
-    </div>
-
-    <!-- Sidebar Email -->
-    <a data-toggle="dropdown" class="sidebar-brand" href="#settings-dropdown">
-        1773867204@qq.com
-        <b class="caret"></b>
-    </a>
-</div>
-
-		<!-- Sidebar Navigation  -->
-		<ul class="nav sidebar-nav">
-    <!-- User dropdown  -->
-    <li class="dropdown">
-        <ul id="settings-dropdown" class="dropdown-menu">
-			
-                <li>
-                    <a href="mailto:1773867204@qq.com" target="_blank" title="Email Me">
-						<i class="material-icons sidebar-material-icons sidebar-indent-left1pc-element">email</i>
-                        Email Me
-                    </a>
-                </li>
-            
-        </ul>
-    </li>
-
-    <!-- Homepage -->
-    <li id="sidebar-first-li">
-        <a href="/" target="_self">
-            <i class="material-icons sidebar-material-icons">home</i>
-             主页
-        </a>
-    </li>
-
-    <!-- I'm Feeling Lucky -->
-<!--
-    <li class="dropdown">
-        <a href="" target="_self">
-            <i class="material-icons sidebar-material-icons">explore</i>
-             sidebar.imlucky
-        </a>
-    </li>
--->
-
-	
-    <!-- Archives  -->
-    <li class="dropdown">
-        <a href="#" class="ripple-effect dropdown-toggle" data-toggle="dropdown">
-            <i class="material-icons sidebar-material-icons">inbox</i>
-             归档
-            <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-            <li>
-            <a class="sidebar_archives-link" href="/archives/2021/07/">七月 2021<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2019/11/">十一月 2019<span class="sidebar_archives-count">4</span></a></li><li><a class="sidebar_archives-link" href="/archives/2019/10/">十月 2019<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2018/04/">四月 2018<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2018/02/">二月 2018<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/10/">十月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/07/">七月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/06/">六月 2017<span class="sidebar_archives-count">1</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/05/">五月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/04/">四月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/03/">三月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2017/01/">一月 2017<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/12/">十二月 2016<span class="sidebar_archives-count">2</span></a></li><li><a class="sidebar_archives-link" href="/archives/2016/11/">十一月 2016<span class="sidebar_archives-count">2</span></a>
-        </ul>
-    </li>
-
-    <!-- Divider -->
-    <li class="divider"></li>
-
-
-    <!-- Pages  -->
-	
-		<li>
-			<a href="/tags/" title="标签云">
-				标签云
-			</a>
-		</li>
-	
-		<li>
-			<a href="/gallery/" title="图库">
-				图库
-			</a>
-		</li>
-	
-
-    <!-- Article Numebr  -->
-    <li>
-        <a href="/archives">
-             文章总数
-             <span class="sidebar-badge">25</span>
-        </a>
-    </li>
+<ul id=menu>
+<li>
+<a href=https://jsharkc.github.io/archives/ title=Archives>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/categories title=Categories>
+<span>Categories</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/tags title=Tags>
+<span>Tags</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
+<span>Search</span>
+</a>
+</li>
 </ul>
-
-		<!-- Sidebar Divider -->
-		<div class="sidebar-divider"></div>
-
-		<!-- Sidebar Footer -->
-		<!-- 
-I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright, I will thank you so much.
-If you still want to delete the copyrights, could you still retain the first one? Which namely "Theme Material"
-It will not impact the appearance and can give developers a lot of support :)
-
-很高兴您使用并喜欢该主题，开发不易 十分谢谢与希望您可以保留一下版权声明。
-如果您仍然想删除的话 能否只保留第一项呢？即 "Theme Material"
-它不会影响美观并可以给开发者很大的支持。 :) 
--->
-
-<!-- Theme Material -->
-<a href="https://github.com/viosey/hexo-theme-material"  class="sidebar-footer-text-a" target="_blank">
-	<div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
-		主题 - Material
-		<span class="sidebar-badge badge-circle">i</span>
-	</div>
-</a>
-
-<!-- Help & Support -->
-<!--
-<a href="mailto:hiviosey@gmail.com" class="sidebar-footer-text-a">
-    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
-		sidebar.help
-		<span class="mdl-button__ripple-container">
-			<span class="mdl-ripple"></span>
-		</span>
-	</div>
-</a>
--->
-
-<!-- Feedback -->
-<!--
-<a href="https://github.com/viosey/hexo-theme-material/issues" target="_blank" class="sidebar-footer-text-a">
-    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
-         sidebar.feedback
-                    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
-</a>
--->
-
-<!-- Abount Theme -->
-<!--
-<a href="https://blog.viosey.com/index.php/Material.html" target="_blank" class="sidebar-footer-text-a">
-    <div class="sidebar-text mdl-button mdl-js-button mdl-js-ripple-effect sidebar-footer-text-div" data-upgraded=",MaterialButton,MaterialRipple">
-         sidebar.about_theme
-        <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></div>
-</a>-->
-
-	</div>
-    
-    <!-- Sidebar Sponsor -->
-    
-
-
-</aside>
-
-				
-				
-				
-					<!-- Footer Top Button -->
-					<div class="toTop-wrap">
-    <a href="#top" class="toTop">
-        <i class="material-icons footer_top-i">expand_less</i>
-    </a>
-</div>
-				
-				
-				<!--Footer-->
-<footer class="mdl-mini-footer" id="bottom">
-	
-	
-		<!-- Paradox Footer Left Section -->
-		<div class="mdl-mini-footer--left-section sns-list">
-    <!-- Twitter -->
-    
-    
-    
-    <!-- Facebook -->
-    
-    
-    
-    <!-- Google + -->
-    
-    
-    
-    <!-- Weibo -->
-    
-    
-    
-    <!-- Instagram -->
-    
-    
-    
-    <!-- Tumblr -->
-    
-    
-    
-    <!-- Github -->
-    
-    <a href="http://github.com/jsharkc" target="view_window"><button class="mdl-mini-footer--social-btn social-btn" style="background-image: url(/img/footer/footer_ico-github.png);">
-        <span class="visuallyhidden">Github</span>
-    </button></a>
-    
-</div>
-
-
-		<!--Copyright-->
-		<div id="copyright">Copyright&nbsp;©&nbsp;<script type="text/javascript">var fd = new Date();document.write(fd.getFullYear());</script>&nbsp;Jsharkc's secret</div>
-
-		<!-- Paradox Footer Right Section -->
-
-		<!-- 
-		I'm glad you use this theme, the development is no so easy, I hope you can keep the copyright.
-		It will not impact the appearance and can give developers a lot of support :)
-
-		很高兴您使用该主题，开发不易，希望您可以保留一下版权声明。
-		它不会影响美观并可以给开发者很大的支持。 :) 
-		-->
-
-		<div class="mdl-mini-footer--right-section">
-			
-		</div>
-	
-    
+</nav>
+</header>
+<main class=main>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Golang slice 切片原理
+</h2>
+</header>
+<section class=entry-content>
+<p>Golang slice 切片原理 ​ golang 中的 slice 是比较好用的一种结构，能根据需求变长，相对于 array 的死板，slice 更加灵活也更加常用，有道说：知其然，知其所以然。现在，我们就看看 slice 到底是怎样一种结构。
+slice源码 type slice struct { array unsafe.Pointer len int cap int } ​ 根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。
+​ 有同学可能不知道 unsafe.Pointer是什么，那么我们一并在这讲解一下。
+package unsafe type ArbitraryType int // - A pointer value of any type can be converted to a Pointer. // - A Pointer can be converted to a pointer value of any type....</p>
+</section>
+<footer class=entry-footer>July 10, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Golang slice 切片原理" href=https://jsharkc.github.io/post/slice%E6%9C%BA%E5%88%B6/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Jobrunner 源码解析
+</h2>
+</header>
+<section class=entry-content>
+<p>安装 go get github.com/bamzi/jobrunner 使用 eg1 package main import "github.com/bamzi/jobrunner" func main() { jobrunner.Start() jobrunner.Schedule("@every 5s", ReminderEmails{}) select{} } type ReminderEmails struct {} func (e ReminderEmails) Run() { fmt.Printf("Every 5 sec send reminder emails \n") } ***解析：***在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。
+Jobrunner 支持两种时间格式：
+“@XXX”
+“@yearly”, “@annually” 每年 “@monthly” 每月 “@weekly” 每星期 “@daily”, “@midnight” 每天 “@hourly” 每小时 “@every 5s” 支持 “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”。 “x x x x x x”...</p>
+</section>
+<footer class=entry-footer>June 27, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Jobrunner 源码解析" href=https://jsharkc.github.io/post/jobrunner/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Golang Interface 解析
+</h2>
+</header>
+<section class=entry-content>
+<p>Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856
+先看一段代码：
+func Foo(x interface{}) { if x == nil { fmt.Println("empty interface") return } fmt.Println("non-empty interface") } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下
+$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
+interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。
+type eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size ptrdata uintptr // size of memory prefix holding all pointers hash uint32 // hash of type; avoids computation in hash tables tflag tflag // extra type information flags align uint8 // alignment of variable with this type fieldalign uint8 // alignment of struct field with this type kind uint8 // enumeration for C alg *typeAlg // algorithm table gcdata *byte // garbage collection data str nameOff // string form ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab....</p>
+</section>
+<footer class=entry-footer>June 17, 2017&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Golang Interface 解析" href=https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>十条有用的 GO 技术
+</h2>
+</header>
+<section class=entry-content>
+<p>十条有用的 Go 技术 转自 mikespook.com
+这里是我过去几年中编写的大量 Go 代码的经验总结而来的自己的最佳实践。我相信它们具有弹性的。这里的弹性是指： 某个应用需要适配一个灵活的环境。你不希望每过 3 到 4 个月就不得不将它们全部重构一遍。添加新的特性应当很容易。许多人参与开发该应用，它应当可以被理解，且维护简单。许多人使用该应用，bug 应该容易被发现并且可以快速的修复。我用了很长的时间学到了这些事情。其中的一些很微小，但对于许多事情都会有影响。所有这些都仅仅是建议，具体情况具体对待，并且如果有帮助的话务必告诉我。随时留言:)
+1. 使用单一的 GOPATH 多个 GOPATH 的情况并不具有弹性。GOPATH 本身就是高度自我完备的（通过导入路径）。有多个 GOPATH 会导致某些副作用，例如可能使用了给定的库的不同的版本。你可能在某个地方升级了它，但是其他地方却没有升级。而且，我还没遇到过任何一个需要使用多个 GOPATH 的情况。所以只使用单一的 GOPATH，这会提升你 Go 的开发进度。
+许多人不同意这一观点，接下来我会做一些澄清。像 etcd 或 camlistore 这样的大项目使用了像 godep 这样的工具，将所有依赖保存到某个目录中。也就是说，这些项目自身有一个单一的 GOPATH。它们只能在这个目录里找到对应的版本。除非你的项目很大并且极为重要，否则不要为每个项目使用不同的 GOPATH。如果你认为项目需要一个自己的 GOPATH 目录，那么就创建它，否则不要尝试使用多个 GOPATH。它只会拖慢你的进度。
+2. 将 for-select 封装到函数中 如果在某个条件下，你需要从 for-select 中退出，就需要使用标签。例如：
+func main() { L: for { select { case &lt;-time.After(time.Second): fmt.Println("hello") default: break L } } fmt.Println("ending") } 如你所见，需要联合break使用标签。这有其用途，不过我不喜欢。这个例子中的 for 循环看起来很小，但是通常它们会更大，而判断break的条件也更为冗长。
+如果需要退出循环，我会将 for-select 封装到函数中：...</p>
+</section>
+<footer class=entry-footer>May 26, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to 十条有用的 GO 技术" href=https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Golang 中不存在引用传参
+</h2>
+</header>
+<section class=entry-content>
+<p>Golang 中不存在引用传参 ​ 原文链接
+​ 翻译：Jsharkc
+什么是引用变量 ? 在 C++ 语言中，你可以为已存在的变量声明一个别名，这就是引用变量：
+#include &lt;stdio.h> int main() { int a = 10; int &b = a; int &c = b; printf("%p %p %p\n", &a, &b, &c); // 0x7ffe114f0b14 0x7ffe114f0b14 0x7ffe114f0b14 return 0; } 可以看到，a、b、c 三个变量的地址是相同的，也就是说它们是同一个内存地址的变量，只不过有三个别名。就好比你有一个大名，一个小名，不管别人叫大名还是小名叫的都是你，如果改变 a 变量，b、c 变量也会跟着变。当你声明一个引用变量在不同的函数作用域中这是非常有用的。
+Golang 没有引用变量 与 C++ 不同，在 Golang 中声明的每个变量都只能占用不同的内存空间的。
+package main import "fmt" func main() { var a, b, c int fmt.Println(&a, &b, &c) // 0x1040a124 0x1040a128 0x1040a12c } 在 Golang 项目中不可能存在两个变量共享一块内存，但是可以创建两个变量指向相同的内存地址，但这和两个变量共享一块内存是不一样的。...</p>
+</section>
+<footer class=entry-footer>May 3, 2017&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jshakrc</footer>
+<a class=entry-link aria-label="post link to Golang 中不存在引用传参" href=https://jsharkc.github.io/post/golang%E4%B8%8D%E5%AD%98%E5%9C%A8%E5%BC%95%E7%94%A8%E4%BC%A0%E5%80%BC/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Docker Note
+</h2>
+</header>
+<section class=entry-content>
+<p>Docker Note 镜像 虚悬镜像 ​ 没有仓库名，也没有标签，均为&lt;none>的为虚悬镜像：
+&lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为&lt;none>，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY TAG IMAGE ID CREATED SIZE &lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
+​ docker images 还支持强大的过滤器参数 --filter ，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
+$ docker images -f since=mongo:3.2 REPOSITORY TAG IMAGE ID CREATED SIZE redis latest 5f515359c7f8 5 days ago 183 MB nginx latest 05a60462f8ba 5 days ago 181 MB ​ 想查看某个位置之前的镜像也可以，只需要吧since换成before即可。...</p>
+</section>
+<footer class=entry-footer>April 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Docker Note" href=https://jsharkc.github.io/post/docker-note/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Linux防火墙-iptables
+</h2>
+</header>
+<section class=entry-content>
+<p>Linux防火墙–iptables学习 转自简书
+iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。
+一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。
+规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。
+配置iptables实际上就是增删修改这些规则。
+2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。
+3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。
+如下图所示，各个表相关的链：
+raw表有2条链：PREROUTING、OUTPUT
+mangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
+nat表有3条链：PREROUTING、POSTROUTING、OUTPUT
+filter表有3条链：INPUT、FORWARD、OUTPUT
+4个表的优先级为：raw > mangle > nat > filter
+二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。
+如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。 \2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。
+综上，数据包在iptables中的传输链路有两种情况：
+第一种：PREROUTING -> FORWARD -> POSTROUTING
+第二种：PREROUTING -> INPUT -> LOCALHOST -> OUTPUT -> PUSTROUTING
+所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。
+（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -> FORWARD链 -> POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）
+三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）
+注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。
+iptables -F：清除所有的规则
+iptables -F -t nat：清除nat表的规则
+iptables -P INPUT DROP：配置INPUT链的默认规则为DROP...</p>
+</section>
+<footer class=entry-footer>April 2, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Linux防火墙-iptables" href=https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>初探 Cockroachdb
+</h2>
+</header>
+<section class=entry-content>
+<p>初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
+docker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
+2.启动第一个节点 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v "${PWD}/cockroach-data/roach1:/cockroach/cockroach-data" \ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
+docker run：Docker 命令启动一个新的容器。
+-d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
+--name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
+--hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
+--net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
+-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。
+-v "${PWD}/cockroach-data/roach1:/cockroach/cockroach-data"：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。
+3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。...</p>
+</section>
+<footer class=entry-footer>March 17, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to 初探 Cockroachdb" href=https://jsharkc.github.io/post/cockroachdb/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Go 程序的性能优化及 pprof 的使用
+</h2>
+</header>
+<section class=entry-content>
+<p>Go 程序的性能优化及 pprof 的使用 转自snowInPluto
+程序的性能优化无非就是对程序占用资源的优化。对于服务器而言，最重要的两项资源莫过于 CPU 和内存。性能优化，就是在对于不影响程序数据处理能力的情况下，我们通常要求程序的 CPU 的内存占用尽量低。反过来说，也就是当程序 CPU 和内存占用不变的情况下，尽量地提高程序的数据处理能力或者说是吞吐量。
+Go 的原生工具链中提供了非常多丰富的工具供开发者使用，其中包括 pprof。
+对于 pprof 的使用要分成下面两部分来说。
+Web 程序使用 pprof 先写一个简单的 Web 服务程序。程序在 9876 端口上接收请求。
+package main import ( "bytes" "io/ioutil" "log" "math/rand" "net/http" _ "net/http/pprof" ) func main() { http.HandleFunc("/test", handler) log.Fatal(http.ListenAndServe(":9876", nil)) } func handler(w http.ResponseWriter, r *http.Request) { err := r.ParseForm() if nil != err { w.Write([]byte(err.Error())) return } doSomeThingOne(10000) buff := genSomeBytes() b, err := ioutil....</p>
+</section>
+<footer class=entry-footer>March 12, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Go 程序的性能优化及 pprof 的使用" href=https://jsharkc.github.io/post/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96pprof/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>跨域资源共享 CORS 详解
+</h2>
+</header>
+<section class=entry-content>
+<p>跨域资源共享 CORS 详解 CORS是一个W3C标准，全称是"跨域资源共享"（Cross-origin resource sharing）。 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。 本文详细介绍CORS的内部机制。
+...</p>
+</section>
+<footer class=entry-footer>January 30, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;yusank</footer>
+<a class=entry-link aria-label="post link to 跨域资源共享 CORS 详解" href=https://jsharkc.github.io/post/cors/></a>
+</article>
+<footer class=page-footer>
+<nav class=pagination>
+<a class=prev href=https://jsharkc.github.io/>« Prev Page</a>
+<a class=next href=https://jsharkc.github.io/page/3/>Next Page »</a>
+</nav>
 </footer>
-                
-				<!-- Import File -->
-<script src="/js/highlight.min.js"></script>
-<script src="/js/js.min.js"></script>
-<script src="/js/nprogress.js"></script>
-
-<script type="text/javascript">
-    NProgress.configure({
-        showSpinner: true
-    });
-    NProgress.start();
-    
-    $('#nprogress .bar').css({
-        'background': '#FF4081'
-    });
-    $('#nprogress .peg').css({
-        'box-shadow': '0 0 10px #FF4081, 0 0 15px #FF4081'
-    });
-    $('#nprogress .spinner-icon').css({
-        'border-top-color': '#FF4081',
-        'border-left-color': '#FF4081'
-    });
-    
-    setTimeout(function() {
-        NProgress.done();
-        $('.fade').removeClass('out');
-    }, 800);
-</script>
-
-
-
-
-
-
-    <!-- Busuanzi -->
-    <script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-
-    <!-- 使用 DISQUS js 代码 -->
-	<script id="dsq-count-scr" src="//jsharkc.disqus.com/count.js" async></script>
-
-
-<!-- Swiftye -->
-
-
-<!-- Local Search-->
-
-
-<!-- Window Load-->
-<script>
-    $(window).load(function() {
-        // Post_Toc parent position fixed
-        $(".post-toc-wrap").parent(".mdl-menu__container").css("position", "fixed");
-    });
-</script>
-
-<!-- MathJax Load-->
-
-            </main>
-        </div>
-		
-    <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/haru01.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":true},"dialog":{"enable":true,"hitokoto":true},"log":false});</script></body>
-		
-	
+</main>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
+</footer>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
+</body>
 </html>

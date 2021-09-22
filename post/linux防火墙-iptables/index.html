@@ -1,0 +1,330 @@
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Linux防火墙-iptables | Jacobc's blog</title>
+<meta name=keywords content>
+<meta name=description content="Linux防火墙&ndash;iptables学习 转自简书
+iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。
+一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。
+规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。
+配置iptables实际上就是增删修改这些规则。
+2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。
+3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。
+如下图所示，各个表相关的链：
+raw表有2条链：PREROUTING、OUTPUT
+mangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
+nat表有3条链：PREROUTING、POSTROUTING、OUTPUT
+filter表有3条链：INPUT、FORWARD、OUTPUT
+4个表的优先级为：raw > mangle > nat > filter
+二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。
+ 如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。  \2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。
+综上，数据包在iptables中的传输链路有两种情况：
+第一种：PREROUTING -> FORWARD -> POSTROUTING
+第二种：PREROUTING -> INPUT -> LOCALHOST -> OUTPUT -> PUSTROUTING
+所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。
+（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -> FORWARD链 -> POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）
+三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）
+注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。
+iptables -F：清除所有的规则
+iptables -F -t nat：清除nat表的规则
+iptables -P INPUT DROP：配置INPUT链的默认规则为DROP">
+<meta name=author content="Jsharkc">
+<link rel=canonical href=https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/>
+<meta name=google-site-verification content="XYZabc">
+<meta name=yandex-verification content="XYZabc">
+<meta name=msvalidate.01 content="XYZabc">
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.86.1">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+</noscript><meta property="og:title" content="Linux防火墙-iptables">
+<meta property="og:description" content="Linux防火墙&ndash;iptables学习 转自简书
+iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。
+一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。
+规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。
+配置iptables实际上就是增删修改这些规则。
+2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。
+3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。
+如下图所示，各个表相关的链：
+raw表有2条链：PREROUTING、OUTPUT
+mangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
+nat表有3条链：PREROUTING、POSTROUTING、OUTPUT
+filter表有3条链：INPUT、FORWARD、OUTPUT
+4个表的优先级为：raw > mangle > nat > filter
+二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。
+ 如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。  \2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。
+综上，数据包在iptables中的传输链路有两种情况：
+第一种：PREROUTING -> FORWARD -> POSTROUTING
+第二种：PREROUTING -> INPUT -> LOCALHOST -> OUTPUT -> PUSTROUTING
+所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。
+（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -> FORWARD链 -> POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）
+三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）
+注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。
+iptables -F：清除所有的规则
+iptables -F -t nat：清除nat表的规则
+iptables -P INPUT DROP：配置INPUT链的默认规则为DROP">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2017-04-02T09:42:23+00:00">
+<meta property="article:modified_time" content="2017-04-02T09:42:23+00:00"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
+<meta name=twitter:title content="Linux防火墙-iptables">
+<meta name=twitter:description content="Linux防火墙&ndash;iptables学习 转自简书
+iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。
+一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。
+规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。
+配置iptables实际上就是增删修改这些规则。
+2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。
+3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。
+如下图所示，各个表相关的链：
+raw表有2条链：PREROUTING、OUTPUT
+mangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
+nat表有3条链：PREROUTING、POSTROUTING、OUTPUT
+filter表有3条链：INPUT、FORWARD、OUTPUT
+4个表的优先级为：raw > mangle > nat > filter
+二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。
+ 如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。  \2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。
+综上，数据包在iptables中的传输链路有两种情况：
+第一种：PREROUTING -> FORWARD -> POSTROUTING
+第二种：PREROUTING -> INPUT -> LOCALHOST -> OUTPUT -> PUSTROUTING
+所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。
+（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -> FORWARD链 -> POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）
+三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）
+注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。
+iptables -F：清除所有的规则
+iptables -F -t nat：清除nat表的规则
+iptables -P INPUT DROP：配置INPUT链的默认规则为DROP">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Linux防火墙-iptables","item":"https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Linux防火墙-iptables","name":"Linux防火墙-iptables","description":"Linux防火墙\u0026ndash;iptables学习 转自简书\niptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。\n一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。\n规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。\n配置iptables实际上就是增删修改这些规则。\n2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。\n3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。\n如下图所示，各个表相关的链：\nraw表有2条链：PREROUTING、OUTPUT\nmangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD\nnat表有3条链：PREROUTING、POSTROUTING、OUTPUT\nfilter表有3条链：INPUT、FORWARD、OUTPUT\n4个表的优先级为：raw \u0026gt; mangle \u0026gt; nat \u0026gt; filter\n二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。\n 如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。  \\2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。\n综上，数据包在iptables中的传输链路有两种情况：\n第一种：PREROUTING -\u0026gt; FORWARD -\u0026gt; POSTROUTING\n第二种：PREROUTING -\u0026gt; INPUT -\u0026gt; LOCALHOST -\u0026gt; OUTPUT -\u0026gt; PUSTROUTING\n所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。\n（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -\u0026gt; FORWARD链 -\u0026gt; POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）\n三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）\n注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。\niptables -F：清除所有的规则\niptables -F -t nat：清除nat表的规则\niptables -P INPUT DROP：配置INPUT链的默认规则为DROP","keywords":[],"articleBody":"Linux防火墙–iptables学习 转自简书\niptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。\n一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。\n规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。\n配置iptables实际上就是增删修改这些规则。\n2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。\n3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。\n如下图所示，各个表相关的链：\nraw表有2条链：PREROUTING、OUTPUT\nmangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD\nnat表有3条链：PREROUTING、POSTROUTING、OUTPUT\nfilter表有3条链：INPUT、FORWARD、OUTPUT\n4个表的优先级为：raw  mangle  nat  filter\n二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。\n 如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。  \\2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。\n综上，数据包在iptables中的传输链路有两种情况：\n第一种：PREROUTING - FORWARD - POSTROUTING\n第二种：PREROUTING - INPUT - LOCALHOST - OUTPUT - PUSTROUTING\n所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。\n（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) - FORWARD链 - POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）\n三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）\n注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。\niptables -F：清除所有的规则\niptables -F -t nat：清除nat表的规则\niptables -P INPUT DROP：配置INPUT链的默认规则为DROP\n示例：\niptables -t filter -A INPUT -s 192.168.1.10 -j ACCEPT\n这是一条简单的规则，表示在filter表的INPUT链中追加一条规则，规则的匹配条件是数据包的源IP为192.168.1.10，执行动作为允许（ACCEPT），即允许源IP为192.168.1.10地址的消息访问本机。\niptables中，默认表名就是filter，所以上面的规则也可以写成：\niptables -A INPUT -s 192.168.1.10 -j ACCEPT\niptables规则的匹配条件中常用的参数有：\n-s匹配源地址\n-d匹配目的地址\n–sport匹配源端口\n–dport匹配目的端口\n-p匹配协议\n-i匹配输入的网卡\n-o匹配输出的网卡\n！取反\n-j规则的执行动作\n示例：配置NAT转发实现内网节点访问公网\n环境假设：\n路由节点：\nLan口：192.168.1.10/24 eth0\nWan口：50.75.153.98/24 eth1\n内网节点：192.168.1.92\n\\1. 在内网节点上配置默认网关为路由节点的Lan口，确保内网节点的包都能走到路由节点。\nroute add default gw 192.168.1.10\n\\2. 在路由节点上打开linux的路由转发功能。\nsysctl -w net.ipv4.ip_forward=1\n\\3. 将FORWARD链的默认策略设置为DROP\niptables -P FORWARD DROP\n这样确保对内网的控制，只把允许访问公网的IP添加到规则中。\n\\4. 允许任意地址之间的确认包和关联包通过。\niptables -A FORWARD -m state –state ESTABLISHED,RELATED -j ACCEPT\n这条规则很关键，否则即使后面添加了允许IP访问的规则也没用。\n\\5. 允许指定IP地址访问公网\niptables -A FORWARD -s 192.168.1.92/24 -j ACCEPT\n\\6. 配置一条SNAT规则，将内网节点的源IP转换为公网IP后，再将消息发出。\niptables -t nat -A POSTROUTING -s 192.168.1.92 -j SNAT –to 50.75.153.98\n示例：配置NAT转发实现公网用户访问内网节点\n环境假设：\n路由节点：\nLan口：192.168.1.10/24 eth0\nWan口：50.75.153.98/24 eth1\n内网节点：192.168.1.92\n 在路由节点上打开linux的路由转发功能。  sysctl -w net.ipv4.ip_forward=1\n\\2. 将FORWARD链的默认策略设置为DROP\niptables -P FORWARD DROP\n这样确保对内网的控制，只把允许访问的IP添加到规则中。\n\\3. 允许任意地址之间的确认包和关联包通过。\niptables -A FORWARD -m state –state ESTABLISHED,RELATED -j ACCEPT\n这条规则很关键，否则即使后面添加了允许IP访问的规则也没用。\n\\4. 允许访问指定的IP地址\niptables -A FORWARD -d 192.168.1.92 -j ACCEPT\n\\5. 配置一条DNAT规则，将访问路由节点的公网地址转换为访问内网节点的私网地址。\niptables -t nat -A POSTROUTING -d 50.75.153.98 -j DNAT –to 192.168.1.92\nPS：用iptables的raw表解决ip_conntrack:table full, dropping packet的问题\nraw表中包含PREROUTING链和OUTPUT链，优先级最高，可以对数据包在进入NAT表的PREROUTING链之前对消息进行处理。当用户启用了RAW表，消息在经过RAW表的PREROUTING链处理后，将跳过NAT表和ip_conntrack处理，不再做地址转换和数据包的链接跟踪处理。\n所以raw表可以用在那些不需要做nat和链接跟踪的情况，提升系统性能。因为启用链接跟踪时，系统会建立一个链接跟踪表，每个消息进来时，都会去查询链接跟踪表，当系统业务量过大时，可能会引发系统CPU消耗过高。\n可以通过在RAW表的PREROUTING链中配置NOTRACK标记，使数据包不再进入nat表，达到不做链接跟踪的目的，如：\niptables -t raw -A PREROUTING -p tcp -d 192.168.1.10 –dport 80 -j NOTRACK\niptables -A FORWARD -m state –state UNTRACKED -j ACCEPT\n表示对访问192.168.1.10:80服务的消息在raw表的PREROUTING链中添加NORTRACK标记，以后访问这个服务的消息都不会再进行链接跟踪。\n另外，再附上鸟哥的iptables流程图，可以看到各个链也是根据不同的表区分优先级的。\n","wordCount":"242","inLanguage":"en","datePublished":"2017-04-02T09:42:23Z","dateModified":"2017-04-02T09:42:23Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+</head>
+<body class=dark id=top>
+<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
+</div>
+<ul id=menu>
+<li>
+<a href=https://jsharkc.github.io/archives/ title=Archives>
+<span>Archives</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/categories title=Categories>
+<span>Categories</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/tags title=Tags>
+<span>Tags</span>
+</a>
+</li>
+<li>
+<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
+<span>Search</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/post/>Posts</a></div>
+<h1 class=post-title>
+Linux防火墙-iptables
+</h1>
+<div class=post-meta>April 2, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/post/Linux%e9%98%b2%e7%81%ab%e5%a2%99-iptables.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+</div>
+</header> <div class=toc>
+<details open>
+<summary accesskey=c title="(Alt + C)">
+<span class=details>Table of Contents</span>
+</summary>
+<div class=inner><ul>
+<li>
+<a href=#linux%e9%98%b2%e7%81%ab%e5%a2%99--iptables%e5%ad%a6%e4%b9%a0 aria-label=Linux防火墙&amp;ndash;iptables学习>Linux防火墙&ndash;iptables学习</a></li>
+<li>
+<a href=#%e4%b8%80-iptables%e7%9a%84%e6%9e%84%e6%88%90 aria-label="一、 iptables的构成">一、 iptables的构成</a><ul>
+<li>
+<a href=#1-%e8%a7%84%e5%88%99rules aria-label="1. 规则（rules）">1. 规则（rules）</a></li>
+<li>
+<a href=#2-%e9%93%bechains aria-label="2. 链（chains）">2. 链（chains）</a></li>
+<li>
+<a href=#3-%e8%a1%a8tables aria-label="3. 表（tables）">3. 表（tables）</a></li></ul>
+</li>
+<li>
+<a href=#%e4%ba%8ciptables%e7%9a%84%e4%bc%a0%e8%be%93%e8%bf%87%e7%a8%8b aria-label=二、iptables的传输过程>二、iptables的传输过程</a></li>
+<li>
+<a href=#%e4%b8%89-iptables%e7%9a%84%e4%bd%bf%e7%94%a8 aria-label="三、 iptables的使用">三、 iptables的使用</a>
+</li>
+</ul>
+</div>
+</details>
+</div>
+<div class=post-content><h1 id=linux防火墙--iptables学习>Linux防火墙&ndash;iptables学习<a hidden class=anchor aria-hidden=true href=#linux防火墙--iptables学习>#</a></h1>
+<p>转自<a href="http://www.jianshu.com/p/5f38e7253fc8?utm_campaign=hugo&utm_medium=reader_share&utm_content=note">简书</a></p>
+<p>iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。</p>
+<h1 id=一-iptables的构成>一、 iptables的构成<a hidden class=anchor aria-hidden=true href=#一-iptables的构成>#</a></h1>
+<h2 id=1-规则rules>1. 规则（rules）<a hidden class=anchor aria-hidden=true href=#1-规则rules>#</a></h2>
+<p>规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。</p>
+<p>规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。</p>
+<p>配置iptables实际上就是增删修改这些规则。</p>
+<h2 id=2-链chains>2. 链（chains）<a hidden class=anchor aria-hidden=true href=#2-链chains>#</a></h2>
+<p>链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。</p>
+<h2 id=3-表tables>3. 表（tables）<a hidden class=anchor aria-hidden=true href=#3-表tables>#</a></h2>
+<p>iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。</p>
+<p>如下图所示，各个表相关的链：</p>
+<p><img loading=lazy src=http://upload-images.jianshu.io/upload_images/3329890-fcea46b652d9b2fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240 alt=img>
+</p>
+<p>raw表有2条链：PREROUTING、OUTPUT</p>
+<p>mangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD</p>
+<p>nat表有3条链：PREROUTING、POSTROUTING、OUTPUT</p>
+<p>filter表有3条链：INPUT、FORWARD、OUTPUT</p>
+<p>4个表的优先级为：raw > mangle > nat > filter</p>
+<h1 id=二iptables的传输过程>二、iptables的传输过程<a hidden class=anchor aria-hidden=true href=#二iptables的传输过程>#</a></h1>
+<p><img loading=lazy src=http://upload-images.jianshu.io/upload_images/3329890-3851549020dc2b60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240 alt=img>
+</p>
+<p>当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。</p>
+<ol>
+<li>如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。</li>
+</ol>
+<p>\2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。</p>
+<p>综上，数据包在iptables中的传输链路有两种情况：</p>
+<p>第一种：PREROUTING -> FORWARD -> POSTROUTING</p>
+<p>第二种：PREROUTING -> INPUT -> LOCALHOST -> OUTPUT -> PUSTROUTING</p>
+<p>所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。</p>
+<p>（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -> FORWARD链 -> POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）</p>
+<h1 id=三-iptables的使用>三、 iptables的使用<a hidden class=anchor aria-hidden=true href=#三-iptables的使用>#</a></h1>
+<p>iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）</p>
+<p>注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。</p>
+<p>iptables -F：清除所有的规则</p>
+<p>iptables -F -t nat：清除nat表的规则</p>
+<p>iptables -P INPUT DROP：配置INPUT链的默认规则为DROP</p>
+<p>示例：</p>
+<p>iptables -t filter -A INPUT -s 192.168.1.10 -j ACCEPT</p>
+<p>这是一条简单的规则，表示在filter表的INPUT链中追加一条规则，规则的匹配条件是数据包的源IP为192.168.1.10，执行动作为允许（ACCEPT），即允许源IP为192.168.1.10地址的消息访问本机。</p>
+<p>iptables中，默认表名就是filter，所以上面的规则也可以写成：</p>
+<p>iptables -A INPUT -s 192.168.1.10 -j ACCEPT</p>
+<p>iptables规则的匹配条件中常用的参数有：</p>
+<p>-s匹配源地址</p>
+<p>-d匹配目的地址</p>
+<p>&ndash;sport匹配源端口</p>
+<p>&ndash;dport匹配目的端口</p>
+<p>-p匹配协议</p>
+<p>-i匹配输入的网卡</p>
+<p>-o匹配输出的网卡</p>
+<p>！取反</p>
+<p>-j规则的执行动作</p>
+<p>示例：配置NAT转发实现内网节点访问公网</p>
+<p>环境假设：</p>
+<p>路由节点：</p>
+<p>Lan口：192.168.1.10/24 eth0</p>
+<p>Wan口：50.75.153.98/24 eth1</p>
+<p>内网节点：192.168.1.92</p>
+<p>\1. 在内网节点上配置默认网关为路由节点的Lan口，确保内网节点的包都能走到路由节点。</p>
+<p>route add default gw 192.168.1.10</p>
+<p>\2. 在路由节点上打开linux的路由转发功能。</p>
+<p>sysctl -w net.ipv4.ip_forward=1</p>
+<p>\3. 将FORWARD链的默认策略设置为DROP</p>
+<p>iptables -P FORWARD DROP</p>
+<p>这样确保对内网的控制，只把允许访问公网的IP添加到规则中。</p>
+<p>\4. 允许任意地址之间的确认包和关联包通过。</p>
+<p>iptables -A FORWARD -m state &ndash;state ESTABLISHED,RELATED -j ACCEPT</p>
+<p>这条规则很关键，否则即使后面添加了允许IP访问的规则也没用。</p>
+<p>\5. 允许指定IP地址访问公网</p>
+<p>iptables -A FORWARD -s 192.168.1.92/24 -j ACCEPT</p>
+<p>\6. 配置一条SNAT规则，将内网节点的源IP转换为公网IP后，再将消息发出。</p>
+<p>iptables -t nat -A POSTROUTING -s 192.168.1.92 -j SNAT &ndash;to 50.75.153.98</p>
+<p>示例：配置NAT转发实现公网用户访问内网节点</p>
+<p>环境假设：</p>
+<p>路由节点：</p>
+<p>Lan口：192.168.1.10/24 eth0</p>
+<p>Wan口：50.75.153.98/24 eth1</p>
+<p>内网节点：192.168.1.92</p>
+<ol>
+<li>在路由节点上打开linux的路由转发功能。</li>
+</ol>
+<p>sysctl -w net.ipv4.ip_forward=1</p>
+<p>\2. 将FORWARD链的默认策略设置为DROP</p>
+<p>iptables -P FORWARD DROP</p>
+<p>这样确保对内网的控制，只把允许访问的IP添加到规则中。</p>
+<p>\3. 允许任意地址之间的确认包和关联包通过。</p>
+<p>iptables -A FORWARD -m state &ndash;state ESTABLISHED,RELATED -j ACCEPT</p>
+<p>这条规则很关键，否则即使后面添加了允许IP访问的规则也没用。</p>
+<p>\4. 允许访问指定的IP地址</p>
+<p>iptables -A FORWARD -d 192.168.1.92 -j ACCEPT</p>
+<p>\5. 配置一条DNAT规则，将访问路由节点的公网地址转换为访问内网节点的私网地址。</p>
+<p>iptables -t nat -A POSTROUTING -d 50.75.153.98 -j DNAT &ndash;to 192.168.1.92</p>
+<p><strong>PS：用iptables的raw表解决ip_conntrack:table full, dropping packet的问题</strong></p>
+<p>raw表中包含PREROUTING链和OUTPUT链，优先级最高，可以对数据包在进入NAT表的PREROUTING链之前对消息进行处理。当用户启用了RAW表，消息在经过RAW表的PREROUTING链处理后，将跳过NAT表和ip_conntrack处理，不再做地址转换和数据包的链接跟踪处理。</p>
+<p>所以raw表可以用在那些不需要做nat和链接跟踪的情况，提升系统性能。因为启用链接跟踪时，系统会建立一个链接跟踪表，每个消息进来时，都会去查询链接跟踪表，当系统业务量过大时，可能会引发系统CPU消耗过高。</p>
+<p>可以通过在RAW表的PREROUTING链中配置NOTRACK标记，使数据包不再进入nat表，达到不做链接跟踪的目的，如：</p>
+<p>iptables -t raw -A PREROUTING -p tcp -d 192.168.1.10 &ndash;dport 80 -j NOTRACK</p>
+<p>iptables -A FORWARD -m state &ndash;state UNTRACKED -j ACCEPT</p>
+<p>表示对访问192.168.1.10:80服务的消息在raw表的PREROUTING链中添加NORTRACK标记，以后访问这个服务的消息都不会再进行链接跟踪。</p>
+<p>另外，再附上鸟哥的iptables流程图，可以看到各个链也是根据不同的表区分优先级的。</p>
+<p><img loading=lazy src=http://upload-images.jianshu.io/upload_images/3329890-df0602ca5ba7ff35.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240 alt=img>
+</p>
+</div>
+<footer class=post-footer>
+<nav class=paginav>
+<a class=prev href=https://jsharkc.github.io/post/docker-note/>
+<span class=title>« Prev Page</span>
+<br>
+<span>Docker Note</span>
+</a>
+<a class=next href=https://jsharkc.github.io/post/cockroachdb/>
+<span class=title>Next Page »</span>
+<br>
+<span>初探 Cockroachdb</span>
+</a>
+</nav>
+<div class=share-buttons>
+<a target=_blank rel="noopener noreferrer" aria-label="share Linux防火墙-iptables on twitter" href="https://twitter.com/intent/tweet/?text=Linux%e9%98%b2%e7%81%ab%e5%a2%99-iptables&url=https%3a%2f%2fjsharkc.github.io%2fpost%2flinux%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599-iptables%2f&hashtags="><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM195.519 424.544c135.939.0 210.268-112.643 210.268-210.268.0-3.218.0-6.437-.153-9.502 14.406-10.421 26.973-23.448 36.935-38.314-13.18 5.824-27.433 9.809-42.452 11.648 15.326-9.196 26.973-23.602 32.49-40.92-14.252 8.429-30.038 14.56-46.896 17.931-13.487-14.406-32.644-23.295-53.946-23.295-40.767.0-73.87 33.104-73.87 73.87.0 5.824.613 11.494 1.992 16.858-61.456-3.065-115.862-32.49-152.337-77.241-6.284 10.881-9.962 23.601-9.962 37.088.0 25.594 13.027 48.276 32.95 61.456-12.107-.307-23.448-3.678-33.41-9.196v.92c0 35.862 25.441 65.594 59.311 72.49-6.13 1.686-12.72 2.606-19.464 2.606-4.751.0-9.348-.46-13.946-1.38 9.349 29.426 36.628 50.728 68.965 51.341-25.287 19.771-57.164 31.571-91.8 31.571-5.977.0-11.801-.306-17.625-1.073 32.337 21.15 71.264 33.41 112.95 33.41z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Linux防火墙-iptables on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fjsharkc.github.io%2fpost%2flinux%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599-iptables%2f&title=Linux%e9%98%b2%e7%81%ab%e5%a2%99-iptables&summary=Linux%e9%98%b2%e7%81%ab%e5%a2%99-iptables&source=https%3a%2f%2fjsharkc.github.io%2fpost%2flinux%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599-iptables%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Linux防火墙-iptables on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fjsharkc.github.io%2fpost%2flinux%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599-iptables%2f&title=Linux%e9%98%b2%e7%81%ab%e5%a2%99-iptables"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Linux防火墙-iptables on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fjsharkc.github.io%2fpost%2flinux%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599-iptables%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Linux防火墙-iptables on whatsapp" href="https://api.whatsapp.com/send?text=Linux%e9%98%b2%e7%81%ab%e5%a2%99-iptables%20-%20https%3a%2f%2fjsharkc.github.io%2fpost%2flinux%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599-iptables%2f"><svg viewBox="0 0 512 512"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg>
+</a>
+<a target=_blank rel="noopener noreferrer" aria-label="share Linux防火墙-iptables on telegram" href="https://telegram.me/share/url?text=Linux%e9%98%b2%e7%81%ab%e5%a2%99-iptables&url=https%3a%2f%2fjsharkc.github.io%2fpost%2flinux%25E9%2598%25B2%25E7%2581%25AB%25E5%25A2%2599-iptables%2f"><svg viewBox="2 2 28 28"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg>
+</a>
+</div>
+</footer>
+</article>
+</main>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
+</footer>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
+</body>
+</html>

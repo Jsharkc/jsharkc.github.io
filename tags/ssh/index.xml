@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>ssh on Jacobc&#39;s blog</title>
+    <link>https://jsharkc.github.io/tags/ssh/</link>
+    <description>Recent content in ssh on Jacobc&#39;s blog</description>
+    <image>
+      <url>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 16 Nov 2019 12:59:00 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/ssh/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android手机作为linux服务器</title>
+      <link>https://jsharkc.github.io/post/android-phone-as-linux-server/</link>
+      <pubDate>Sat, 16 Nov 2019 12:59:00 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/android-phone-as-linux-server/</guid>
+      <description>有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。
+下载 Termux Termux 下载地址
+下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
+配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
+apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
+whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
+ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.</description>
+    </item>
+    
+  </channel>
+</rss>
