@@ -17,16 +17,14 @@
       
       <guid>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
       <description>Mac 使用 V2ray 科学上网 Install v2ray-core step 1: Add official tap
-brew tap v2ray/v2ray step 2: Install v2ray-core:
-brew install v2ray-core Update v2ray-core step 1: update tap
-brew update step 2: update v2ray-core
-brew upgrade v2ray-core 使用 直接在命令行上输入 v2ray 就可以运行 v2ray-core。（配置文件在当前目录则不用写参数，直接 v2ray）
+1  brew tap v2ray/v2ray   step 2: Install v2ray-core:
+1  brew install v2ray-core   Update v2ray-core step 1: update tap
+1  brew update   step 2: update v2ray-core
+1  brew upgrade v2ray-core   使用 直接在命令行上输入 v2ray 就可以运行 v2ray-core。（配置文件在当前目录则不用写参数，直接 v2ray）
 默认配置文件位于：/usr/local/etc/config.json
 编辑默认配置文件：
-vim /usr/local/etc/config.json 配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
-config.json 添加 http 代理：
-&amp;#34;inboundDetour&amp;#34;: [{ &amp;#34;protocol&amp;#34;: &amp;#34;http&amp;#34;, &amp;#34;port&amp;#34;: 1081, &amp;#34;settings&amp;#34;: { &amp;#34;udp&amp;#34;: true } }], .zshrc 添加
-# proxy alias proxy=&#39;export https_proxy=http://127.</description>
+1  vim /usr/local/etc/config.json   配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
+config.json 添加 http 代理：</description>
     </item>
     
     <item>
@@ -37,8 +35,7 @@ config.json 添加 http 代理：
       <guid>https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/</guid>
       <description>Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
 组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
-type Command struct { Use string // The one-line usage message.  Short string // The short description shown in the &amp;#39;help&amp;#39; output.  Long string // The long message shown in the &amp;#39;help&amp;lt;this-command&amp;gt;&amp;#39; output.  Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。
-安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。</description>
+1 2 3 4 5 6  type Command struct { Use string // The one-line usage message.  Short string // The short description shown in the &amp;#39;help&amp;#39; output.  Long string // The long message shown in the &amp;#39;help&amp;lt;this-command&amp;gt;&amp;#39; output.  Run func(cmd *Command, args []string) // Run runs the command.</description>
     </item>
     
     <item>
@@ -48,9 +45,9 @@ type Command struct { Use string // The one-line usage message.  Short string //
       
       <guid>https://jsharkc.github.io/post/slice%E6%9C%BA%E5%88%B6/</guid>
       <description>Golang slice 切片原理 ​	golang 中的 slice 是比较好用的一种结构，能根据需求变长，相对于 array 的死板，slice 更加灵活也更加常用，有道说：知其然，知其所以然。现在，我们就看看 slice 到底是怎样一种结构。
-slice源码 type slice struct { array unsafe.Pointer len int cap int } ​	根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。
+slice源码 1 2 3 4 5  type slice struct { array unsafe.Pointer len int cap int }   ​	根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。
 ​	有同学可能不知道 unsafe.Pointer是什么，那么我们一并在这讲解一下。
-package unsafe type ArbitraryType int //	- A pointer value of any type can be converted to a Pointer. //	- A Pointer can be converted to a pointer value of any type.</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13  package unsafe type ArbitraryType int //	- A pointer value of any type can be converted to a Pointer.</description>
     </item>
     
     <item>
@@ -61,10 +58,9 @@ package unsafe type ArbitraryType int //	- A pointer value of any type can be co
       <guid>https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/</guid>
       <description>Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856
 先看一段代码：
-func Foo(x interface{}) { if x == nil { fmt.Println(&amp;#34;empty interface&amp;#34;) return } fmt.Println(&amp;#34;non-empty interface&amp;#34;) } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下
-$ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
-interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。
-type eface struct { _type *_type data unsafe.Pointer } type _type struct { size uintptr // type size  ptrdata uintptr // size of memory prefix holding all pointers  hash uint32 // hash of type; avoids computation in hash tables  tflag tflag // extra type information flags  align uint8 // alignment of variable with this type  fieldalign uint8 // alignment of struct field with this type  kind uint8 // enumeration for C  alg *typeAlg // algorithm table  gcdata *byte // garbage collection data  str nameOff // string form  ptrToThis typeOff // type for pointer to this type, may be zero } iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.</description>
+1 2 3 4 5 6 7 8 9 10 11 12  func Foo(x interface{}) { if x == nil { fmt.Println(&amp;#34;empty interface&amp;#34;) return } fmt.Println(&amp;#34;non-empty interface&amp;#34;) } func main() { var x *int = nil Foo(x) }   上面的例子的输出结果如下
+1 2  $ go run test_interface.go non-empty interface   可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
+interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。</description>
     </item>
     
     <item>
@@ -78,8 +74,7 @@ type eface struct { _type *_type data unsafe.Pointer } type _type struct { size 
 1. 使用单一的 GOPATH 多个 GOPATH 的情况并不具有弹性。GOPATH 本身就是高度自我完备的（通过导入路径）。有多个 GOPATH 会导致某些副作用，例如可能使用了给定的库的不同的版本。你可能在某个地方升级了它，但是其他地方却没有升级。而且，我还没遇到过任何一个需要使用多个 GOPATH 的情况。所以只使用单一的 GOPATH，这会提升你 Go 的开发进度。
 许多人不同意这一观点，接下来我会做一些澄清。像 etcd 或 camlistore 这样的大项目使用了像 godep 这样的工具，将所有依赖保存到某个目录中。也就是说，这些项目自身有一个单一的 GOPATH。它们只能在这个目录里找到对应的版本。除非你的项目很大并且极为重要，否则不要为每个项目使用不同的 GOPATH。如果你认为项目需要一个自己的 GOPATH 目录，那么就创建它，否则不要尝试使用多个 GOPATH。它只会拖慢你的进度。
 2. 将 for-select 封装到函数中 如果在某个条件下，你需要从 for-select 中退出，就需要使用标签。例如：
-func main() { L: for { select { case &amp;lt;-time.After(time.Second): fmt.Println(&amp;#34;hello&amp;#34;) default: break L } } fmt.Println(&amp;#34;ending&amp;#34;) } 如你所见，需要联合break使用标签。这有其用途，不过我不喜欢。这个例子中的 for 循环看起来很小，但是通常它们会更大，而判断break的条件也更为冗长。
-如果需要退出循环，我会将 for-select 封装到函数中：</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14  func main() { L: for { select { case &amp;lt;-time.</description>
     </item>
     
     <item>
@@ -91,9 +86,9 @@ func main() { L: for { select { case &amp;lt;-time.After(time.Second): fmt.Print
       <description>Golang 中不存在引用传参 ​	原文链接
 ​	翻译：Jsharkc
 什么是引用变量 ? 在 C++ 语言中，你可以为已存在的变量声明一个别名，这就是引用变量：
-#include &amp;lt;stdio.h&amp;gt; int main() { int a = 10; int &amp;amp;b = a; int &amp;amp;c = b; printf(&amp;#34;%p %p %p\n&amp;#34;, &amp;amp;a, &amp;amp;b, &amp;amp;c); // 0x7ffe114f0b14 0x7ffe114f0b14 0x7ffe114f0b14  return 0; } 可以看到，a、b、c 三个变量的地址是相同的，也就是说它们是同一个内存地址的变量，只不过有三个别名。就好比你有一个大名，一个小名，不管别人叫大名还是小名叫的都是你，如果改变 a 变量，b、c 变量也会跟着变。当你声明一个引用变量在不同的函数作用域中这是非常有用的。
+1 2 3 4 5 6 7 8 9 10  #include &amp;lt;stdio.h&amp;gt; int main() { int a = 10; int &amp;amp;b = a; int &amp;amp;c = b; printf(&amp;#34;%p %p %p\n&amp;#34;, &amp;amp;a, &amp;amp;b, &amp;amp;c); // 0x7ffe114f0b14 0x7ffe114f0b14 0x7ffe114f0b14  return 0; }   可以看到，a、b、c 三个变量的地址是相同的，也就是说它们是同一个内存地址的变量，只不过有三个别名。就好比你有一个大名，一个小名，不管别人叫大名还是小名叫的都是你，如果改变 a 变量，b、c 变量也会跟着变。当你声明一个引用变量在不同的函数作用域中这是非常有用的。
 Golang 没有引用变量 与 C++ 不同，在 Golang 中声明的每个变量都只能占用不同的内存空间的。
-package main import &amp;#34;fmt&amp;#34; func main() { var a, b, c int fmt.Println(&amp;amp;a, &amp;amp;b, &amp;amp;c) // 0x1040a124 0x1040a128 0x1040a12c } 在 Golang 项目中不可能存在两个变量共享一块内存，但是可以创建两个变量指向相同的内存地址，但这和两个变量共享一块内存是不一样的。</description>
+1 2 3 4 5 6 7 8  package main import &amp;#34;fmt&amp;#34; func main() { var a, b, c int fmt.</description>
     </item>
     
     <item>
@@ -107,7 +102,7 @@ package main import &amp;#34;fmt&amp;#34; func main() { var a, b, c int fmt.Prin
 Go 的原生工具链中提供了非常多丰富的工具供开发者使用，其中包括 pprof。
 对于 pprof 的使用要分成下面两部分来说。
 Web 程序使用 pprof 先写一个简单的 Web 服务程序。程序在 9876 端口上接收请求。
-package main import ( &amp;quot;bytes&amp;quot; &amp;quot;io/ioutil&amp;quot; &amp;quot;log&amp;quot; &amp;quot;math/rand&amp;quot; &amp;quot;net/http&amp;quot; _ &amp;quot;net/http/pprof&amp;quot; ) func main() { http.HandleFunc(&amp;quot;/test&amp;quot;, handler) log.Fatal(http.ListenAndServe(&amp;quot;:9876&amp;quot;, nil)) } func handler(w http.ResponseWriter, r *http.Request) { err := r.ParseForm() if nil != err { w.Write([]byte(err.Error())) return } doSomeThingOne(10000) buff := genSomeBytes() b, err := ioutil.</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48  package main import ( &amp;#34;bytes&amp;#34; &amp;#34;io/ioutil&amp;#34; &amp;#34;log&amp;#34; &amp;#34;math/rand&amp;#34; &amp;#34;net/http&amp;#34; _ &amp;#34;net/http/pprof&amp;#34; ) func main() { http.</description>
     </item>
     
     <item>
@@ -119,9 +114,9 @@ package main import ( &amp;quot;bytes&amp;quot; &amp;quot;io/ioutil&amp;quot; &a
       <description>Golang I/O 包的妙用 作者：icexin 转自简书
 golang标准库对io的抽象非常精巧，各个组件可以随意组合，可以作为接口设计的典范。这篇文章结合一个实际的例子来和大家分享一下。
 背景 以一个RPC的协议包来说，每个包有如下结构
-type Packet struct { TotalSize uint32 Magic [4]byte Payload []byte Checksum uint32 } 其中TotalSize是整个包除去TotalSize后的字节数， Magic是一个固定长度的字串，Payload是包的实际内容，包含业务逻辑的数据。 Checksum是对Magic和Payload的adler32校验和。
+1 2 3 4 5 6  type Packet struct { TotalSize uint32 Magic [4]byte Payload []byte Checksum uint32 }   其中TotalSize是整个包除去TotalSize后的字节数， Magic是一个固定长度的字串，Payload是包的实际内容，包含业务逻辑的数据。 Checksum是对Magic和Payload的adler32校验和。
 编码(encode) 我们使用一个原型为func EncodePacket(w io.Writer, payload []byte) error的函数来把数据打包，结合encoding/binary我们很容易写出第一版，演示需要，错误处理方面就简化处理了。
-var RPC_MAGIC = [4]byte{&amp;#39;p&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;x&amp;#39;, &amp;#39;i&amp;#39;} func EncodePacket(w io.Writer, payload []byte) error { // len(Magic) + len(Checksum) == 8  totalsize := uint32(len(payload) + 8) // write total size  binary.Write(w, binary.BigEndian, totalsize) // write magic bytes  binary.</description>
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23  var RPC_MAGIC = [4]byte{&amp;#39;p&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;x&amp;#39;, &amp;#39;i&amp;#39;} func EncodePacket(w io.</description>
     </item>
     
     <item>
@@ -131,9 +126,8 @@ var RPC_MAGIC = [4]byte{&amp;#39;p&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;x&amp
       
       <guid>https://jsharkc.github.io/post/gonote/</guid>
       <description>Go &amp;gt;注意点&amp;lt; 总结 1. 布尔类型 ​ 布尔类型 不能 接受其他类型的赋值，不支持 自动或者强制的类型转换
-var b bool b = 1 // 编译错误  b = bool(1) // 编译错误  2. int与int32 ​ **注意：**int和int32在Go语言里被认为是两种不同的类型，编译器也不会帮你自动做类型转换
-var value2 int32 value1:= 64 // value1将会被自动推导为int类型  value2 = value1 // 编译错误  // 可用强制转换解决这个编译错误：  value2 = int32(value1) // 编译通过  3. 整数值比较 ​ 两种 不同 类型的整型数 不能 直接比较，比如 int8 类型的数和 int 类型的数不能直接比较，但各种类型的整型变量都可以直接与字面常量 ( literal ) 进行比较
- 4. ^x 表示对 x 取反  5.</description>
+1 2 3  var b bool b = 1 // 编译错误  b = bool(1) // 编译错误    2. int与int32 ​ **注意：**int和int32在Go语言里被认为是两种不同的类型，编译器也不会帮你自动做类型转换
+1 2 3 4 5  var value2 int32 value1:= 64 // value1将会被自动推导为int类型  value2 = value1 // 编译错误  // 可用强制转换解决这个编译错误：  value2 = int32(value1) // 编译通过    3. 整数值比较 ​ 两种 不同 类型的整型数 不能 直接比较，比如 int8 类型的数和 int 类型的数不能直接比较，但各种类型的整型变量都可以直接与字面常量 ( literal ) 进行比较</description>
     </item>
     
   </channel>

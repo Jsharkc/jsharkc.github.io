@@ -5,15 +5,14 @@
 <meta name=robots content="index, follow">
 <title>Git命令清单 | Jacobc's blog</title>
 <meta name=keywords content="Git">
-<meta name=description content="Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url] 二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）
-# 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.name &#34;[name]&#34; $ git config [--global] user.email &#34;[email address]&#34; 三、增加 / 删除文件 # 添加制定文件到暂存区 $ git add [file1] [file2] ... # 添加制定目录到暂存区，包括子目录 $ git add [dir] # 添加每个变化前，都会要求确认 # 对于同一个文件的多处变化，可以实现分次提交 $ git add -p # 删除工作区文件，并且将这次删除放入暂存区 $ git rm [file1] [file2].">
+<meta name=description content="Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 1 2 3 4 5 6 7 8  # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url]   二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）
+1 2 3 4 5 6 7 8 9  # 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.">
 <meta name=author content="Jsharkc">
 <link rel=canonical href=https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/>
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
-<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.83c4eb6d61e6a4176992e4a4ce8786fc30bd40032ba8663ec5d11e285a965766.css integrity="sha256-g8TrbWHmpBdpkuSkzoeG/DC9QAMrqGY+xdEeKFqWV2Y=" rel="preload stylesheet" as=style>
 <link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
@@ -25,8 +24,8 @@
 <noscript>
 <style>#theme-toggle,.top-link{display:none}</style>
 </noscript><meta property="og:title" content="Git命令清单">
-<meta property="og:description" content="Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url] 二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）
-# 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.name &#34;[name]&#34; $ git config [--global] user.email &#34;[email address]&#34; 三、增加 / 删除文件 # 添加制定文件到暂存区 $ git add [file1] [file2] ... # 添加制定目录到暂存区，包括子目录 $ git add [dir] # 添加每个变化前，都会要求确认 # 对于同一个文件的多处变化，可以实现分次提交 $ git add -p # 删除工作区文件，并且将这次删除放入暂存区 $ git rm [file1] [file2].">
+<meta property="og:description" content="Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 1 2 3 4 5 6 7 8  # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url]   二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）
+1 2 3 4 5 6 7 8 9  # 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
 <meta property="article:published_time" content="2016-12-28T09:49:10+00:00">
@@ -34,10 +33,10 @@
 <meta name=twitter:card content="summary_large_image">
 <meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
 <meta name=twitter:title content="Git命令清单">
-<meta name=twitter:description content="Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url] 二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）
-# 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.name &#34;[name]&#34; $ git config [--global] user.email &#34;[email address]&#34; 三、增加 / 删除文件 # 添加制定文件到暂存区 $ git add [file1] [file2] ... # 添加制定目录到暂存区，包括子目录 $ git add [dir] # 添加每个变化前，都会要求确认 # 对于同一个文件的多处变化，可以实现分次提交 $ git add -p # 删除工作区文件，并且将这次删除放入暂存区 $ git rm [file1] [file2].">
+<meta name=twitter:description content="Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 1 2 3 4 5 6 7 8  # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url]   二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）
+1 2 3 4 5 6 7 8 9  # 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.">
 <script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Git命令清单","item":"https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/"}]}</script>
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Git命令清单","name":"Git命令清单","description":"Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url] 二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）\n# 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.name \u0026quot;[name]\u0026quot; $ git config [--global] user.email \u0026quot;[email address]\u0026quot; 三、增加 / 删除文件 # 添加制定文件到暂存区 $ git add [file1] [file2] ... # 添加制定目录到暂存区，包括子目录 $ git add [dir] # 添加每个变化前，都会要求确认 # 对于同一个文件的多处变化，可以实现分次提交 $ git add -p # 删除工作区文件，并且将这次删除放入暂存区 $ git rm [file1] [file2].","keywords":["Git"],"articleBody":"Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url] 二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）\n# 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.name \"[name]\" $ git config [--global] user.email \"[email address]\" 三、增加 / 删除文件 # 添加制定文件到暂存区 $ git add [file1] [file2] ... # 添加制定目录到暂存区，包括子目录 $ git add [dir] # 添加每个变化前，都会要求确认 # 对于同一个文件的多处变化，可以实现分次提交 $ git add -p # 删除工作区文件，并且将这次删除放入暂存区 $ git rm [file1] [file2]... # 停止追踪指定文件，但该文件会保留在工作区 $ git rm --cached [file] # 改名文件，并且将这个改名放入暂存区 $ git mv [file-original] [file-renamed] ","wordCount":"101","inLanguage":"en","datePublished":"2016-12-28T09:49:10Z","dateModified":"2016-12-28T09:49:10Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Git命令清单","name":"Git命令清单","description":"Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 1 2 3 4 5 6 7 8  # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url]   二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）\n1 2 3 4 5 6 7 8 9  # 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.","keywords":["Git"],"articleBody":"Git专有名词解释：  Workspace：工作区 Index / Stage：暂存区 Repository：仓库区（或本地仓库） Remote：远程仓库   一、新建代码库 1 2 3 4 5 6 7 8  # 在当前目录新建一个Git代码库 $ git init # 新建一个目录，将其初始化为Git代码库 $ git init [project-name] # 下载一个项目和它的整个代码历史 $ git clone [url]   二、配置 Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）\n1 2 3 4 5 6 7 8 9  # 显示当前的Git配置 $ git config --list # 编辑Git配置文件 $ git config -e [--golbal] # 设置提交代码时的用户信息 $ git config [--global] user.name \"[name]\" $ git config [--global] user.email \"[email address]\"   三、增加 / 删除文件 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  # 添加制定文件到暂存区 $ git add [file1] [file2] ... # 添加制定目录到暂存区，包括子目录 $ git add [dir] # 添加每个变化前，都会要求确认 # 对于同一个文件的多处变化，可以实现分次提交 $ git add -p # 删除工作区文件，并且将这次删除放入暂存区 $ git rm [file1] [file2]... # 停止追踪指定文件，但该文件会保留在工作区 $ git rm --cached [file] # 改名文件，并且将这个改名放入暂存区 $ git mv [file-original] [file-renamed]   ","wordCount":"136","inLanguage":"en","datePublished":"2016-12-28T09:49:10Z","dateModified":"2016-12-28T09:49:10Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/git%E5%91%BD%E4%BB%A4%E6%B8%85%E5%8D%95/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
 </head>
 <body class=dark id=top>
 <script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
@@ -81,7 +80,7 @@
 <h1 class=post-title>
 Git命令清单
 </h1>
-<div class=post-meta>December 28, 2016&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/post/Git%e5%91%bd%e4%bb%a4%e6%b8%85%e5%8d%95.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+<div class=post-meta>December 28, 2016&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog/content/post/Git%e5%91%bd%e4%bb%a4%e6%b8%85%e5%8d%95.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
 </div>
 </header> <div class=toc>
 <details open>
@@ -111,7 +110,19 @@ Git命令清单
 </ul>
 <hr>
 <h4 id=一新建代码库>一、新建代码库<a hidden class=anchor aria-hidden=true href=#一新建代码库>#</a></h4>
-<pre><code># 在当前目录新建一个Git代码库
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback># 在当前目录新建一个Git代码库
 $ git init
 
 # 新建一个目录，将其初始化为Git代码库
@@ -119,19 +130,58 @@ $ git init [project-name]
 
 # 下载一个项目和它的整个代码历史
 $ git clone [url]
-</code></pre><h4 id=二配置>二、配置<a hidden class=anchor aria-hidden=true href=#二配置>#</a></h4>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=二配置>二、配置<a hidden class=anchor aria-hidden=true href=#二配置>#</a></h4>
 <p>Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），也可以在项目目录下（项目配置）</p>
-<pre><code># 显示当前的Git配置
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback># 显示当前的Git配置
 $ git config --list
 
 # 编辑Git配置文件
 $ git config -e [--golbal]
 
 # 设置提交代码时的用户信息
-$ git config [--global] user.name &quot;[name]&quot;
-$ git config [--global] user.email &quot;[email address]&quot;
-</code></pre><h4 id=三增加--删除文件>三、增加 / 删除文件<a hidden class=anchor aria-hidden=true href=#三增加--删除文件>#</a></h4>
-<pre><code># 添加制定文件到暂存区
+$ git config [--global] user.name &#34;[name]&#34;
+$ git config [--global] user.email &#34;[email address]&#34;
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=三增加--删除文件>三、增加 / 删除文件<a hidden class=anchor aria-hidden=true href=#三增加--删除文件>#</a></h4>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback># 添加制定文件到暂存区
 $ git add [file1] [file2] ...
 
 # 添加制定目录到暂存区，包括子目录
@@ -149,7 +199,9 @@ $ git rm --cached [file]
 
 # 改名文件，并且将这个改名放入暂存区
 $ git mv [file-original] [file-renamed]
-</code></pre>
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <footer class=post-footer>
 <ul class=post-tags>

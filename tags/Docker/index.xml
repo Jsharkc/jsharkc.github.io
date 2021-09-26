@@ -17,11 +17,11 @@
       
       <guid>https://jsharkc.github.io/post/docker-note/</guid>
       <description>Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为&amp;lt;none&amp;gt;的为虚悬镜像：
-&amp;lt;none&amp;gt;	&amp;lt;none&amp;gt;	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为&amp;lt;none&amp;gt;，可用下面的命令专门显示这类镜像：
-$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE &amp;lt;none&amp;gt;	&amp;lt;none&amp;gt;	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
-$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
+1  &amp;lt;none&amp;gt;	&amp;lt;none&amp;gt;	00285df0df87	5 days ago	342 MB   ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为&amp;lt;none&amp;gt;，可用下面的命令专门显示这类镜像：
+1 2 3  $ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE &amp;lt;none&amp;gt;	&amp;lt;none&amp;gt;	00285df0df87	5 days ago 342 MB   ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+1  $ docker rmi $(docker images -q -f dangling=ture)   docker images ####—filter -f
 ​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
-$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。</description>
+1 2 3 4  $ docker images -f since=mongo:3.</description>
     </item>
     
     <item>
@@ -32,11 +32,10 @@ $ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	la
       <guid>https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/</guid>
       <description>Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-&amp;gt; yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
-&amp;gt; yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo &amp;gt; yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
-&amp;gt; yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
-&amp;gt; yum-config-manager --disable docker-ce-edge ##安装 Docker
-&amp;gt; sudo yum makecache fast &amp;gt; sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.</description>
+1  &amp;gt; yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+1 2 3 4 5  &amp;gt; yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo &amp;gt; yum-config-manager --enable docker-ce-edge   由于docker.com服务器下载很慢,所以改为国内镜像.
+1 2 3  &amp;gt; yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo   如需禁止edge版本, 可以执行下面的命令
+1  &amp;gt; yum-config-manager --disable docker-ce-edge   ##安装 Docker</description>
     </item>
     
   </channel>

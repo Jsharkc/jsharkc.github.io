@@ -9,16 +9,14 @@
 下载 Termux Termux 下载地址
 下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
 配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
-apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
-whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
-ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.">
+1 2 3 4 5  apt update apt upgrade apt install openssh pkg install termux-auth   查看用户名，ip，设置密码
+1 2 3 4 5 6 7 8  whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口   设置好后，用电脑登录">
 <meta name=author content="Jsharkc">
 <link rel=canonical href=https://jsharkc.github.io/post/android-phone-as-linux-server/>
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
-<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.83c4eb6d61e6a4176992e4a4ce8786fc30bd40032ba8663ec5d11e285a965766.css integrity="sha256-g8TrbWHmpBdpkuSkzoeG/DC9QAMrqGY+xdEeKFqWV2Y=" rel="preload stylesheet" as=style>
 <link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
@@ -34,9 +32,8 @@ ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 
 下载 Termux Termux 下载地址
 下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
 配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
-apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
-whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
-ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.">
+1 2 3 4 5  apt update apt upgrade apt install openssh pkg install termux-auth   查看用户名，ip，设置密码
+1 2 3 4 5 6 7 8  whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口   设置好后，用电脑登录">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://jsharkc.github.io/post/android-phone-as-linux-server/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
 <meta property="article:published_time" content="2019-11-16T12:59:00+00:00">
@@ -48,11 +45,10 @@ ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 
 下载 Termux Termux 下载地址
 下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
 配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
-apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
-whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
-ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.">
+1 2 3 4 5  apt update apt upgrade apt install openssh pkg install termux-auth   查看用户名，ip，设置密码
+1 2 3 4 5 6 7 8  whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口   设置好后，用电脑登录">
 <script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Android手机作为linux服务器","item":"https://jsharkc.github.io/post/android-phone-as-linux-server/"}]}</script>
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Android手机作为linux服务器","name":"Android手机作为linux服务器","description":"有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。\n下载 Termux Termux 下载地址\n下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。\n配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块\napt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码\nwhoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录\nssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.","keywords":["Termux","ssh","Android","linux","服务器"],"articleBody":"有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。\n下载 Termux Termux 下载地址\n下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。\n配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块\napt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码\nwhoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录\nssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.termux/files/home/storage/shared目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：\ntermux-setup-storage 当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了\n利用 frp 内网穿透 安装 Golang\npkg install golang frp 下载地址\nAndroid 下载以arm结尾的，服务器端根据自己的服务器选。\n写个 Hello world http 服务\npackage main import ( \"fmt\" \"net/http\" ) func main() { http.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, \"Hello World\") }) http.ListenAndServe(\":8085\", nil) } 配置 frp 服务端 # frps.ini [common] bind_port = 7001 # frp 服务绑定的端口 vhost_http_port = 8082 # 外网可访问的 web 服务端口 配置 frp 客户端 # frpc.ini [common] server_addr = xx.xx.xx.xx # 你的服务器地址 server_port = 7001 # 服务器绑定的端口，与服务端配置 bind_port 一致 [ssh] type = tcp local_ip = 127.0.0.1 local_port = 9999 # 本地 ssh 监听端口 remote_port = 6000 # 远程连接用的端口 [web] type = http local_port = 8085 # 本地 web 服务监听端口 custom_domains = xx.xx.xx # 服务器域名，有域名写域名，没域名写 ip 运行 frp 服务端\n./frps -c ./frps.ini 客户端\n./frpc -c ./frpc.ini 测试\ncurl http://xx.xx.xx:8082 # 可以看到 Hello world ssh 连接 ssh u0_a150@xx.xx.xx.xx -oPort=6000 格式：ssh [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]\n安装发行版 linux 可以再 Termux 上安装发行版 linux，包括 fedora、debian、alpine、aosc、arch、ubuntu、centos。\n安装 atilo echo \"deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras\"  $PREFIX/etc/apt/sources.list pkg in atilo-cn 安装系统 atilo install centos 删除系统 atilo remove centos ","wordCount":"249","inLanguage":"en","datePublished":"2019-11-16T12:59:00Z","dateModified":"2019-11-16T12:59:00Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/android-phone-as-linux-server/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Android手机作为linux服务器","name":"Android手机作为linux服务器","description":"有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。\n下载 Termux Termux 下载地址\n下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。\n配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块\n1 2 3 4 5  apt update apt upgrade apt install openssh pkg install termux-auth   查看用户名，ip，设置密码\n1 2 3 4 5 6 7 8  whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口   设置好后，用电脑登录","keywords":["Termux","ssh","Android","linux","服务器"],"articleBody":"有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。\n下载 Termux Termux 下载地址\n下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。\n配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块\n1 2 3 4 5  apt update apt upgrade apt install openssh pkg install termux-auth   查看用户名，ip，设置密码\n1 2 3 4 5 6 7 8  whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口   设置好后，用电脑登录\n1 2  ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了   之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.termux/files/home/storage/shared目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：\n1  termux-setup-storage   当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了\n利用 frp 内网穿透 安装 Golang\n1  pkg install golang   frp 下载地址\nAndroid 下载以arm结尾的，服务器端根据自己的服务器选。\n写个 Hello world http 服务\n1 2 3 4 5 6 7 8 9 10 11 12 13 14  package main import ( \"fmt\" \"net/http\" ) func main() { http.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, \"Hello World\") }) http.ListenAndServe(\":8085\", nil) }   配置 frp 服务端 1 2 3 4  # frps.ini [common] bind_port = 7001 # frp 服务绑定的端口 vhost_http_port = 8082 # 外网可访问的 web 服务端口   配置 frp 客户端 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15  # frpc.ini [common] server_addr = xx.xx.xx.xx # 你的服务器地址 server_port = 7001 # 服务器绑定的端口，与服务端配置 bind_port 一致 [ssh] type = tcp local_ip = 127.0.0.1 local_port = 9999 # 本地 ssh 监听端口 remote_port = 6000 # 远程连接用的端口 [web] type = http local_port = 8085 # 本地 web 服务监听端口 custom_domains = xx.xx.xx # 服务器域名，有域名写域名，没域名写 ip   运行 frp 服务端\n1  ./frps -c ./frps.ini   客户端\n1  ./frpc -c ./frpc.ini   测试\n1 2  curl http://xx.xx.xx:8082 # 可以看到 Hello world   ssh 连接 1  ssh u0_a150@xx.xx.xx.xx -oPort=6000   格式：ssh [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]\n安装发行版 linux 可以再 Termux 上安装发行版 linux，包括 fedora、debian、alpine、aosc、arch、ubuntu、centos。\n安装 atilo 1 2  echo \"deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras\"  $PREFIX/etc/apt/sources.list pkg in atilo-cn   安装系统 1  atilo install centos   删除系统 1  atilo remove centos   ","wordCount":"308","inLanguage":"en","datePublished":"2019-11-16T12:59:00Z","dateModified":"2019-11-16T12:59:00Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/android-phone-as-linux-server/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
 </head>
 <body class=dark id=top>
 <script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
@@ -96,7 +92,7 @@ ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 
 <h1 class=post-title>
 Android手机作为linux服务器
 </h1>
-<div class=post-meta>November 16, 2019&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://github.com/%3cpath_to_repo%3e/content/post/Android-Phone-as-linux-server.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+<div class=post-meta>November 16, 2019&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog/content/post/Android-Phone-as-linux-server.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
 </div>
 </header> <div class=toc>
 <details open>
@@ -144,13 +140,36 @@ Android手机作为linux服务器
 <p>下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。</p>
 <h2 id=配置-termux>配置 Termux<a hidden class=anchor aria-hidden=true href=#配置-termux>#</a></h2>
 <p>Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>apt update
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>apt update
 apt upgrade
 
 apt install openssh
 pkg install termux-auth
-</code></pre></div><p>查看用户名，ip，设置密码</p>
-<pre><code>whoami
+</code></pre></td></tr></table>
+</div>
+</div><p>查看用户名，ip，设置密码</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>whoami
 # 结果为：u0_a150，你的可能不一样，用自己的
 ifconfig
 # 找到 inet addr，我的是 192.168.0.104，也是用你自己的
@@ -158,39 +177,112 @@ passwd
 # 这个是设置密码
 sshd -p 9999
 # 让 ssh 监听 9999 端口
-</code></pre><p>设置好后，用电脑登录</p>
-<pre><code>ssh u0_a150@192.168.0.104 -p 9999
+</code></pre></td></tr></table>
+</div>
+</div><p>设置好后，用电脑登录</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>ssh u0_a150@192.168.0.104 -p 9999
 # 回车，输入密码就行了
-</code></pre><p>之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 <code>termux-setup-storage</code> 插件把手机目录挂载到 <code>/data/data/com.termux/files/home/storage/shared</code>目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：</p>
-<pre><code>termux-setup-storage
-</code></pre><p>当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 <code>termux-setup-storage</code> 插件把手机目录挂载到 <code>/data/data/com.termux/files/home/storage/shared</code>目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>termux-setup-storage
+</code></pre></td></tr></table>
+</div>
+</div><p>当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了</p>
 <h2 id=利用-frp-内网穿透>利用 frp 内网穿透<a hidden class=anchor aria-hidden=true href=#利用-frp-内网穿透>#</a></h2>
 <p>安装 <code>Golang</code></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>pkg install golang
-</code></pre></div><p><a href=https://github.com/fatedier/frp/releases>frp 下载地址</a></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-shell data-lang=shell>pkg install golang
+</code></pre></td></tr></table>
+</div>
+</div><p><a href=https://github.com/fatedier/frp/releases>frp 下载地址</a></p>
 <p>Android 下载以arm结尾的，服务器端根据自己的服务器选。</p>
 <p>写个 Hello world http 服务</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=kn>package</span> <span class=nx>main</span>
 
-<span style=color:#f92672>import</span> (
-        <span style=color:#e6db74>&#34;fmt&#34;</span>
-        <span style=color:#e6db74>&#34;net/http&#34;</span>
-)
+<span class=kn>import</span> <span class=p>(</span>
+        <span class=s>&#34;fmt&#34;</span>
+        <span class=s>&#34;net/http&#34;</span>
+<span class=p>)</span>
 
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
-        <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>HandleFunc</span>(<span style=color:#e6db74>&#34;/&#34;</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>w</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>ResponseWriter</span>, <span style=color:#a6e22e>r</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Request</span>) {
-                <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Fprintf</span>(<span style=color:#a6e22e>w</span>, <span style=color:#e6db74>&#34;Hello World&#34;</span>)
-        })
+<span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+        <span class=nx>http</span><span class=p>.</span><span class=nf>HandleFunc</span><span class=p>(</span><span class=s>&#34;/&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+                <span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprintf</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=s>&#34;Hello World&#34;</span><span class=p>)</span>
+        <span class=p>})</span>
 
-        <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>ListenAndServe</span>(<span style=color:#e6db74>&#34;:8085&#34;</span>, <span style=color:#66d9ef>nil</span>)
-}
-</code></pre></div><h4 id=配置-frp-服务端>配置 frp 服务端<a hidden class=anchor aria-hidden=true href=#配置-frp-服务端>#</a></h4>
-<pre><code># frps.ini
+        <span class=nx>http</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>(</span><span class=s>&#34;:8085&#34;</span><span class=p>,</span> <span class=kc>nil</span><span class=p>)</span>
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=配置-frp-服务端>配置 frp 服务端<a hidden class=anchor aria-hidden=true href=#配置-frp-服务端>#</a></h4>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback># frps.ini
 [common]
 bind_port = 7001       # frp 服务绑定的端口
 vhost_http_port = 8082 # 外网可访问的 web 服务端口
-</code></pre><h4 id=配置-frp-客户端>配置 frp 客户端<a hidden class=anchor aria-hidden=true href=#配置-frp-客户端>#</a></h4>
-<pre><code># frpc.ini
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=配置-frp-客户端>配置 frp 客户端<a hidden class=anchor aria-hidden=true href=#配置-frp-客户端>#</a></h4>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback># frpc.ini
 [common]
 server_addr = xx.xx.xx.xx  # 你的服务器地址
 server_port = 7001         # 服务器绑定的端口，与服务端配置 bind_port 一致
@@ -205,27 +297,80 @@ remote_port = 6000         # 远程连接用的端口
 type = http
 local_port = 8085          # 本地 web 服务监听端口
 custom_domains = xx.xx.xx  # 服务器域名，有域名写域名，没域名写 ip
-</code></pre><h4 id=运行-frp>运行 frp<a hidden class=anchor aria-hidden=true href=#运行-frp>#</a></h4>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=运行-frp>运行 frp<a hidden class=anchor aria-hidden=true href=#运行-frp>#</a></h4>
 <p><strong>服务端</strong></p>
-<pre><code>./frps -c ./frps.ini
-</code></pre><p><strong>客户端</strong></p>
-<pre><code>./frpc -c ./frpc.ini
-</code></pre><p><strong>测试</strong></p>
-<pre><code>curl http://xx.xx.xx:8082
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>./frps -c ./frps.ini
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>客户端</strong></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>./frpc -c ./frpc.ini
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>测试</strong></p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>curl http://xx.xx.xx:8082
 # 可以看到 Hello world
-</code></pre><h4 id=ssh-连接>ssh 连接<a hidden class=anchor aria-hidden=true href=#ssh-连接>#</a></h4>
-<pre><code>ssh u0_a150@xx.xx.xx.xx -oPort=6000
-</code></pre><p>格式：ssh [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]</p>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=ssh-连接>ssh 连接<a hidden class=anchor aria-hidden=true href=#ssh-连接>#</a></h4>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>ssh u0_a150@xx.xx.xx.xx -oPort=6000
+</code></pre></td></tr></table>
+</div>
+</div><p>格式：ssh [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]</p>
 <h2 id=安装发行版-linux>安装发行版 linux<a hidden class=anchor aria-hidden=true href=#安装发行版-linux>#</a></h2>
 <p>可以再 Termux 上安装发行版 linux，包括 fedora、debian、alpine、aosc、arch、ubuntu、centos。</p>
 <h4 id=安装-atilo>安装 atilo<a hidden class=anchor aria-hidden=true href=#安装-atilo>#</a></h4>
-<pre><code>echo &quot;deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras&quot; &gt;&gt; $PREFIX/etc/apt/sources.list
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>echo &#34;deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras&#34; &gt;&gt; $PREFIX/etc/apt/sources.list
 pkg in atilo-cn
-</code></pre><h4 id=安装系统>安装系统<a hidden class=anchor aria-hidden=true href=#安装系统>#</a></h4>
-<pre><code>atilo install centos
-</code></pre><h4 id=删除系统>删除系统<a hidden class=anchor aria-hidden=true href=#删除系统>#</a></h4>
-<pre><code>atilo remove centos
-</code></pre>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=安装系统>安装系统<a hidden class=anchor aria-hidden=true href=#安装系统>#</a></h4>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>atilo install centos
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=删除系统>删除系统<a hidden class=anchor aria-hidden=true href=#删除系统>#</a></h4>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>atilo remove centos
+</code></pre></td></tr></table>
+</div>
+</div>
 </div>
 <footer class=post-footer>
 <ul class=post-tags>

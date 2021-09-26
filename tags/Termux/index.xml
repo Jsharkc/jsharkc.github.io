@@ -20,9 +20,8 @@
 下载 Termux Termux 下载地址
 下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
 配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
-apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
-whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
-ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.</description>
+1 2 3 4 5  apt update apt upgrade apt install openssh pkg install termux-auth   查看用户名，ip，设置密码
+1 2 3 4 5 6 7 8  whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口   设置好后，用电脑登录</description>
     </item>
     
   </channel>

@@ -11,7 +11,7 @@
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.83c4eb6d61e6a4176992e4a4ce8786fc30bd40032ba8663ec5d11e285a965766.css integrity="sha256-g8TrbWHmpBdpkuSkzoeG/DC9QAMrqGY+xdEeKFqWV2Y=" rel="preload stylesheet" as=style>
 <link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
@@ -78,11 +78,10 @@
 </header>
 <section class=entry-content>
 <p>查看、安装 zsh 查看是否安装了 zsh
-# 方法一： chsh -l # 方法二： cat /etc/shells # 可能结果： /bin/sh /bin/bash /sbin/nologin /usr/bin/sh /usr/bin/bash /usr/sbin/nologin /bin/zsh # 如果有 /bin/zsh 代表已经安装，反之则没有 安装 zsh
-yum install -y zsh 切换 shell 为 zsh
-chsh -s /bin/zsh 安装 oh-my-zsh 安装需要 git，没有安装需要先安装：
-yum install -y git 1、可以通过别人已经写好的脚本安装，用 curl 或者 wget 下载脚本来安装：
-通过 curl sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 通过 wget sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 2、也可以自己用 git 安装...</p>
+1 2 3 4 5 6 7 8 9 10 11 12 13 # 方法一： chsh -l # 方法二： cat /etc/shells # 可能结果： /bin/sh /bin/bash /sbin/nologin /usr/bin/sh /usr/bin/bash /usr/sbin/nologin /bin/zsh # 如果有 /bin/zsh 代表已经安装，反之则没有 安装 zsh
+1 yum install -y zsh 切换 shell 为 zsh
+1 chsh -s /bin/zsh 安装 oh-my-zsh 安装需要 git，没有安装需要先安装：
+1 yum install -y git 1、可以通过别人已经写好的脚本安装，用 curl 或者 wget 下载脚本来安装：...</p>
 </section>
 <footer class=entry-footer>November 17, 2019&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to Centos 安装 oh-my-zsh" href=https://jsharkc.github.io/post/centos-install-oh-my-zsh/></a>

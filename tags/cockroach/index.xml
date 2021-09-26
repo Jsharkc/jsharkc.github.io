@@ -17,16 +17,14 @@
       
       <guid>https://jsharkc.github.io/post/cockroachdb/</guid>
       <description>初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
-docker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
-2.启动第一个节点 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &amp;#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&amp;#34; \ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
+1  docker network create -d bridge roachnet  我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
+2.启动第一个节点 1 2 3 4 5 6 7  docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &amp;#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&amp;#34; \ cockroachdb/cockroach:v1.0.4 start --insecure  此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
 docker run：Docker 命令启动一个新的容器。
 -d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
 --name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
 --hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
 --net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
--p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。
--v &amp;quot;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&amp;quot;：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。
-3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。</description>
+-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。</description>
     </item>
     
   </channel>
