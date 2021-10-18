@@ -11,7 +11,7 @@
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.83c4eb6d61e6a4176992e4a4ce8786fc30bd40032ba8663ec5d11e285a965766.css integrity="sha256-g8TrbWHmpBdpkuSkzoeG/DC9QAMrqGY+xdEeKFqWV2Y=" rel="preload stylesheet" as=style>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
 <link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
@@ -51,11 +51,6 @@
 </a>
 </li>
 <li>
-<a href=https://jsharkc.github.io/categories title=Categories>
-<span>Categories</span>
-</a>
-</li>
-<li>
 <a href=https://jsharkc.github.io/tags title=Tags>
 <span>Tags</span>
 </a>
@@ -72,6 +67,32 @@
 <header class=page-header><div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a></div>
 <h1>Posts</h1>
 </header>
+<article class=post-entry>
+<header class=entry-header>
+<h2>create-react-app 脚手架添加 less 支持和 antd 样式按需加载
+</h2>
+</header>
+<section class=entry-content>
+<p>create-react-app 脚手架添加 less 支持和 antd 样式按需加载 1. 创建项目 1 2 3 4 5 6 7 npm install -g create-react-app /* 安装create-react-app，建议使用cnpm */ create-react-app react-test /* 使用命令创建应用，myapp为项目名称 */ cd react-test /* 进入目录，然后启动 */ npm start 2.create-react-app 把 webpack 配置文件暴露出来 create-react-app 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：
+1 npm run eject 3. 添加 babel-plugin-import babel-plugin-import 是一个用于 按需加载 组件代码和样式 的 babel 插件（原理）。
+1 npm install babel-plugin-import --save-dev 4.添加 less 、less-loader 1 npm install less less-loader --save-dev 5....</p>
+</section>
+<footer class=entry-footer>February 3, 2018&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to create-react-app 脚手架添加 less 支持和 antd 样式按需加载" href=https://jsharkc.github.io/post/create-react-app-add-less-and-antd-%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Cobra - 一个 Golang 命令行项目生成工具
+</h2>
+</header>
+<section class=entry-content>
+<p>Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
+组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
+1 2 3 4 5 6 type Command struct { Use string // The one-line usage message. Short string // The short description shown in the 'help' output. Long string // The long message shown in the 'help&lt;this-command>' output. Run func(cmd *Command, args []string) // Run runs the command....</p>
+</section>
+<footer class=entry-footer>July 17, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Cobra - 一个 Golang 命令行项目生成工具" href=https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/></a>
+</article>
 <article class=post-entry>
 <header class=entry-header>
 <h2>Golang slice 切片原理
@@ -214,34 +235,6 @@ docker run：Docker 命令启动一个新的容器。
 </section>
 <footer class=entry-footer>March 17, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to 初探 Cockroachdb" href=https://jsharkc.github.io/post/cockroachdb/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Go 程序的性能优化及 pprof 的使用
-</h2>
-</header>
-<section class=entry-content>
-<p>Go 程序的性能优化及 pprof 的使用 转自snowInPluto
-程序的性能优化无非就是对程序占用资源的优化。对于服务器而言，最重要的两项资源莫过于 CPU 和内存。性能优化，就是在对于不影响程序数据处理能力的情况下，我们通常要求程序的 CPU 的内存占用尽量低。反过来说，也就是当程序 CPU 和内存占用不变的情况下，尽量地提高程序的数据处理能力或者说是吞吐量。
-Go 的原生工具链中提供了非常多丰富的工具供开发者使用，其中包括 pprof。
-对于 pprof 的使用要分成下面两部分来说。
-Web 程序使用 pprof 先写一个简单的 Web 服务程序。程序在 9876 端口上接收请求。
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 package main import ( "bytes" "io/ioutil" "log" "math/rand" "net/http" _ "net/http/pprof" ) func main() { http....</p>
-</section>
-<footer class=entry-footer>March 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Go 程序的性能优化及 pprof 的使用" href=https://jsharkc.github.io/post/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96pprof/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>跨域资源共享 CORS 详解
-</h2>
-</header>
-<section class=entry-content>
-<p>跨域资源共享 CORS 详解 CORS是一个W3C标准，全称是"跨域资源共享"（Cross-origin resource sharing）。 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。 本文详细介绍CORS的内部机制。
-...</p>
-</section>
-<footer class=entry-footer>January 30, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;yusank</footer>
-<a class=entry-link aria-label="post link to 跨域资源共享 CORS 详解" href=https://jsharkc.github.io/post/cors/></a>
 </article>
 <footer class=page-footer>
 <nav class=pagination>

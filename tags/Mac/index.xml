@@ -9,7 +9,20 @@
       <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 17 Nov 2019 12:40:56 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/mac/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 16 Oct 2021 14:37:03 +0800</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/mac/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>修复 dyld: Library not loaded</title>
+      <link>https://jsharkc.github.io/post/fix-dyld-library-not-loaded/</link>
+      <pubDate>Sat, 16 Oct 2021 14:37:03 +0800</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/fix-dyld-library-not-loaded/</guid>
+      <description>flutter 最新版 2.5.3 安装 CocoaPods 需要 ruby 2.6 以上，而我 MAC 上 ruby 只有 2.5 所以需要更新 ruby，brew install ruby 后，就碰到了这个问题。
+报错信息：
+1 2 3 4  dyld: Library not loaded: /usr/local/opt/ruby/lib/libruby.2.5.dylib Referenced from: /usr/local/bin/vi Reason: image not found   也就是说，现在 ruby 2.6 所以找不到 ruby 2.5 了
+首先
+1 2 3 4 5 6 7 8 9 10 11 12  &amp;gt; which vi 找到 vi 所在的位置，/usr/local/bin/vi，然后 通过 otool 找到该命令依赖的库 &amp;gt; otool -L /usr/local/bin/vi /usr/local/bin/vi: .</description>
+    </item>
+    
     <item>
       <title>Mac安装破解版 Charles</title>
       <link>https://jsharkc.github.io/post/mac-install-charles/</link>

@@ -9,7 +9,18 @@
       <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 07 Apr 2018 21:42:23 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 26 Sep 2021 19:05:03 +0800</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang 按大小 or 时间切割日志</title>
+      <link>https://jsharkc.github.io/post/golang-devide-log-by-size-or-time/</link>
+      <pubDate>Sun, 26 Sep 2021 19:05:03 +0800</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/golang-devide-log-by-size-or-time/</guid>
+      <description>Log 用的 go.uber.org/zap 库。
+按大小切割日志 按大小切割日志，用到 github.com/natefinch/lumberjack 库，代码如下：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71  package log import ( &amp;#34;fmt&amp;#34; &amp;#34;os&amp;#34; &amp;#34;strings&amp;#34; &amp;#34;time&amp;#34; &amp;#34;github.</description>
+    </item>
+    
     <item>
       <title>Mac 使用 V2ray 科学上网</title>
       <link>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>

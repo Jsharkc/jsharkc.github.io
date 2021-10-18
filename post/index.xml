@@ -9,7 +9,31 @@
       <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 13 Jul 2021 17:41:23 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 16 Oct 2021 14:37:03 +0800</lastBuildDate><atom:link href="https://jsharkc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>修复 dyld: Library not loaded</title>
+      <link>https://jsharkc.github.io/post/fix-dyld-library-not-loaded/</link>
+      <pubDate>Sat, 16 Oct 2021 14:37:03 +0800</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/fix-dyld-library-not-loaded/</guid>
+      <description>flutter 最新版 2.5.3 安装 CocoaPods 需要 ruby 2.6 以上，而我 MAC 上 ruby 只有 2.5 所以需要更新 ruby，brew install ruby 后，就碰到了这个问题。
+报错信息：
+1 2 3 4  dyld: Library not loaded: /usr/local/opt/ruby/lib/libruby.2.5.dylib Referenced from: /usr/local/bin/vi Reason: image not found   也就是说，现在 ruby 2.6 所以找不到 ruby 2.5 了
+首先
+1 2 3 4 5 6 7 8 9 10 11 12  &amp;gt; which vi 找到 vi 所在的位置，/usr/local/bin/vi，然后 通过 otool 找到该命令依赖的库 &amp;gt; otool -L /usr/local/bin/vi /usr/local/bin/vi: .</description>
+    </item>
+    
+    <item>
+      <title>Golang 按大小 or 时间切割日志</title>
+      <link>https://jsharkc.github.io/post/golang-devide-log-by-size-or-time/</link>
+      <pubDate>Sun, 26 Sep 2021 19:05:03 +0800</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/golang-devide-log-by-size-or-time/</guid>
+      <description>Log 用的 go.uber.org/zap 库。
+按大小切割日志 按大小切割日志，用到 github.com/natefinch/lumberjack 库，代码如下：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71  package log import ( &amp;#34;fmt&amp;#34; &amp;#34;os&amp;#34; &amp;#34;strings&amp;#34; &amp;#34;time&amp;#34; &amp;#34;github.</description>
+    </item>
+    
     <item>
       <title>有进程为什么还创造线程</title>
       <link>https://jsharkc.github.io/post/%E6%9C%89%E8%BF%9B%E7%A8%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E8%A6%81%E7%BA%BF%E7%A8%8B/</link>
@@ -134,10 +158,10 @@ config.json 添加 http 代理：</description>
     
     <item>
       <title>create-react-app 脚手架添加 less 支持和 antd 样式按需加载</title>
-      <link>https://jsharkc.github.io/post/create-react-app-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%B7%BB%E5%8A%A0-less-%E6%94%AF%E6%8C%81%E5%92%8C-antd-%E6%A0%B7%E5%BC%8F%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/</link>
-      <pubDate>Sat, 03 Feb 2018 17:42:23 +0000</pubDate>
+      <link>https://jsharkc.github.io/post/create-react-app-add-less-and-antd-%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/</link>
+      <pubDate>Sat, 03 Feb 2018 17:42:23 +0800</pubDate>
       
-      <guid>https://jsharkc.github.io/post/create-react-app-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%B7%BB%E5%8A%A0-less-%E6%94%AF%E6%8C%81%E5%92%8C-antd-%E6%A0%B7%E5%BC%8F%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/</guid>
+      <guid>https://jsharkc.github.io/post/create-react-app-add-less-and-antd-%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/</guid>
       <description>create-react-app 脚手架添加 less 支持和 antd 样式按需加载 1. 创建项目 1 2 3 4 5 6 7  npm install -g create-react-app /* 安装create-react-app，建议使用cnpm */ create-react-app react-test /* 使用命令创建应用，myapp为项目名称 */ cd react-test /* 进入目录，然后启动 */ npm start   2.create-react-app 把 webpack 配置文件暴露出来 create-react-app 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：
 1  npm run eject   3. 添加 babel-plugin-import babel-plugin-import 是一个用于 按需加载 组件代码和样式 的 babel 插件（原理）。
 1  npm install babel-plugin-import --save-dev   4.添加 less 、less-loader 1  npm install less less-loader --save-dev   5.</description>
@@ -309,10 +333,10 @@ Web 程序使用 pprof 先写一个简单的 Web 服务程序。程序在 9876 �
     
     <item>
       <title>Centos7 安装 Docker-CE 社区版</title>
-      <link>https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/</link>
-      <pubDate>Sun, 15 Jan 2017 17:42:23 +0000</pubDate>
+      <link>https://jsharkc.github.io/post/centos7-install-docker/</link>
+      <pubDate>Sun, 15 Jan 2017 17:42:23 +8000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/</guid>
+      <guid>https://jsharkc.github.io/post/centos7-install-docker/</guid>
       <description>Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
 1  &amp;gt; yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版

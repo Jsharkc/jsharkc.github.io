@@ -26,10 +26,10 @@
     
     <item>
       <title>Centos7 安装 Docker-CE 社区版</title>
-      <link>https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/</link>
-      <pubDate>Sun, 15 Jan 2017 17:42:23 +0000</pubDate>
+      <link>https://jsharkc.github.io/post/centos7-install-docker/</link>
+      <pubDate>Sun, 15 Jan 2017 17:42:23 +8000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/centos7%E5%AE%89%E8%A3%85docker/</guid>
+      <guid>https://jsharkc.github.io/post/centos7-install-docker/</guid>
       <description>Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
 1  &amp;gt; yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版

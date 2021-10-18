@@ -11,7 +11,7 @@
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.83c4eb6d61e6a4176992e4a4ce8786fc30bd40032ba8663ec5d11e285a965766.css integrity="sha256-g8TrbWHmpBdpkuSkzoeG/DC9QAMrqGY+xdEeKFqWV2Y=" rel="preload stylesheet" as=style>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
 <link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
@@ -50,11 +50,6 @@
 </a>
 </li>
 <li>
-<a href=https://jsharkc.github.io/categories title=Categories>
-<span>Categories</span>
-</a>
-</li>
-<li>
 <a href=https://jsharkc.github.io/tags title=Tags>
 <span>Tags</span>
 </a>
@@ -71,6 +66,21 @@
 <header class=page-header><div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/tags/>Tags</a></div>
 <h1>Mac</h1>
 </header>
+<article class="post-entry tag-entry">
+<header class=entry-header>
+<h2>修复 dyld: Library not loaded
+</h2>
+</header>
+<section class=entry-content>
+<p>flutter 最新版 2.5.3 安装 CocoaPods 需要 ruby 2.6 以上，而我 MAC 上 ruby 只有 2.5 所以需要更新 ruby，brew install ruby 后，就碰到了这个问题。
+报错信息：
+1 2 3 4 dyld: Library not loaded: /usr/local/opt/ruby/lib/libruby.2.5.dylib Referenced from: /usr/local/bin/vi Reason: image not found 也就是说，现在 ruby 2.6 所以找不到 ruby 2.5 了
+首先
+1 2 3 4 5 6 7 8 9 10 11 12 > which vi 找到 vi 所在的位置，/usr/local/bin/vi，然后 通过 otool 找到该命令依赖的库 > otool -L /usr/local/bin/vi /usr/local/bin/vi: ....</p>
+</section>
+<footer class=entry-footer>October 16, 2021&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to 修复 dyld: Library not loaded" href=https://jsharkc.github.io/post/fix-dyld-library-not-loaded/></a>
+</article>
 <article class="post-entry tag-entry">
 <header class=entry-header>
 <h2>Mac安装破解版 Charles

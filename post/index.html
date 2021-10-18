@@ -11,7 +11,7 @@
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.83c4eb6d61e6a4176992e4a4ce8786fc30bd40032ba8663ec5d11e285a965766.css integrity="sha256-g8TrbWHmpBdpkuSkzoeG/DC9QAMrqGY+xdEeKFqWV2Y=" rel="preload stylesheet" as=style>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
 <link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
 <link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
@@ -51,11 +51,6 @@
 </a>
 </li>
 <li>
-<a href=https://jsharkc.github.io/categories title=Categories>
-<span>Categories</span>
-</a>
-</li>
-<li>
 <a href=https://jsharkc.github.io/tags title=Tags>
 <span>Tags</span>
 </a>
@@ -72,6 +67,34 @@
 <header class=page-header><div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a></div>
 <h1>Posts</h1>
 </header>
+<article class=post-entry>
+<header class=entry-header>
+<h2>修复 dyld: Library not loaded
+</h2>
+</header>
+<section class=entry-content>
+<p>flutter 最新版 2.5.3 安装 CocoaPods 需要 ruby 2.6 以上，而我 MAC 上 ruby 只有 2.5 所以需要更新 ruby，brew install ruby 后，就碰到了这个问题。
+报错信息：
+1 2 3 4 dyld: Library not loaded: /usr/local/opt/ruby/lib/libruby.2.5.dylib Referenced from: /usr/local/bin/vi Reason: image not found 也就是说，现在 ruby 2.6 所以找不到 ruby 2.5 了
+首先
+1 2 3 4 5 6 7 8 9 10 11 12 > which vi 找到 vi 所在的位置，/usr/local/bin/vi，然后 通过 otool 找到该命令依赖的库 > otool -L /usr/local/bin/vi /usr/local/bin/vi: ....</p>
+</section>
+<footer class=entry-footer>October 16, 2021&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to 修复 dyld: Library not loaded" href=https://jsharkc.github.io/post/fix-dyld-library-not-loaded/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Golang 按大小 or 时间切割日志
+</h2>
+</header>
+<section class=entry-content>
+<p>Log 用的 go.uber.org/zap 库。
+按大小切割日志 按大小切割日志，用到 github.com/natefinch/lumberjack 库，代码如下：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 package log import ( "fmt" "os" "strings" "time" "github....</p>
+</section>
+<footer class=entry-footer>September 26, 2021&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Golang 按大小 or 时间切割日志" href=https://jsharkc.github.io/post/golang-devide-log-by-size-or-time/></a>
+</article>
 <article class=post-entry>
 <header class=entry-header>
 <h2>有进程为什么还创造线程
@@ -209,32 +232,6 @@ config.json 添加 http 代理：...</p>
 </section>
 <footer class=entry-footer>April 7, 2018&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to Mac 使用 V2ray 科学上网" href=https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>create-react-app 脚手架添加 less 支持和 antd 样式按需加载
-</h2>
-</header>
-<section class=entry-content>
-<p>create-react-app 脚手架添加 less 支持和 antd 样式按需加载 1. 创建项目 1 2 3 4 5 6 7 npm install -g create-react-app /* 安装create-react-app，建议使用cnpm */ create-react-app react-test /* 使用命令创建应用，myapp为项目名称 */ cd react-test /* 进入目录，然后启动 */ npm start 2.create-react-app 把 webpack 配置文件暴露出来 create-react-app 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：
-1 npm run eject 3. 添加 babel-plugin-import babel-plugin-import 是一个用于 按需加载 组件代码和样式 的 babel 插件（原理）。
-1 npm install babel-plugin-import --save-dev 4.添加 less 、less-loader 1 npm install less less-loader --save-dev 5....</p>
-</section>
-<footer class=entry-footer>February 3, 2018&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to create-react-app 脚手架添加 less 支持和 antd 样式按需加载" href=https://jsharkc.github.io/post/create-react-app-%E8%84%9A%E6%89%8B%E6%9E%B6%E6%B7%BB%E5%8A%A0-less-%E6%94%AF%E6%8C%81%E5%92%8C-antd-%E6%A0%B7%E5%BC%8F%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Cobra - 一个 Golang 命令行项目生成工具
-</h2>
-</header>
-<section class=entry-content>
-<p>Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
-组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
-1 2 3 4 5 6 type Command struct { Use string // The one-line usage message. Short string // The short description shown in the 'help' output. Long string // The long message shown in the 'help&lt;this-command>' output. Run func(cmd *Command, args []string) // Run runs the command....</p>
-</section>
-<footer class=entry-footer>July 17, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Cobra - 一个 Golang 命令行项目生成工具" href=https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/></a>
 </article>
 <footer class=page-footer>
 <nav class=pagination>
