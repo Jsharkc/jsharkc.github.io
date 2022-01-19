@@ -6,11 +6,11 @@
 <title>Docker Note | Jacobc's blog</title>
 <meta name=keywords content="Docker">
 <meta name=description content="Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为<none>的为虚悬镜像：
-1  <none>	<none>	00285df0df87	5 days ago	342 MB   ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
-1 2 3  $ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB   ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
-1  $ docker rmi $(docker images -q -f dangling=ture)   docker images ####—filter -f
+<none>	<none>	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
 ​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
-1 2 3 4  $ docker images -f since=mongo:3.">
+$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。">
 <meta name=author content="Jsharkc">
 <link rel=canonical href=https://jsharkc.github.io/post/docker-note/>
 <meta name=google-site-verification content="XYZabc">
@@ -30,11 +30,11 @@
 <style>#theme-toggle,.top-link{display:none}</style>
 </noscript><meta property="og:title" content="Docker Note">
 <meta property="og:description" content="Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为<none>的为虚悬镜像：
-1  <none>	<none>	00285df0df87	5 days ago	342 MB   ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
-1 2 3  $ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB   ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
-1  $ docker rmi $(docker images -q -f dangling=ture)   docker images ####—filter -f
+<none>	<none>	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
 ​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
-1 2 3 4  $ docker images -f since=mongo:3.">
+$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://jsharkc.github.io/post/docker-note/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
 <meta property="article:published_time" content="2017-04-12T16:52:24+00:00">
@@ -43,13 +43,13 @@
 <meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
 <meta name=twitter:title content="Docker Note">
 <meta name=twitter:description content="Docker Note 镜像 虚悬镜像 ​	没有仓库名，也没有标签，均为<none>的为虚悬镜像：
-1  <none>	<none>	00285df0df87	5 days ago	342 MB   ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
-1 2 3  $ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB   ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
-1  $ docker rmi $(docker images -q -f dangling=ture)   docker images ####—filter -f
+<none>	<none>	00285df0df87	5 days ago	342 MB ​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<none>，可用下面的命令专门显示这类镜像：
+$ docker images -f dangling=ture REPOSITORY	TAG	IMAGE ID CREATED	SIZE <none>	<none>	00285df0df87	5 days ago 342 MB ​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
+$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
 ​	docker images 还支持强大的过滤器参数 --filter	，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
-1 2 3 4  $ docker images -f since=mongo:3.">
+$ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	latest	5f515359c7f8	5 days ago	183 MB nginx	latest	05a60462f8ba	5 days ago	181 MB ​	想查看某个位置之前的镜像也可以，只需要吧since换成before即可。">
 <script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Docker Note","item":"https://jsharkc.github.io/post/docker-note/"}]}</script>
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Docker Note","name":"Docker Note","description":"Docker Note 镜像 虚悬镜像 ​\t没有仓库名，也没有标签，均为\u0026lt;none\u0026gt;的为虚悬镜像：\n1  \u0026lt;none\u0026gt;\t\u0026lt;none\u0026gt;\t00285df0df87\t5 days ago\t342 MB   ​\t由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为\u0026lt;none\u0026gt;，可用下面的命令专门显示这类镜像：\n1 2 3  $ docker images -f dangling=ture REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE \u0026lt;none\u0026gt;\t\u0026lt;none\u0026gt;\t00285df0df87\t5 days ago 342 MB   ​\t一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。\n1  $ docker rmi $(docker images -q -f dangling=ture)   docker images ####—filter -f\n​\tdocker images 还支持强大的过滤器参数 --filter\t，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：\n1 2 3 4  $ docker images -f since=mongo:3.","keywords":["Docker"],"articleBody":"Docker Note 镜像 虚悬镜像 ​\t没有仓库名，也没有标签，均为的为虚悬镜像：\n1  \t\t00285df0df87\t5 days ago\t342 MB   ​\t由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为，可用下面的命令专门显示这类镜像：\n1 2 3  $ docker images -f dangling=ture REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE \t\t00285df0df87\t5 days ago 342 MB   ​\t一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。\n1  $ docker rmi $(docker images -q -f dangling=ture)   docker images ####—filter -f\n​\tdocker images 还支持强大的过滤器参数 --filter\t，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：\n1 2 3 4  $ docker images -f since=mongo:3.2 REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE redis\tlatest\t5f515359c7f8\t5 days ago\t183 MB nginx\tlatest\t05a60462f8ba\t5 days ago\t181 MB   ​\t想查看某个位置之前的镜像也可以，只需要吧since换成before即可。\n####以特定格式显示镜像\n​\t把所有的虚悬镜像的 ID 列出来\n1 2 3 4 5 6 7 8  $ docker images -q 5f515359c7f8 05a60462f8ba fe9198c04d62 00285df0df87 f753707788c5 f753707788c5 1e0c3dd64ccd   ​\t以自己想要的格式显示，比如显示镜像 ID 和仓库名：\n1 2 3 4 5 6 7 8  $ docker images --format \"{{.ID}}: {{.Repository}}\" 5f515359c7f8: redis 05a60462f8ba: nginx fe9198c04d62: mongo 00285df0df87:  f753707788c5: ubuntu f753707788c5: ubuntu 1e0c3dd64ccd: ubuntu   ​\t以表格等距显示，并且有标题行\n1 2 3 4 5 6 7 8 9  $ docker images --format \"table {{.ID}}\\t{{.Repository}}\\t{{.Tag}}\" IMAGE ID REPOSITORY TAG 5f515359c7f8 redis latest 05a60462f8ba nginx latest fe9198c04d62 mongo 3.2 00285df0df87   f753707788c5 ubuntu 16.04 f753707788c5 ubuntu latest 1e0c3dd64ccd ubuntu 14.04   Dockerfile 定制镜像 ​\tDockerfile 中每一个指令都会建立一层，RUN 也不例外。每一个 RUN 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，commit 这一层的修改，构成新的镜像。\nContext 上下文 ​\t当构建的时候，用户会指定构建镜像上下文的路径，docker build 命令得知这个路径后，会将路径下的所有内容打包，然后上传给 Docker 引擎。这样 Docker 引擎收到这个上下文包后，展开就会获得构建镜像所需的一切文件。\nDockerfile 指令详解 ####COPY 复制文件\n格式：\n COPY ...  COPY [\"\",... \"\"]  和 RUN 指令一样，也有两种格式，一种类似于命令行，一种类似于函数调用。\nCOPY 指令将从构建上下文目录中  的文件/目录复制到新的一层的镜像内的  位置。比如：\n1  COPY package.json /usr/src/app/    可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 filepath.Match 规则，如：\n1 2  COPY hom* /mydir/ COPY hom?.txt /mydir/    可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 WORKDIR指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。\n此外，还需要注意一点，使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。\n####CMD 容器启动命令\nCMD 指令的格式和 RUN 相似，也是两种格式：\n shell 格式：CMD  exec 格式：CMD [\"可执行文件\", \"参数1\", \"参数2\"...] 参数列表格式：CMD [\"参数1\", \"参数2\"...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。  之前介绍容器的时候曾经说过，Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。CMD 指令就是用于指定__默认__的__容器主进程__的__启动命令__的。\n在指令格式上，一般推荐使用 exec 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 \"，而不要使用单引号。\n如果使用 shell 格式的话，实际的命令会被包装为 sh -c 的参数的形式进行执行。比如：\n1 2  CMD echo $HOME   在实际执行中，会将其变更为：\n1  CMD [ \"sh\", \"-c\", \"echo $HOME\" ]   ENTRYPOINT 入口点 ENTRYPOINT 的格式和 RUN 指令格式一样，分为 exec 格式和 shell 格式。\nENTRYPOINT 的目的和 CMD 一样，都是在指定容器启动程序及参数。ENTRYPOINT 在运行时也可以替代，不过比 CMD 要略显繁琐，需要通过 docker run 的参数 --entrypoint 来指定。\n当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令，换句话说实际执行时，将变为：\n1   \"\"   ENV 设置环境变量 格式有两种：\n ENV   ENV = =...  这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如 RUN，还是运行时的应用，都可以直接使用这里定义的环境变量。\n1 2 3  ENV VERSION=1.0 DEBUG=on \\ NAME=\"Happy Feet\"   ARG 构建参数 格式：ARG [=]\n构建参数和 ENV 的效果一样，都是设置环境变量。所不同的是，ARG 所设置的构建环境的环境变量，在将来__容器运行时__是__不会存在这些环境变量__的。但是不要因此就使用 ARG 保存密码之类的信息，因为 docker history 还是可以看到所有值的。\nDockerfile 中的 ARG 指令是定义参数名称，以及定义其默认值。该默认值可以在构建命令 docker build 中用 --build-arg = 来覆盖。\n在 1.13 之前的版本，要求 --build-arg 中的参数名，必须在 Dockerfile 中用 ARG 定义过了，换句话说，就是 --build-arg 指定的参数，必须在 Dockerfile 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 Dockerfile 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。\nVOLUME 定义匿名卷 格式为：\n VOLUME [\"\", \"\"...] VOLUME   之前我们说过，容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，后面的章节我们会进一步介绍 Docker 卷的概念。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。\n1 2  VOLUME /data   这里的 /data 目录就会在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：\n1 2  docker run -d -v mydata:/data xxxx   在这行命令中，就使用了 mydata 这个命名卷挂载到了 /data 这个位置，替代了 Dockerfile 中定义的匿名卷的挂载配置。\nEXPOSE 声明端口 格式为 EXPOSE  [...]。\nEXPOSE 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 docker run -P时，会自动随机映射 EXPOSE 的端口。\nWORKDIR 指定工作目录 格式为 WORKDIR 。\n使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。\nONBUILD 为他人做嫁衣裳 格式：ONBUILD 。\nONBUILD 是一个特殊的指令，它后面跟的是其它指令，比如 RUN, COPY 等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。\n仓库 Docker Hub docker search 查找的时候通过 -s N 参数可以指定仅显示评价为 N 星以上的镜像（新版本Docker推荐使用--filter=stars=N参数）。\n1 2 3 4 5 6 7 8 9  docker search centos --filter=stars=20 NAME DESCRIPTION STARS OFFICIAL AUTOMATED centos The official build of CentOS. 3631 [OK] ansible/centos7-ansible Ansible on Centos7 101 [OK] jdeathe/centos-ssh CentOS-6 6.9 ... 83 [OK] tutum/centos Simple CentOS docker 33 imagine10255/centos6-lnmp-php56 centos6-lnmp-php56 30 [OK] gluster/gluster-centos Official GlusterFS Image [ CentOS-7 + Glu... 20 [OK]   网络 容器互联 --link参数可以让容器之间安全的进行交互\n--link 参数的格式为 --link name:alias，其中 name 是要链接的容器的名称，alias 是这个连接的别名。\n","wordCount":"551","inLanguage":"en","datePublished":"2017-04-12T16:52:24Z","dateModified":"2017-04-12T16:52:24Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/docker-note/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Docker Note","name":"Docker Note","description":"Docker Note 镜像 虚悬镜像 ​\t没有仓库名，也没有标签，均为\u0026lt;none\u0026gt;的为虚悬镜像：\n\u0026lt;none\u0026gt;\t\u0026lt;none\u0026gt;\t00285df0df87\t5 days ago\t342 MB ​\t由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为\u0026lt;none\u0026gt;，可用下面的命令专门显示这类镜像：\n$ docker images -f dangling=ture REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE \u0026lt;none\u0026gt;\t\u0026lt;none\u0026gt;\t00285df0df87\t5 days ago 342 MB ​\t一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。\n$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f\n​\tdocker images 还支持强大的过滤器参数 --filter\t，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：\n$ docker images -f since=mongo:3.2 REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE redis\tlatest\t5f515359c7f8\t5 days ago\t183 MB nginx\tlatest\t05a60462f8ba\t5 days ago\t181 MB ​\t想查看某个位置之前的镜像也可以，只需要吧since换成before即可。","keywords":["Docker"],"articleBody":"Docker Note 镜像 虚悬镜像 ​\t没有仓库名，也没有标签，均为的为虚悬镜像：\n\t\t00285df0df87\t5 days ago\t342 MB ​\t由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为，可用下面的命令专门显示这类镜像：\n$ docker images -f dangling=ture REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE \t\t00285df0df87\t5 days ago 342 MB ​\t一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。\n$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f\n​\tdocker images 还支持强大的过滤器参数 --filter\t，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：\n$ docker images -f since=mongo:3.2 REPOSITORY\tTAG\tIMAGE ID CREATED\tSIZE redis\tlatest\t5f515359c7f8\t5 days ago\t183 MB nginx\tlatest\t05a60462f8ba\t5 days ago\t181 MB ​\t想查看某个位置之前的镜像也可以，只需要吧since换成before即可。\n####以特定格式显示镜像\n​\t把所有的虚悬镜像的 ID 列出来\n$ docker images -q 5f515359c7f8 05a60462f8ba fe9198c04d62 00285df0df87 f753707788c5 f753707788c5 1e0c3dd64ccd ​\t以自己想要的格式显示，比如显示镜像 ID 和仓库名：\n$ docker images --format \"{{.ID}}: {{.Repository}}\" 5f515359c7f8: redis 05a60462f8ba: nginx fe9198c04d62: mongo 00285df0df87:  f753707788c5: ubuntu f753707788c5: ubuntu 1e0c3dd64ccd: ubuntu ​\t以表格等距显示，并且有标题行\n$ docker images --format \"table {{.ID}}\\t{{.Repository}}\\t{{.Tag}}\" IMAGE ID REPOSITORY TAG 5f515359c7f8 redis latest 05a60462f8ba nginx latest fe9198c04d62 mongo 3.2 00285df0df87   f753707788c5 ubuntu 16.04 f753707788c5 ubuntu latest 1e0c3dd64ccd ubuntu 14.04 Dockerfile 定制镜像 ​\tDockerfile 中每一个指令都会建立一层，RUN 也不例外。每一个 RUN 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，commit 这一层的修改，构成新的镜像。\nContext 上下文 ​\t当构建的时候，用户会指定构建镜像上下文的路径，docker build 命令得知这个路径后，会将路径下的所有内容打包，然后上传给 Docker 引擎。这样 Docker 引擎收到这个上下文包后，展开就会获得构建镜像所需的一切文件。\nDockerfile 指令详解 ####COPY 复制文件\n格式：\n COPY ...  COPY [\"\",... \"\"]  和 RUN 指令一样，也有两种格式，一种类似于命令行，一种类似于函数调用。\nCOPY 指令将从构建上下文目录中  的文件/目录复制到新的一层的镜像内的  位置。比如：\nCOPY package.json /usr/src/app/  可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 filepath.Match 规则，如：\nCOPY hom* /mydir/ COPY hom?.txt /mydir/  可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 WORKDIR指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。\n此外，还需要注意一点，使用 COPY 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。\n####CMD 容器启动命令\nCMD 指令的格式和 RUN 相似，也是两种格式：\n shell 格式：CMD  exec 格式：CMD [\"可执行文件\", \"参数1\", \"参数2\"...] 参数列表格式：CMD [\"参数1\", \"参数2\"...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。  之前介绍容器的时候曾经说过，Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。CMD 指令就是用于指定__默认__的__容器主进程__的__启动命令__的。\n在指令格式上，一般推荐使用 exec 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 \"，而不要使用单引号。\n如果使用 shell 格式的话，实际的命令会被包装为 sh -c 的参数的形式进行执行。比如：\nCMD echo $HOME 在实际执行中，会将其变更为：\nCMD [ \"sh\", \"-c\", \"echo $HOME\" ] ENTRYPOINT 入口点 ENTRYPOINT 的格式和 RUN 指令格式一样，分为 exec 格式和 shell 格式。\nENTRYPOINT 的目的和 CMD 一样，都是在指定容器启动程序及参数。ENTRYPOINT 在运行时也可以替代，不过比 CMD 要略显繁琐，需要通过 docker run 的参数 --entrypoint 来指定。\n当指定了 ENTRYPOINT 后，CMD 的含义就发生了改变，不再是直接的运行其命令，而是将 CMD 的内容作为参数传给 ENTRYPOINT 指令，换句话说实际执行时，将变为：\n \"\" ENV 设置环境变量 格式有两种：\n ENV   ENV = =...  这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如 RUN，还是运行时的应用，都可以直接使用这里定义的环境变量。\nENV VERSION=1.0 DEBUG=on \\ NAME=\"Happy Feet\" ARG 构建参数 格式：ARG [=]\n构建参数和 ENV 的效果一样，都是设置环境变量。所不同的是，ARG 所设置的构建环境的环境变量，在将来__容器运行时__是__不会存在这些环境变量__的。但是不要因此就使用 ARG 保存密码之类的信息，因为 docker history 还是可以看到所有值的。\nDockerfile 中的 ARG 指令是定义参数名称，以及定义其默认值。该默认值可以在构建命令 docker build 中用 --build-arg = 来覆盖。\n在 1.13 之前的版本，要求 --build-arg 中的参数名，必须在 Dockerfile 中用 ARG 定义过了，换句话说，就是 --build-arg 指定的参数，必须在 Dockerfile 中使用了。如果对应参数没有被使用，则会报错退出构建。从 1.13 开始，这种严格的限制被放开，不再报错退出，而是显示警告信息，并继续构建。这对于使用 CI 系统，用同样的构建流程构建不同的 Dockerfile 的时候比较有帮助，避免构建命令必须根据每个 Dockerfile 的内容修改。\nVOLUME 定义匿名卷 格式为：\n VOLUME [\"\", \"\"...] VOLUME   之前我们说过，容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，后面的章节我们会进一步介绍 Docker 卷的概念。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 Dockerfile 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。\nVOLUME /data 这里的 /data 目录就会在运行时自动挂载为匿名卷，任何向 /data 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：\ndocker run -d -v mydata:/data xxxx 在这行命令中，就使用了 mydata 这个命名卷挂载到了 /data 这个位置，替代了 Dockerfile 中定义的匿名卷的挂载配置。\nEXPOSE 声明端口 格式为 EXPOSE  [...]。\nEXPOSE 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 docker run -P时，会自动随机映射 EXPOSE 的端口。\nWORKDIR 指定工作目录 格式为 WORKDIR 。\n使用 WORKDIR 指令可以来指定工作目录（或者称为当前目录），以后各层的当前目录就被改为指定的目录，如该目录不存在，WORKDIR 会帮你建立目录。\nONBUILD 为他人做嫁衣裳 格式：ONBUILD 。\nONBUILD 是一个特殊的指令，它后面跟的是其它指令，比如 RUN, COPY 等，而这些指令，在当前镜像构建时并不会被执行。只有当以当前镜像为基础镜像，去构建下一级镜像的时候才会被执行。\n仓库 Docker Hub docker search 查找的时候通过 -s N 参数可以指定仅显示评价为 N 星以上的镜像（新版本Docker推荐使用--filter=stars=N参数）。\ndocker search centos --filter=stars=20 NAME DESCRIPTION STARS OFFICIAL AUTOMATED centos The official build of CentOS. 3631 [OK] ansible/centos7-ansible Ansible on Centos7 101 [OK] jdeathe/centos-ssh CentOS-6 6.9 ... 83 [OK] tutum/centos Simple CentOS docker 33 imagine10255/centos6-lnmp-php56 centos6-lnmp-php56 30 [OK] gluster/gluster-centos Official GlusterFS Image [ CentOS-7 + Glu... 20 [OK] 网络 容器互联 --link参数可以让容器之间安全的进行交互\n--link 参数的格式为 --link name:alias，其中 name 是要链接的容器的名称，alias 是这个连接的别名。\n","wordCount":"494","inLanguage":"en","datePublished":"2017-04-12T16:52:24Z","dateModified":"2017-04-12T16:52:24Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/docker-note/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
 </head>
 <body class=dark id=top>
 <script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
@@ -88,7 +88,7 @@
 <h1 class=post-title>
 Docker Note
 </h1>
-<div class=post-meta>April 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog/content/post/Docker%20Note.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+<div class=post-meta>April 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog rel="noopener noreferrer" target=_blank>Suggest Changes</a>
 </div>
 </header> <div class=toc>
 <details open>
@@ -153,69 +153,24 @@ Docker Note
 <h2 id=镜像>镜像<a hidden class=anchor aria-hidden=true href=#镜像>#</a></h2>
 <h3 id=虚悬镜像>虚悬镜像<a hidden class=anchor aria-hidden=true href=#虚悬镜像>#</a></h3>
 <p>​ 没有仓库名，也没有标签，均为<code>&lt;none></code>的为虚悬镜像：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>&lt;none&gt;		&lt;none&gt;			00285df0df87		5 days ago		342 MB
-</code></pre></td></tr></table>
-</div>
-</div><p>​ 由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<code>&lt;none></code>，可用下面的命令专门显示这类镜像：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>$ docker images -f <span class=nv>dangling</span><span class=o>=</span>ture
+<pre><code>&lt;none&gt;		&lt;none&gt;			00285df0df87		5 days ago		342 MB
+</code></pre><p>​ 由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<code>&lt;none></code>，可用下面的命令专门显示这类镜像：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>$ docker images -f dangling<span style=color:#f92672>=</span>ture
 REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
-&lt;none&gt;			&lt;none&gt;		00285df0df87		<span class=m>5</span> days ago 			<span class=m>342</span> MB
-</code></pre></td></tr></table>
-</div>
-</div><p>​ 一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>$ docker rmi <span class=k>$(</span>docker images -q -f <span class=nv>dangling</span><span class=o>=</span>ture<span class=k>)</span>
-</code></pre></td></tr></table>
-</div>
-</div><h3 id=docker-images>docker images<a hidden class=anchor aria-hidden=true href=#docker-images>#</a></h3>
+&lt;none&gt;			&lt;none&gt;		00285df0df87		<span style=color:#ae81ff>5</span> days ago 			<span style=color:#ae81ff>342</span> MB
+</code></pre></div><p>​ 一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker rmi <span style=color:#66d9ef>$(</span>docker images -q -f dangling<span style=color:#f92672>=</span>ture<span style=color:#66d9ef>)</span>
+</code></pre></div><h3 id=docker-images>docker images<a hidden class=anchor aria-hidden=true href=#docker-images>#</a></h3>
 <p>####—filter -f</p>
 <p>​ <code>docker images</code> 还支持强大的过滤器参数 <code>--filter</code> ，或者简写<code>-f</code>。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在<code>mongo:3.2</code>之后建立的镜像，可以用下面的命令：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>$ docker images -f <span class=nv>since</span><span class=o>=</span>mongo:3.2
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images -f since<span style=color:#f92672>=</span>mongo:3.2
 REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
-redis			latest		5f515359c7f8		<span class=m>5</span> days ago			<span class=m>183</span> MB
-nginx			latest		05a60462f8ba		<span class=m>5</span> days ago			<span class=m>181</span> MB
-</code></pre></td></tr></table>
-</div>
-</div><p>​ 想查看某个位置之前的镜像也可以，只需要吧<code>since</code>换成<code>before</code>即可。</p>
+redis			latest		5f515359c7f8		<span style=color:#ae81ff>5</span> days ago			<span style=color:#ae81ff>183</span> MB
+nginx			latest		05a60462f8ba		<span style=color:#ae81ff>5</span> days ago			<span style=color:#ae81ff>181</span> MB
+</code></pre></div><p>​ 想查看某个位置之前的镜像也可以，只需要吧<code>since</code>换成<code>before</code>即可。</p>
 <p>####以特定格式显示镜像</p>
 <p>​ 把所有的虚悬镜像的 ID 列出来</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span><span class=lnt>8
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>$ docker images -q
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images -q
 5f515359c7f8
 05a60462f8ba
 fe9198c04d62
@@ -223,22 +178,8 @@ fe9198c04d62
 f753707788c5
 f753707788c5
 1e0c3dd64ccd
-</code></pre></td></tr></table>
-</div>
-</div><p>​ 以自己想要的格式显示，比如显示镜像 ID 和仓库名：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span><span class=lnt>8
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>$ docker images --format <span class=s2>&#34;{{.ID}}: {{.Repository}}&#34;</span>
+</code></pre></div><p>​ 以自己想要的格式显示，比如显示镜像 ID 和仓库名：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images --format <span style=color:#e6db74>&#34;{{.ID}}: {{.Repository}}&#34;</span>
 5f515359c7f8: redis
 05a60462f8ba: nginx
 fe9198c04d62: mongo
@@ -246,23 +187,8 @@ fe9198c04d62: mongo
 f753707788c5: ubuntu
 f753707788c5: ubuntu
 1e0c3dd64ccd: ubuntu
-</code></pre></td></tr></table>
-</div>
-</div><p>​ 以表格等距显示，并且有标题行</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span><span class=lnt>8
-</span><span class=lnt>9
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>$ docker images --format <span class=s2>&#34;table {{.ID}}\t{{.Repository}}\t{{.Tag}}&#34;</span>
+</code></pre></div><p>​ 以表格等距显示，并且有标题行</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ docker images --format <span style=color:#e6db74>&#34;table {{.ID}}\t{{.Repository}}\t{{.Tag}}&#34;</span>
 IMAGE ID            REPOSITORY          TAG
 5f515359c7f8        redis               latest
 05a60462f8ba        nginx               latest
@@ -271,9 +197,7 @@ fe9198c04d62        mongo               3.2
 f753707788c5        ubuntu              16.04
 f753707788c5        ubuntu              latest
 1e0c3dd64ccd        ubuntu              14.04
-</code></pre></td></tr></table>
-</div>
-</div><h3 id=dockerfile-定制镜像>Dockerfile 定制镜像<a hidden class=anchor aria-hidden=true href=#dockerfile-定制镜像>#</a></h3>
+</code></pre></div><h3 id=dockerfile-定制镜像>Dockerfile 定制镜像<a hidden class=anchor aria-hidden=true href=#dockerfile-定制镜像>#</a></h3>
 <p>​ Dockerfile 中每一个指令都会建立一层，<code>RUN</code> 也不例外。每一个 <code>RUN</code> 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，<code>commit</code> 这一层的修改，构成新的镜像。</p>
 <h4 id=context-上下文>Context 上下文<a hidden class=anchor aria-hidden=true href=#context-上下文>#</a></h4>
 <p>​ 当构建的时候，用户会指定构建镜像上下文的路径，<code>docker build</code> 命令得知这个路径后，会将路径下的所有内容打包，然后上传给 Docker 引擎。这样 Docker 引擎收到这个上下文包后，展开就会获得构建镜像所需的一切文件。</p>
@@ -286,26 +210,11 @@ f753707788c5        ubuntu              latest
 </ul>
 <p>和 <code>RUN</code> 指令一样，也有两种格式，一种类似于命令行，一种类似于函数调用。</p>
 <p><code>COPY</code> 指令将从构建上下文目录中 <code>&lt;源路径></code> 的文件/目录复制到新的一层的镜像内的 <code>&lt;目标路径></code> 位置。比如：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>COPY package.json /usr/src/app/
-</code></pre></td></tr></table>
-</div>
-</div><p><code>&lt;源路径></code> 可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 <a href=https://golang.org/pkg/path/filepath/#Match><code>filepath.Match</code></a> 规则，如：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>COPY hom* /mydir/
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>COPY package.json /usr/src/app/
+</code></pre></div><p><code>&lt;源路径></code> 可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 <a href=https://golang.org/pkg/path/filepath/#Match><code>filepath.Match</code></a> 规则，如：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>COPY hom* /mydir/
 COPY hom?.txt /mydir/
-</code></pre></td></tr></table>
-</div>
-</div><p><code>&lt;目标路径></code> 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 <code>WORKDIR</code>指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</p>
+</code></pre></div><p><code>&lt;目标路径></code> 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 <code>WORKDIR</code>指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</p>
 <p>此外，还需要注意一点，使用 <code>COPY</code> 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。</p>
 <p>####CMD 容器启动命令</p>
 <p><code>CMD</code> 指令的格式和 <code>RUN</code> 相似，也是两种格式：</p>
@@ -317,57 +226,26 @@ COPY hom?.txt /mydir/
 <p>之前介绍容器的时候曾经说过，Docker 不是虚拟机，<strong>容器就是进程</strong>。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。<code>CMD</code> 指令就是用于指定__默认__的__容器主进程__的__启动命令__的。</p>
 <p>在指令格式上，一般推荐使用 <code>exec</code> 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 <code>"</code>，而不要使用单引号。</p>
 <p>如果使用 <code>shell</code> 格式的话，实际的命令会被包装为 <code>sh -c</code> 的参数的形式进行执行。比如：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>CMD echo $HOME
+<pre><code>CMD echo $HOME
 
-</code></pre></td></tr></table>
-</div>
-</div><p>在实际执行中，会将其变更为：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>CMD [ &#34;sh&#34;, &#34;-c&#34;, &#34;echo $HOME&#34; ]
-</code></pre></td></tr></table>
-</div>
-</div><h4 id=entrypoint-入口点>ENTRYPOINT 入口点<a hidden class=anchor aria-hidden=true href=#entrypoint-入口点>#</a></h4>
+</code></pre><p>在实际执行中，会将其变更为：</p>
+<pre><code>CMD [ &quot;sh&quot;, &quot;-c&quot;, &quot;echo $HOME&quot; ]
+</code></pre><h4 id=entrypoint-入口点>ENTRYPOINT 入口点<a hidden class=anchor aria-hidden=true href=#entrypoint-入口点>#</a></h4>
 <p><code>ENTRYPOINT</code> 的格式和 <code>RUN</code> 指令格式一样，分为 <code>exec</code> 格式和 <code>shell</code> 格式。</p>
 <p><code>ENTRYPOINT</code> 的目的和 <code>CMD</code> 一样，都是在指定容器启动程序及参数。<code>ENTRYPOINT</code> 在运行时也可以替代，不过比 <code>CMD</code> 要略显繁琐，需要通过 <code>docker run</code> 的参数 <code>--entrypoint</code> 来指定。</p>
 <p>当指定了 <code>ENTRYPOINT</code> 后，<code>CMD</code> 的含义就发生了改变，不再是直接的运行其命令，而是将 <code>CMD</code> 的内容作为参数传给 <code>ENTRYPOINT</code> 指令，换句话说实际执行时，将变为：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>&lt;ENTRYPOINT&gt; &#34;&lt;CMD&gt;&#34;
-</code></pre></td></tr></table>
-</div>
-</div><h4 id=env-设置环境变量>ENV 设置环境变量<a hidden class=anchor aria-hidden=true href=#env-设置环境变量>#</a></h4>
+<pre><code>&lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
+</code></pre><h4 id=env-设置环境变量>ENV 设置环境变量<a hidden class=anchor aria-hidden=true href=#env-设置环境变量>#</a></h4>
 <p>格式有两种：</p>
 <ul>
 <li><code>ENV &lt;key> &lt;value></code></li>
 <li><code>ENV &lt;key1>=&lt;value1> &lt;key2>=&lt;value2>...</code></li>
 </ul>
 <p>这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如 <code>RUN</code>，还是运行时的应用，都可以直接使用这里定义的环境变量。</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>ENV VERSION=1.0 DEBUG=on \
-    NAME=&#34;Happy Feet&#34;
+<pre><code>ENV VERSION=1.0 DEBUG=on \
+    NAME=&quot;Happy Feet&quot;
 
-</code></pre></td></tr></table>
-</div>
-</div><h4 id=arg-构建参数>ARG 构建参数<a hidden class=anchor aria-hidden=true href=#arg-构建参数>#</a></h4>
+</code></pre><h4 id=arg-构建参数>ARG 构建参数<a hidden class=anchor aria-hidden=true href=#arg-构建参数>#</a></h4>
 <p>格式：<code>ARG &lt;参数名>[=&lt;默认值>]</code></p>
 <p>构建参数和 <code>ENV</code> 的效果一样，都是设置环境变量。所不同的是，<code>ARG</code> 所设置的构建环境的环境变量，在将来__容器运行时__是__不会存在这些环境变量__的。但是不要因此就使用 <code>ARG</code> 保存密码之类的信息，因为 <code>docker history</code> 还是可以看到所有值的。</p>
 <p><code>Dockerfile</code> 中的 <code>ARG</code> 指令是定义参数名称，以及定义其默认值。该默认值可以在构建命令 <code>docker build</code> 中用 <code>--build-arg &lt;参数名>=&lt;值></code> 来覆盖。</p>
@@ -379,28 +257,12 @@ COPY hom?.txt /mydir/
 <li><code>VOLUME &lt;路径></code></li>
 </ul>
 <p>之前我们说过，容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，后面的章节我们会进一步介绍 Docker 卷的概念。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 <code>Dockerfile</code> 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>VOLUME /data
+<pre><code>VOLUME /data
 
-</code></pre></td></tr></table>
-</div>
-</div><p>这里的 <code>/data</code> 目录就会在运行时自动挂载为匿名卷，任何向 <code>/data</code> 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback>docker run -d -v mydata:/data xxxx
+</code></pre><p>这里的 <code>/data</code> 目录就会在运行时自动挂载为匿名卷，任何向 <code>/data</code> 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：</p>
+<pre><code>docker run -d -v mydata:/data xxxx
 
-</code></pre></td></tr></table>
-</div>
-</div><p>在这行命令中，就使用了 <code>mydata</code> 这个命名卷挂载到了 <code>/data</code> 这个位置，替代了 <code>Dockerfile</code> 中定义的匿名卷的挂载配置。</p>
+</code></pre><p>在这行命令中，就使用了 <code>mydata</code> 这个命名卷挂载到了 <code>/data</code> 这个位置，替代了 <code>Dockerfile</code> 中定义的匿名卷的挂载配置。</p>
 <h4 id=expose-声明端口>EXPOSE 声明端口<a hidden class=anchor aria-hidden=true href=#expose-声明端口>#</a></h4>
 <p>格式为 <code>EXPOSE &lt;端口1> [&lt;端口2>...]</code>。</p>
 <p><code>EXPOSE</code> 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。在 Dockerfile 中写入这样的声明有两个好处，一个是帮助镜像使用者理解这个镜像服务的守护端口，以方便配置映射；另一个用处则是在运行时使用随机端口映射时，也就是 <code>docker run -P</code>时，会自动随机映射 <code>EXPOSE</code> 的端口。</p>
@@ -414,31 +276,16 @@ COPY hom?.txt /mydir/
 <h3 id=docker-hub>Docker Hub<a hidden class=anchor aria-hidden=true href=#docker-hub>#</a></h3>
 <h4 id=docker-search>docker search<a hidden class=anchor aria-hidden=true href=#docker-search>#</a></h4>
 <p>查找的时候通过 <code>-s N</code> 参数可以指定仅显示评价为 <code>N</code> 星以上的镜像（新版本Docker推荐使用<code>--filter=stars=N</code>参数）。</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span><span class=lnt>8
-</span><span class=lnt>9
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>docker search centos --filter<span class=o>=</span><span class=nv>stars</span><span class=o>=</span><span class=m>20</span>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>docker search centos --filter<span style=color:#f92672>=</span>stars<span style=color:#f92672>=</span><span style=color:#ae81ff>20</span>
 NAME                       DESCRIPTION                  STARS     OFFICIAL   AUTOMATED
-centos                    The official build of CentOS.  <span class=m>3631</span>      <span class=o>[</span>OK<span class=o>]</span>       
-ansible/centos7-ansible   Ansible on Centos7             <span class=m>101</span>                  <span class=o>[</span>OK<span class=o>]</span>
-jdeathe/centos-ssh        CentOS-6 6.9 ...               <span class=m>83</span>                   <span class=o>[</span>OK<span class=o>]</span>
-tutum/centos              Simple CentOS docker           <span class=m>33</span>                   
-imagine10255/centos6-lnmp-php56 centos6-lnmp-php56       <span class=m>30</span>                   <span class=o>[</span>OK<span class=o>]</span>
-gluster/gluster-centos    Official GlusterFS Image <span class=o>[</span> CentOS-7 +  Glu... <span class=m>20</span>    <span class=o>[</span>OK<span class=o>]</span>
+centos                    The official build of CentOS.  <span style=color:#ae81ff>3631</span>      <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>       
+ansible/centos7-ansible   Ansible on Centos7             <span style=color:#ae81ff>101</span>                  <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
+jdeathe/centos-ssh        CentOS-6 6.9 ...               <span style=color:#ae81ff>83</span>                   <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
+tutum/centos              Simple CentOS docker           <span style=color:#ae81ff>33</span>                   
+imagine10255/centos6-lnmp-php56 centos6-lnmp-php56       <span style=color:#ae81ff>30</span>                   <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
+gluster/gluster-centos    Official GlusterFS Image <span style=color:#f92672>[</span> CentOS-7 +  Glu... <span style=color:#ae81ff>20</span>    <span style=color:#f92672>[</span>OK<span style=color:#f92672>]</span>
 
-</code></pre></td></tr></table>
-</div>
-</div><h3 id=网络>网络<a hidden class=anchor aria-hidden=true href=#网络>#</a></h3>
+</code></pre></div><h3 id=网络>网络<a hidden class=anchor aria-hidden=true href=#网络>#</a></h3>
 <h4 id=容器互联>容器互联<a hidden class=anchor aria-hidden=true href=#容器互联>#</a></h4>
 <p><code>--link</code>参数可以让容器之间安全的进行交互</p>
 <p><code>--link</code> 参数的格式为 <code>--link name:alias</code>，其中 <code>name</code> 是要链接的容器的名称，<code>alias</code> 是这个连接的别名。</p>
@@ -463,7 +310,7 @@ gluster/gluster-centos    Official GlusterFS Image <span class=o>[</span> CentOS
 </article>
 </main>
 <footer class=footer>
-<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
 <span>
 Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &

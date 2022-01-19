@@ -7,10 +7,11 @@
 <meta name=keywords content="Docker">
 <meta name=description content="Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-1  > yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
-1 2 3 4 5  > yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge   由于docker.com服务器下载很慢,所以改为国内镜像.
-1 2 3  > yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo   如需禁止edge版本, 可以执行下面的命令
-1  > yum-config-manager --disable docker-ce-edge   ##安装 Docker">
+> yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+> yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
+> yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
+> yum-config-manager --disable docker-ce-edge ##安装 Docker
+> sudo yum makecache fast > sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.">
 <meta name=author content="Jsharkc">
 <link rel=canonical href=https://jsharkc.github.io/post/centos7-install-docker/>
 <meta name=google-site-verification content="XYZabc">
@@ -31,10 +32,11 @@
 </noscript><meta property="og:title" content="Centos7 安装 Docker-CE 社区版">
 <meta property="og:description" content="Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-1  > yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
-1 2 3 4 5  > yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge   由于docker.com服务器下载很慢,所以改为国内镜像.
-1 2 3  > yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo   如需禁止edge版本, 可以执行下面的命令
-1  > yum-config-manager --disable docker-ce-edge   ##安装 Docker">
+> yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+> yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
+> yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
+> yum-config-manager --disable docker-ce-edge ##安装 Docker
+> sudo yum makecache fast > sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://jsharkc.github.io/post/centos7-install-docker/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
 <meta property="article:published_time" content="2017-01-15T17:42:23+80:00">
@@ -44,12 +46,13 @@
 <meta name=twitter:title content="Centos7 安装 Docker-CE 社区版">
 <meta name=twitter:description content="Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-1  > yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
-1 2 3 4 5  > yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge   由于docker.com服务器下载很慢,所以改为国内镜像.
-1 2 3  > yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo   如需禁止edge版本, 可以执行下面的命令
-1  > yum-config-manager --disable docker-ce-edge   ##安装 Docker">
+> yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
+> yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
+> yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
+> yum-config-manager --disable docker-ce-edge ##安装 Docker
+> sudo yum makecache fast > sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.">
 <script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Centos7 安装 Docker-CE 社区版","item":"https://jsharkc.github.io/post/centos7-install-docker/"}]}</script>
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Centos7 安装 Docker-CE 社区版","name":"Centos7 安装 Docker-CE 社区版","description":"Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。\n安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.\n1  \u0026gt; yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版\n1 2 3 4 5  \u0026gt; yum-config-manager \\  --add-repo \\  https://download.docker.com/linux/centos/docker-ce.repo \u0026gt; yum-config-manager --enable docker-ce-edge   由于docker.com服务器下载很慢,所以改为国内镜像.\n1 2 3  \u0026gt; yum-config-manager \\  --add-repo \\  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo   如需禁止edge版本, 可以执行下面的命令\n1  \u0026gt; yum-config-manager --disable docker-ce-edge   ##安装 Docker","keywords":["Docker"],"articleBody":"Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。\n安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.\n1   yum install -y yum-utils device-mapper-persistent-data lvm2   配置版本镜像库 季度更新的稳定stable版和月度更新的edge版\n1 2 3 4 5   yum-config-manager \\  --add-repo \\  https://download.docker.com/linux/centos/docker-ce.repo  yum-config-manager --enable docker-ce-edge   由于docker.com服务器下载很慢,所以改为国内镜像.\n1 2 3   yum-config-manager \\  --add-repo \\  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo   如需禁止edge版本, 可以执行下面的命令\n1   yum-config-manager --disable docker-ce-edge   ##安装 Docker\n1 2 3 4 5 6   sudo yum makecache fast  sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.12-2.gite7096ce.el7.noarch   出现冲突, 原因是直接安装过docker.\n1 2 3 4 5 6 7 8 9 10   yum list docker Installed Packages docker.x86_64 2:1.12.6-28.git1398f24.el7.centos @extras  sudo yum erase docker.x86_64 Removed: docker.x86_64 2:1.12.6-28.git1398f24.el7.centos  sudo yum list container-selinux-2.12-2.gite7096ce.el7.noarch  sudo yum erase container-selinux.noarch   删除老版本 docker\n1 2 3 4 5 6 7 8 9 10 11   yum list installed | grep docker docker-client.x86_64 2:1.12.6-28.git1398f24.el7.centos docker-common.x86_64 2:1.12.6-28.git1398f24.el7.centos  sudo yum erase -y docker-client.x86_64  sudo yum erase -y docker-common.x86_64  sudo yum remove docker \\  docker-common \\  container-selinux \\  docker-selinux \\  docker-engine   再安装\n1 2 3 4 5 6 7 8 9  [zhouhh@mainServer ~]$ sudo yum install docker-ce Loaded plugins: fastestmirror, langpacks Installing: docker-ce x86_64 17.05.0.ce-1.el7.centos docker-ce-edge 19 M Installing for dependencies: docker-ce-selinux noarch 17.05.0.ce-1.el7.centos docker-ce-edge 28 k Complete!   如果生产系统需要稳定版本, 需要 yum list 进行查询. 但yum list只会显示二进制包, 加上.x86_64会显示包含源码包的全部的包. sort -r会按版本倒序排序.\n1 2 3 4 5 6 7 8 9 10   yum list docker-ce.x86_64 --showduplicates |sort -r * updates: mirrors.tuna.tsinghua.edu.cn Loading mirror speeds from cached hostfile Loaded plugins: fastestmirror, langpacks * extras: mirror.bit.edu.cn docker-ce.x86_64 17.05.0.ce-1.el7.centos docker-ce-edge docker-ce.x86_64 17.04.0.ce-1.el7.centos docker-ce-edge docker-ce.x86_64 17.03.1.ce-1.el7.centos docker-ce-stable docker-ce.x86_64 17.03.0.ce-1.el7.centos docker-ce-stable * base: mirror.bit.edu.cn   第二列是版本号. el7表示centos7. 第三列是库名.\n安装指定版本: sudo yum install docker-ce-\n安装稳定版本:\n1 2 3 4 5 6 7 8   sudo yum install docker-ce-17.03.1.ce-1.el7.centos Installed: docker-ce.x86_64 0:17.03.1.ce-1.el7.centos Dependency Installed: docker-ce-selinux.noarch 0:17.05.0.ce-1.el7.centos Complete!   删除 docker-ce 版和镜像 1 2   sudo yum remove docker-ce  sudo rm -rf /var/lib/docker   启动测试 docker Hello world的镜像启动后会打印”Hello from Docker!”然后退出.\n1 2 3 4 5 6 7 8 9 10 11   sudo systemctl start docker  docker run hello-world Unable to find image 'hello-world:latest' locally latest: Pulling from library/hello-world 78445dd45222: Pull complete Digest: sha256:c5515758d4c5e1e838e9cd307f6c6a0d620b5e07e6f927b07d05f6d12a1ac8d7 Status: Downloaded newer image for hello-world:latest Hello from Docker! This message shows that your installation appears to be working correctly.   非root用户启动docker 默认情况下，docker 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 root 用户和 docker 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 root 用户。因此，更好地做法是将需要使用 docker 的用户加入 docker 用户组。\n建立 docker 组：\n1  $ sudo groupadd docker   将当前用户加入 docker 组：\n1  $ sudo usermod -aG docker $USER   设置自启动 大部分最新的linux发行版(RHEL, CentOS, Fedora, Ubuntu 16.04 以上), 都用sytemd来管理启动.\n1 2 3  [zhouhh@mainServer ~]$ sudo systemctl enable docker Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.   禁止自启动 1  [zhouhh@mainServer ~]$ sudo systemctl disable docker   ","wordCount":"447","inLanguage":"en","datePublished":"2017-01-15T17:42:23+80:00","dateModified":"2017-01-15T17:42:23+80:00","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/centos7-install-docker/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Centos7 安装 Docker-CE 社区版","name":"Centos7 安装 Docker-CE 社区版","description":"Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。\n安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.\n\u0026gt; yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版\n\u0026gt; yum-config-manager \\  --add-repo \\  https://download.docker.com/linux/centos/docker-ce.repo \u0026gt; yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.\n\u0026gt; yum-config-manager \\  --add-repo \\  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令\n\u0026gt; yum-config-manager --disable docker-ce-edge ##安装 Docker\n\u0026gt; sudo yum makecache fast \u0026gt; sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.","keywords":["Docker"],"articleBody":"Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。\n安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.\n yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版\n yum-config-manager \\  --add-repo \\  https://download.docker.com/linux/centos/docker-ce.repo  yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.\n yum-config-manager \\  --add-repo \\  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令\n yum-config-manager --disable docker-ce-edge ##安装 Docker\n sudo yum makecache fast  sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.12-2.gite7096ce.el7.noarch 出现冲突, 原因是直接安装过docker.\n yum list docker Installed Packages docker.x86_64 2:1.12.6-28.git1398f24.el7.centos @extras  sudo yum erase docker.x86_64 Removed: docker.x86_64 2:1.12.6-28.git1398f24.el7.centos  sudo yum list container-selinux-2.12-2.gite7096ce.el7.noarch  sudo yum erase container-selinux.noarch 删除老版本 docker\n yum list installed | grep docker docker-client.x86_64 2:1.12.6-28.git1398f24.el7.centos docker-common.x86_64 2:1.12.6-28.git1398f24.el7.centos  sudo yum erase -y docker-client.x86_64  sudo yum erase -y docker-common.x86_64  sudo yum remove docker \\  docker-common \\  container-selinux \\  docker-selinux \\  docker-engine 再安装\n[zhouhh@mainServer ~]$ sudo yum install docker-ce Loaded plugins: fastestmirror, langpacks Installing: docker-ce x86_64 17.05.0.ce-1.el7.centos docker-ce-edge 19 M Installing for dependencies: docker-ce-selinux noarch 17.05.0.ce-1.el7.centos docker-ce-edge 28 k Complete! 如果生产系统需要稳定版本, 需要 yum list 进行查询. 但yum list只会显示二进制包, 加上.x86_64会显示包含源码包的全部的包. sort -r会按版本倒序排序.\n yum list docker-ce.x86_64 --showduplicates |sort -r * updates: mirrors.tuna.tsinghua.edu.cn Loading mirror speeds from cached hostfile Loaded plugins: fastestmirror, langpacks * extras: mirror.bit.edu.cn docker-ce.x86_64 17.05.0.ce-1.el7.centos docker-ce-edge docker-ce.x86_64 17.04.0.ce-1.el7.centos docker-ce-edge docker-ce.x86_64 17.03.1.ce-1.el7.centos docker-ce-stable docker-ce.x86_64 17.03.0.ce-1.el7.centos docker-ce-stable * base: mirror.bit.edu.cn 第二列是版本号. el7表示centos7. 第三列是库名.\n安装指定版本: sudo yum install docker-ce-\n安装稳定版本:\n sudo yum install docker-ce-17.03.1.ce-1.el7.centos Installed: docker-ce.x86_64 0:17.03.1.ce-1.el7.centos Dependency Installed: docker-ce-selinux.noarch 0:17.05.0.ce-1.el7.centos Complete! 删除 docker-ce 版和镜像  sudo yum remove docker-ce  sudo rm -rf /var/lib/docker 启动测试 docker Hello world的镜像启动后会打印”Hello from Docker!”然后退出.\n sudo systemctl start docker  docker run hello-world Unable to find image 'hello-world:latest' locally latest: Pulling from library/hello-world 78445dd45222: Pull complete Digest: sha256:c5515758d4c5e1e838e9cd307f6c6a0d620b5e07e6f927b07d05f6d12a1ac8d7 Status: Downloaded newer image for hello-world:latest Hello from Docker! This message shows that your installation appears to be working correctly. 非root用户启动docker 默认情况下，docker 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 root 用户和 docker 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 root 用户。因此，更好地做法是将需要使用 docker 的用户加入 docker 用户组。\n建立 docker 组：\n$ sudo groupadd docker 将当前用户加入 docker 组：\n$ sudo usermod -aG docker $USER 设置自启动 大部分最新的linux发行版(RHEL, CentOS, Fedora, Ubuntu 16.04 以上), 都用sytemd来管理启动.\n[zhouhh@mainServer ~]$ sudo systemctl enable docker Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service. 禁止自启动 [zhouhh@mainServer ~]$ sudo systemctl disable docker ","wordCount":"364","inLanguage":"en","datePublished":"2017-01-15T17:42:23+80:00","dateModified":"2017-01-15T17:42:23+80:00","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/centos7-install-docker/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
 </head>
 <body class=dark id=top>
 <script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
@@ -88,7 +91,7 @@
 <h1 class=post-title>
 Centos7 安装 Docker-CE 社区版
 </h1>
-<div class=post-meta>January 15, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog/content/post/CentOS7-install-Docker.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+<div class=post-meta>January 15, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog rel="noopener noreferrer" target=_blank>Suggest Changes</a>
 </div>
 </header> <div class=toc>
 <details open>
@@ -123,89 +126,29 @@ Centos7 安装 Docker-CE 社区版
 <p>今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。</p>
 <h2 id=安装相关依赖>安装相关依赖<a hidden class=anchor aria-hidden=true href=#安装相关依赖>#</a></h2>
 <p>yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>&gt; yum install -y yum-utils device-mapper-persistent-data lvm2
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=配置版本镜像库>配置版本镜像库<a hidden class=anchor aria-hidden=true href=#配置版本镜像库>#</a></h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum install -y yum-utils device-mapper-persistent-data lvm2
+</code></pre></div><h2 id=配置版本镜像库>配置版本镜像库<a hidden class=anchor aria-hidden=true href=#配置版本镜像库>#</a></h2>
 <p>季度更新的稳定stable版和月度更新的edge版</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>&gt; yum-config-manager <span class=se>\
-</span><span class=se></span>     --add-repo <span class=se>\
-</span><span class=se></span>     https://download.docker.com/linux/centos/docker-ce.repo
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; yum-config-manager <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>     --add-repo <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>     https://download.docker.com/linux/centos/docker-ce.repo
 &gt; yum-config-manager --enable docker-ce-edge
 
-</code></pre></td></tr></table>
-</div>
-</div><p>由于docker.com服务器下载很慢,所以改为国内镜像.</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>&gt; yum-config-manager <span class=se>\
-</span><span class=se></span>    --add-repo <span class=se>\
-</span><span class=se></span>    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-</code></pre></td></tr></table>
-</div>
-</div><p>如需禁止edge版本, 可以执行下面的命令</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>&gt; yum-config-manager --disable docker-ce-edge
-</code></pre></td></tr></table>
-</div>
-</div><p>##安装 Docker</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>&gt; sudo yum makecache fast
+</code></pre></div><p>由于docker.com服务器下载很慢,所以改为国内镜像.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; yum-config-manager <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --add-repo <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</code></pre></div><p>如需禁止edge版本, 可以执行下面的命令</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum-config-manager --disable docker-ce-edge
+</code></pre></div><p>##安装 Docker</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; sudo yum makecache fast
 
 &gt; sudo yum install docker-ce
 Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64
 Error: docker-ce-selinux conflicts with 2:container-selinux-2.12-2.gite7096ce.el7.noarch
 
-</code></pre></td></tr></table>
-</div>
-</div><p>出现冲突, 原因是直接安装过docker.</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>&gt; yum list docker
+</code></pre></div><p>出现冲突, 原因是直接安装过docker.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum list docker
 
 Installed Packages
 docker.x86_64                      2:1.12.6-28.git1398f24.el7.centos                      @extras
@@ -215,78 +158,30 @@ Removed:
 &gt; sudo yum list container-selinux-2.12-2.gite7096ce.el7.noarch
 
 &gt; sudo yum erase container-selinux.noarch
-</code></pre></td></tr></table>
-</div>
-</div><p>删除老版本 docker</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>&gt; yum list installed <span class=p>|</span> grep docker
+</code></pre></div><p>删除老版本 docker</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; yum list installed | grep docker
 docker-client.x86_64                   2:1.12.6-28.git1398f24.el7.centos
 docker-common.x86_64                   2:1.12.6-28.git1398f24.el7.centos
 &gt; sudo yum erase -y docker-client.x86_64
 &gt; sudo yum erase -y docker-common.x86_64
 
-&gt; sudo yum remove docker <span class=se>\
-</span><span class=se></span>                  docker-common <span class=se>\
-</span><span class=se></span>                  container-selinux <span class=se>\
-</span><span class=se></span>                  docker-selinux <span class=se>\
-</span><span class=se></span>                  docker-engine
-</code></pre></td></tr></table>
-</div>
-</div><p>再安装</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span><span class=lnt>8
-</span><span class=lnt>9
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=o>[</span>zhouhh@mainServer ~<span class=o>]</span>$ sudo yum install docker-ce
+&gt; sudo yum remove docker <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  docker-common <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  container-selinux <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  docker-selinux <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>                  docker-engine
+</code></pre></div><p>再安装</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=color:#f92672>[</span>zhouhh@mainServer ~<span style=color:#f92672>]</span>$ sudo yum install docker-ce
 Loaded plugins: fastestmirror, langpacks
 Installing:
- docker-ce               x86_64       17.05.0.ce-1.el7.centos         docker-ce-edge        <span class=m>19</span> M
-Installing <span class=k>for</span> dependencies:
- docker-ce-selinux       noarch       17.05.0.ce-1.el7.centos         docker-ce-edge        <span class=m>28</span> k
+ docker-ce               x86_64       17.05.0.ce-1.el7.centos         docker-ce-edge        <span style=color:#ae81ff>19</span> M
+Installing <span style=color:#66d9ef>for</span> dependencies:
+ docker-ce-selinux       noarch       17.05.0.ce-1.el7.centos         docker-ce-edge        <span style=color:#ae81ff>28</span> k
 
 Complete!
 
-</code></pre></td></tr></table>
-</div>
-</div><p>如果生产系统需要稳定版本, 需要 <code>yum list</code> 进行查询. 但yum list只会显示二进制包, 加上.x86_64会显示包含源码包的全部的包. sort -r会按版本倒序排序.</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>&gt; yum list docker-ce.x86_64  --showduplicates <span class=p>|</span>sort -r
+</code></pre></div><p>如果生产系统需要稳定版本, 需要 <code>yum list</code> 进行查询. 但yum list只会显示二进制包, 加上.x86_64会显示包含源码包的全部的包. sort -r会按版本倒序排序.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; yum list docker-ce.x86_64  --showduplicates |sort -r
  * updates: mirrors.tuna.tsinghua.edu.cn
 Loading mirror speeds from cached hostfile
 Loaded plugins: fastestmirror, langpacks
@@ -296,24 +191,10 @@ docker-ce.x86_64            17.04.0.ce-1.el7.centos             docker-ce-edge
 docker-ce.x86_64            17.03.1.ce-1.el7.centos             docker-ce-stable
 docker-ce.x86_64            17.03.0.ce-1.el7.centos             docker-ce-stable
  * base: mirror.bit.edu.cn
-</code></pre></td></tr></table>
-</div>
-</div><p>第二列是版本号. el7表示centos7. 第三列是库名.</p>
+</code></pre></div><p>第二列是版本号. el7表示centos7. 第三列是库名.</p>
 <p>安装指定版本: sudo yum install docker-ce-</p>
 <p>安装稳定版本:</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span><span class=lnt>8
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>&gt; sudo yum install docker-ce-17.03.1.ce-1.el7.centos
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; sudo yum install docker-ce-17.03.1.ce-1.el7.centos
 Installed:
   docker-ce.x86_64 0:17.03.1.ce-1.el7.centos
 
@@ -321,93 +202,36 @@ Dependency Installed:
   docker-ce-selinux.noarch 0:17.05.0.ce-1.el7.centos
 
 Complete!
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=删除-docker-ce-版和镜像>删除 docker-ce 版和镜像<a hidden class=anchor aria-hidden=true href=#删除-docker-ce-版和镜像>#</a></h2>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>&gt; sudo yum remove docker-ce
+</code></pre></div><h2 id=删除-docker-ce-版和镜像>删除 docker-ce 版和镜像<a hidden class=anchor aria-hidden=true href=#删除-docker-ce-版和镜像>#</a></h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>&gt; sudo yum remove docker-ce
 &gt; sudo rm -rf /var/lib/docker
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=启动测试-docker>启动测试 docker<a hidden class=anchor aria-hidden=true href=#启动测试-docker>#</a></h2>
+</code></pre></div><h2 id=启动测试-docker>启动测试 docker<a hidden class=anchor aria-hidden=true href=#启动测试-docker>#</a></h2>
 <p>Hello world的镜像启动后会打印”Hello from Docker!”然后退出.</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>&gt; sudo systemctl start docker
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>&gt; sudo systemctl start docker
 &gt; docker run hello-world
-Unable to find image <span class=s1>&#39;hello-world:latest&#39;</span> locally
+Unable to find image <span style=color:#e6db74>&#39;hello-world:latest&#39;</span> locally
 latest: Pulling from library/hello-world
-78445dd45222: Pull <span class=nb>complete</span>
+78445dd45222: Pull complete
 Digest: sha256:c5515758d4c5e1e838e9cd307f6c6a0d620b5e07e6f927b07d05f6d12a1ac8d7
-Status: Downloaded newer image <span class=k>for</span> hello-world:latest
+Status: Downloaded newer image <span style=color:#66d9ef>for</span> hello-world:latest
 
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=非root用户启动docker>非root用户启动docker<a hidden class=anchor aria-hidden=true href=#非root用户启动docker>#</a></h2>
+</code></pre></div><h2 id=非root用户启动docker>非root用户启动docker<a hidden class=anchor aria-hidden=true href=#非root用户启动docker>#</a></h2>
 <p>默认情况下，<code>docker</code> 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 <code>root</code> 用户和 <code>docker</code> 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 <code>root</code> 用户。因此，更好地做法是将需要使用 <code>docker</code> 的用户加入 <code>docker</code> 用户组。</p>
 <p>建立 <code>docker</code> 组：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh>$ sudo groupadd docker
-</code></pre></td></tr></table>
-</div>
-</div><p>将当前用户加入 <code>docker</code> 组：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>$ sudo usermod -aG docker <span class=nv>$USER</span>
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=设置自启动>设置自启动<a hidden class=anchor aria-hidden=true href=#设置自启动>#</a></h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh>$ sudo groupadd docker
+</code></pre></div><p>将当前用户加入 <code>docker</code> 组：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh>$ sudo usermod -aG docker $USER
+</code></pre></div><h2 id=设置自启动>设置自启动<a hidden class=anchor aria-hidden=true href=#设置自启动>#</a></h2>
 <p>大部分最新的linux发行版(RHEL, CentOS, Fedora, Ubuntu 16.04 以上), 都用sytemd来管理启动.</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh><span class=o>[</span>zhouhh@mainServer ~<span class=o>]</span>$ sudo systemctl <span class=nb>enable</span> docker
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh><span style=color:#f92672>[</span>zhouhh@mainServer ~<span style=color:#f92672>]</span>$ sudo systemctl enable docker
 Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
 
-</code></pre></td></tr></table>
-</div>
-</div><h2 id=禁止自启动>禁止自启动<a hidden class=anchor aria-hidden=true href=#禁止自启动>#</a></h2>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-Sh data-lang=Sh><span class=o>[</span>zhouhh@mainServer ~<span class=o>]</span>$ sudo systemctl disable docker
-</code></pre></td></tr></table>
-</div>
-</div>
+</code></pre></div><h2 id=禁止自启动>禁止自启动<a hidden class=anchor aria-hidden=true href=#禁止自启动>#</a></h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Sh data-lang=Sh><span style=color:#f92672>[</span>zhouhh@mainServer ~<span style=color:#f92672>]</span>$ sudo systemctl disable docker
+</code></pre></div>
 </div>
 <footer class=post-footer>
 <ul class=post-tags>
@@ -429,7 +253,7 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service 
 </article>
 </main>
 <footer class=footer>
-<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
 <span>
 Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &

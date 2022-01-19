@@ -69,15 +69,61 @@
 </header>
 <article class=post-entry>
 <header class=entry-header>
+<h2>Mysql update 结合另一个表更新数据
+</h2>
+</header>
+<section class=entry-content>
+<p>有时 update 更新语句会需要根据另一个表进行更新，举例如下：
+-- 方式一： update tableA a, tableB b set a.Name=b.Name, a.Age=b.Age where a.IDCard=b.IDCard; -- 方式二: update tableA a inner join tableB b on a.IDCard=b.IDCard set a.Name=b.Name, a.Age=b.Age; </p>
+</section>
+<footer class=entry-footer>October 30, 2019&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Mysql update 结合另一个表更新数据" href=https://jsharkc.github.io/post/mysql-update-%E7%BB%93%E5%90%88%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Flutter 返回按钮返回桌面
+</h2>
+</header>
+<section class=entry-content>
+<p>Flutter 返回按钮返回桌面 想实现点击返回按钮，直接返回桌面，本想 flutter 有方法的话，直接用，然而好像没有，所以采用调用本地方法返回桌面
+Android 端 MainActivity 代码如下 package com.dreamreal.example; import android.os.Bundle; import io.flutter.app.FlutterActivity; import io.flutter.plugin.common.MethodChannel; import io.flutter.plugins.GeneratedPluginRegistrant; public class MainActivity extends FlutterActivity { // 字符串常量，回到手机桌面 private final String chanel = "back/desktop"; // 返回到桌面事件 static final String backDesktopEvent = "backDesktop"; @Override protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); GeneratedPluginRegistrant.registerWith(this); MethodChannel(getFlutterView(), chanel).setMethodCallHandler( (methodCall, result) -> { if (methodCall.method.equals(backDesktopEvent)) { moveTaskToBack(false); result.success(true); } } ); } } 如果是 kotlin 的话，如下：...</p>
+</section>
+<footer class=entry-footer>October 29, 2019&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Flutter 返回按钮返回桌面" href=https://jsharkc.github.io/post/flutter-%E8%BF%94%E5%9B%9E%E6%A1%8C%E9%9D%A2/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Mac 使用 V2ray 科学上网
+</h2>
+</header>
+<section class=entry-content>
+<p>Mac 使用 V2ray 科学上网 Install v2ray-core step 1: Add official tap
+brew tap v2ray/v2ray step 2: Install v2ray-core:
+brew install v2ray-core Update v2ray-core step 1: update tap
+brew update step 2: update v2ray-core
+brew upgrade v2ray-core 使用 直接在命令行上输入 v2ray 就可以运行 v2ray-core。（配置文件在当前目录则不用写参数，直接 v2ray）
+默认配置文件位于：/usr/local/etc/config.json
+编辑默认配置文件：
+vim /usr/local/etc/config.json 配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
+config.json 添加 http 代理：
+"inboundDetour": [{ "protocol": "http", "port": 1081, "settings": { "udp": true } }], .zshrc 添加
+# proxy alias proxy='export https_proxy=http://127....</p>
+</section>
+<footer class=entry-footer>April 7, 2018&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Mac 使用 V2ray 科学上网" href=https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
 <h2>create-react-app 脚手架添加 less 支持和 antd 样式按需加载
 </h2>
 </header>
 <section class=entry-content>
-<p>create-react-app 脚手架添加 less 支持和 antd 样式按需加载 1. 创建项目 1 2 3 4 5 6 7 npm install -g create-react-app /* 安装create-react-app，建议使用cnpm */ create-react-app react-test /* 使用命令创建应用，myapp为项目名称 */ cd react-test /* 进入目录，然后启动 */ npm start 2.create-react-app 把 webpack 配置文件暴露出来 create-react-app 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：
-1 npm run eject 3. 添加 babel-plugin-import babel-plugin-import 是一个用于 按需加载 组件代码和样式 的 babel 插件（原理）。
-1 npm install babel-plugin-import --save-dev 4.添加 less 、less-loader 1 npm install less less-loader --save-dev 5....</p>
+<p>create-react-app 脚手架添加 less 支持和 antd 样式按需加载 1. 创建项目 npm install -g create-react-app /* 安装create-react-app，建议使用cnpm */ create-react-app react-test /* 使用命令创建应用，myapp为项目名称 */ cd react-test /* 进入目录，然后启动 */ npm start 2.create-react-app 把 webpack 配置文件暴露出来 create-react-app 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：
+npm run eject 3. 添加 babel-plugin-import babel-plugin-import 是一个用于 按需加载 组件代码和样式 的 babel 插件（原理）。
+npm install babel-plugin-import --save-dev 4.添加 less 、less-loader npm install less less-loader --save-dev 5.修改 webpack 配置文件 修改 webpack.config.dev.js 和 webpack.config-prod.js 配置文件
+test: /\.css$/ 改为 /\....</p>
 </section>
-<footer class=entry-footer>February 3, 2018&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<footer class=entry-footer>February 3, 2018&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to create-react-app 脚手架添加 less 支持和 antd 样式按需加载" href=https://jsharkc.github.io/post/create-react-app-add-less-and-antd-%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD/></a>
 </article>
 <article class=post-entry>
@@ -88,7 +134,8 @@
 <section class=entry-content>
 <p>Cobra - Golang 命令行库 简介： Cobra 是一个创建 CLI 命令行的 golang 库。
 组成： Cobra 结构由三部分组成：命令( Command )、参数( Args )、标志( Flag )。
-1 2 3 4 5 6 type Command struct { Use string // The one-line usage message. Short string // The short description shown in the 'help' output. Long string // The long message shown in the 'help&lt;this-command>' output. Run func(cmd *Command, args []string) // Run runs the command....</p>
+type Command struct { Use string // The one-line usage message. Short string // The short description shown in the 'help' output. Long string // The long message shown in the 'help&lt;this-command>' output. Run func(cmd *Command, args []string) // Run runs the command. } 前三个是不同场景下的说明，最后一个是要执行的函数。
+安装 安装 Cobra 很简单，首先，用 go get 安装最新版本的库，这个命令会安装 Cobra 框架生成工具和依赖。...</p>
 </section>
 <footer class=entry-footer>July 17, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to Cobra - 一个 Golang 命令行项目生成工具" href=https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/></a>
@@ -100,9 +147,9 @@
 </header>
 <section class=entry-content>
 <p>Golang slice 切片原理 ​ golang 中的 slice 是比较好用的一种结构，能根据需求变长，相对于 array 的死板，slice 更加灵活也更加常用，有道说：知其然，知其所以然。现在，我们就看看 slice 到底是怎样一种结构。
-slice源码 1 2 3 4 5 type slice struct { array unsafe.Pointer len int cap int } ​ 根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。
+slice源码 type slice struct { array unsafe.Pointer len int cap int } ​ 根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。
 ​ 有同学可能不知道 unsafe.Pointer是什么，那么我们一并在这讲解一下。
-1 2 3 4 5 6 7 8 9 10 11 12 13 package unsafe type ArbitraryType int // - A pointer value of any type can be converted to a Pointer....</p>
+package unsafe type ArbitraryType int // - A pointer value of any type can be converted to a Pointer. // - A Pointer can be converted to a pointer value of any type....</p>
 </section>
 <footer class=entry-footer>July 10, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to Golang slice 切片原理" href=https://jsharkc.github.io/post/slice%E6%9C%BA%E5%88%B6/></a>
@@ -113,128 +160,13 @@ slice源码 1 2 3 4 5 type slice struct { array unsafe.Pointer len int cap int }
 </h2>
 </header>
 <section class=entry-content>
-<p>安装 1 go get github.com/bamzi/jobrunner 使用 eg1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 package main import "github.com/bamzi/jobrunner" func main() { jobrunner.Start() jobrunner.Schedule("@every 5s", ReminderEmails{}) select{} } type ReminderEmails struct {} func (e ReminderEmails) Run() { fmt.Printf("Every 5 sec send reminder emails \n") } ***解析：***在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。
-Jobrunner 支持两种时间格式：...</p>
+<p>安装 go get github.com/bamzi/jobrunner 使用 eg1 package main import "github.com/bamzi/jobrunner" func main() { jobrunner.Start() jobrunner.Schedule("@every 5s", ReminderEmails{}) select{} } type ReminderEmails struct {} func (e ReminderEmails) Run() { fmt.Printf("Every 5 sec send reminder emails \n") } ***解析：***在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。
+Jobrunner 支持两种时间格式：
+“@XXX”
+“@yearly”, “@annually” 每年 “@monthly” 每月 “@weekly” 每星期 “@daily”, “@midnight” 每天 “@hourly” 每小时 “@every 5s” 支持 “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”。 “x x x x x x”...</p>
 </section>
-<footer class=entry-footer>June 27, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
+<footer class=entry-footer>June 27, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to Jobrunner 源码解析" href=https://jsharkc.github.io/post/jobrunner/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Golang Interface 解析
-</h2>
-</header>
-<section class=entry-content>
-<p>Interface 解析 转自 https://zhuanlan.zhihu.com/p/27652856
-先看一段代码：
-1 2 3 4 5 6 7 8 9 10 11 12 func Foo(x interface{}) { if x == nil { fmt.Println("empty interface") return } fmt.Println("non-empty interface") } func main() { var x *int = nil Foo(x) } 上面的例子的输出结果如下
-1 2 $ go run test_interface.go non-empty interface 可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。
-interface 底层结构 根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。...</p>
-</section>
-<footer class=entry-footer>June 17, 2017&nbsp;·&nbsp;8 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Golang Interface 解析" href=https://jsharkc.github.io/post/interface%E8%A7%A3%E6%9E%90/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>十条有用的 GO 技术
-</h2>
-</header>
-<section class=entry-content>
-<p>十条有用的 Go 技术 转自 mikespook.com
-这里是我过去几年中编写的大量 Go 代码的经验总结而来的自己的最佳实践。我相信它们具有弹性的。这里的弹性是指： 某个应用需要适配一个灵活的环境。你不希望每过 3 到 4 个月就不得不将它们全部重构一遍。添加新的特性应当很容易。许多人参与开发该应用，它应当可以被理解，且维护简单。许多人使用该应用，bug 应该容易被发现并且可以快速的修复。我用了很长的时间学到了这些事情。其中的一些很微小，但对于许多事情都会有影响。所有这些都仅仅是建议，具体情况具体对待，并且如果有帮助的话务必告诉我。随时留言:)
-1. 使用单一的 GOPATH 多个 GOPATH 的情况并不具有弹性。GOPATH 本身就是高度自我完备的（通过导入路径）。有多个 GOPATH 会导致某些副作用，例如可能使用了给定的库的不同的版本。你可能在某个地方升级了它，但是其他地方却没有升级。而且，我还没遇到过任何一个需要使用多个 GOPATH 的情况。所以只使用单一的 GOPATH，这会提升你 Go 的开发进度。
-许多人不同意这一观点，接下来我会做一些澄清。像 etcd 或 camlistore 这样的大项目使用了像 godep 这样的工具，将所有依赖保存到某个目录中。也就是说，这些项目自身有一个单一的 GOPATH。它们只能在这个目录里找到对应的版本。除非你的项目很大并且极为重要，否则不要为每个项目使用不同的 GOPATH。如果你认为项目需要一个自己的 GOPATH 目录，那么就创建它，否则不要尝试使用多个 GOPATH。它只会拖慢你的进度。
-2. 将 for-select 封装到函数中 如果在某个条件下，你需要从 for-select 中退出，就需要使用标签。例如：
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 func main() { L: for { select { case &lt;-time....</p>
-</section>
-<footer class=entry-footer>May 26, 2017&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to 十条有用的 GO 技术" href=https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Golang 中不存在引用传参
-</h2>
-</header>
-<section class=entry-content>
-<p>Golang 中不存在引用传参 ​ 原文链接
-​ 翻译：Jsharkc
-什么是引用变量 ? 在 C++ 语言中，你可以为已存在的变量声明一个别名，这就是引用变量：
-1 2 3 4 5 6 7 8 9 10 #include &lt;stdio.h> int main() { int a = 10; int &b = a; int &c = b; printf("%p %p %p\n", &a, &b, &c); // 0x7ffe114f0b14 0x7ffe114f0b14 0x7ffe114f0b14 return 0; } 可以看到，a、b、c 三个变量的地址是相同的，也就是说它们是同一个内存地址的变量，只不过有三个别名。就好比你有一个大名，一个小名，不管别人叫大名还是小名叫的都是你，如果改变 a 变量，b、c 变量也会跟着变。当你声明一个引用变量在不同的函数作用域中这是非常有用的。
-Golang 没有引用变量 与 C++ 不同，在 Golang 中声明的每个变量都只能占用不同的内存空间的。
-1 2 3 4 5 6 7 8 package main import "fmt" func main() { var a, b, c int fmt....</p>
-</section>
-<footer class=entry-footer>May 3, 2017&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jshakrc</footer>
-<a class=entry-link aria-label="post link to Golang 中不存在引用传参" href=https://jsharkc.github.io/post/golang%E4%B8%8D%E5%AD%98%E5%9C%A8%E5%BC%95%E7%94%A8%E4%BC%A0%E5%80%BC/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Docker Note
-</h2>
-</header>
-<section class=entry-content>
-<p>Docker Note 镜像 虚悬镜像 ​ 没有仓库名，也没有标签，均为&lt;none>的为虚悬镜像：
-1 &lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为&lt;none>，可用下面的命令专门显示这类镜像：
-1 2 3 $ docker images -f dangling=ture REPOSITORY TAG IMAGE ID CREATED SIZE &lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
-1 $ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
-​ docker images 还支持强大的过滤器参数 --filter ，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
-1 2 3 4 $ docker images -f since=mongo:3....</p>
-</section>
-<footer class=entry-footer>April 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Docker Note" href=https://jsharkc.github.io/post/docker-note/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Linux防火墙-iptables
-</h2>
-</header>
-<section class=entry-content>
-<p>Linux防火墙–iptables学习 转自简书
-iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。
-一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。
-规则中定义的条件一般包括源地址/端口、目的地址/端口、传输协议（TCP/UDP/ICMP）等。而规则定义的动作一般有放行（ACCEPT）、拒绝（REJECT）和丢弃（DROP）等。
-配置iptables实际上就是增删修改这些规则。
-2. 链（chains） 链是数据包传播的路径，每条链中都有若干个规则。当一个数据包到达一条链时，iptables会按照规则的顺序，从该链的第一条规则开始往下检查，如果有条件匹配的规则，则按照规则定义的动作执行；否则继续检查下一条规则。如果该数据包和链中所有的规则都不匹配，则iptables会根据该链预先定义的默认策略来处理数据包。
-3. 表（tables） iptables内置了4个表，即filter表、nat表、mangle表、raw表，分别用于实现包过滤、网络地址转换、包修改和数据跟踪处理等功能。每个表中含有若干条链，具体的规则就是根据实现目的的不同，添加到不同表的不同链中。
-如下图所示，各个表相关的链：
-raw表有2条链：PREROUTING、OUTPUT
-mangle表有5条链：PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD
-nat表有3条链：PREROUTING、POSTROUTING、OUTPUT
-filter表有3条链：INPUT、FORWARD、OUTPUT
-4个表的优先级为：raw > mangle > nat > filter
-二、iptables的传输过程 当数据包到达网卡时，首先会进入PREROUTING链（注意，raw表处理完后就不会再进入nat表了），完成PREROUTING链中规则的匹配和执行后（比如DNAT），iptables根据数据包的目的IP是否为本机地址，判断是否需要将该数据包转发出去。
-如果数据包的目的IP为本机地址，它就会进入INPUT链。可以在filter表的INPUT链中添加包过滤规则，限制哪些数据包可以访问本机；经过INPUT链中的规则处理后，剩下的数据包在本机上任何进程都可以收到，并根据需要对它们进行处理；当进程处理完后，需要发送出去的数据包会经过OUTPUT链的处理，然后到达POSTROUTING链，经过处理（比如SNAT）后输出。 \2. 如果数据包的目的IP不是本机地址（比如做了DNAT、或者只是作为默认网关时走过来的包），并且系统内核开启了转发功能（ip_forward参数为1），则数据包会进入FORWARD链；此时可以在filter表的FORWARD链中设置相应的规则进行处理；经过FORWARD链的数据包再走到POSTROUTING链中处理（比如执行SNAT），最后输出。
-综上，数据包在iptables中的传输链路有两种情况：
-第一种：PREROUTING -> FORWARD -> POSTROUTING
-第二种：PREROUTING -> INPUT -> LOCALHOST -> OUTPUT -> PUSTROUTING
-所以，要想对数据包进行控制，主要可以在上面几条链路中添加规则。
-（可以发现LVS的NAT模式下，会经过PREROUTING链(nat表) -> FORWARD链 -> POSTROUTING链(nat表)，请求的转发在PREROUTING链中进行DNAT，响应在POSTROUTING链中进行SNAT。无论时请求还是响应都不会走到INPUT链和OUTPUT链中）
-三、 iptables的使用 iptables对链的操作方法有：-I（插入），-A（追加），-R（替换），-D（删除），-L（显示）
-注意，-I是将规则插入到第一行，-A是将规则追加到链的最后一行。
-iptables -F：清除所有的规则
-iptables -F -t nat：清除nat表的规则
-iptables -P INPUT DROP：配置INPUT链的默认规则为DROP...</p>
-</section>
-<footer class=entry-footer>April 2, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Linux防火墙-iptables" href=https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>初探 Cockroachdb
-</h2>
-</header>
-<section class=entry-content>
-<p>初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
-1 docker network create -d bridge roachnet 我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
-2.启动第一个节点 1 2 3 4 5 6 7 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v "${PWD}/cockroach-data/roach1:/cockroach/cockroach-data" \ cockroachdb/cockroach:v1.0.4 start --insecure 此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
-docker run：Docker 命令启动一个新的容器。
--d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
---name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
---hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
---net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
--p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。...</p>
-</section>
-<footer class=entry-footer>March 17, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to 初探 Cockroachdb" href=https://jsharkc.github.io/post/cockroachdb/></a>
 </article>
 <footer class=page-footer>
 <nav class=pagination>
@@ -244,7 +176,7 @@ docker run：Docker 命令启动一个新的容器。
 </footer>
 </main>
 <footer class=footer>
-<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
 <span>
 Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &

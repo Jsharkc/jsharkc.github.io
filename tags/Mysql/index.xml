@@ -17,7 +17,7 @@
       
       <guid>https://jsharkc.github.io/post/mysql-update-%E7%BB%93%E5%90%88%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE/</guid>
       <description>有时 update 更新语句会需要根据另一个表进行更新，举例如下：
-1 2 3 4 5  -- 方式一： updatetableAa,tableBbseta.Name=b.Name,a.Age=b.Agewherea.IDCard=b.IDCard;-- 方式二: updatetableAainnerjointableBbona.IDCard=b.IDCardseta.Name=b.Name,a.Age=b.Age;  </description>
+-- 方式一： update tableA a, tableB b set a.Name=b.Name, a.Age=b.Age where a.IDCard=b.IDCard; -- 方式二: update tableA a inner join tableB b on a.IDCard=b.IDCard set a.Name=b.Name, a.Age=b.Age; </description>
     </item>
     
   </channel>

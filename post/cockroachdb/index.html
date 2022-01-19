@@ -6,14 +6,16 @@
 <title>初探 Cockroachdb | Jacobc's blog</title>
 <meta name=keywords content="cockroach">
 <meta name=description content="初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
-1  docker network create -d bridge roachnet  我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
-2.启动第一个节点 1 2 3 4 5 6 7  docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34; \ cockroachdb/cockroach:v1.0.4 start --insecure  此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
+docker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
+2.启动第一个节点 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34; \ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
 docker run：Docker 命令启动一个新的容器。
 -d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
 --name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
 --hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
 --net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
--p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。">
+-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。
+-v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34;：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。
+3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。">
 <meta name=author content="Jsharkc">
 <link rel=canonical href=https://jsharkc.github.io/post/cockroachdb/>
 <meta name=google-site-verification content="XYZabc">
@@ -33,14 +35,16 @@ docker run：Docker 命令启动一个新的容器。
 <style>#theme-toggle,.top-link{display:none}</style>
 </noscript><meta property="og:title" content="初探 Cockroachdb">
 <meta property="og:description" content="初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
-1  docker network create -d bridge roachnet  我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
-2.启动第一个节点 1 2 3 4 5 6 7  docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34; \ cockroachdb/cockroach:v1.0.4 start --insecure  此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
+docker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
+2.启动第一个节点 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34; \ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
 docker run：Docker 命令启动一个新的容器。
 -d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
 --name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
 --hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
 --net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
--p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。">
+-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。
+-v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34;：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。
+3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://jsharkc.github.io/post/cockroachdb/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
 <meta property="article:published_time" content="2017-03-17T14:50:37+00:00">
@@ -49,16 +53,18 @@ docker run：Docker 命令启动一个新的容器。
 <meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
 <meta name=twitter:title content="初探 Cockroachdb">
 <meta name=twitter:description content="初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
-1  docker network create -d bridge roachnet  我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
-2.启动第一个节点 1 2 3 4 5 6 7  docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34; \ cockroachdb/cockroach:v1.0.4 start --insecure  此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
+docker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
+2.启动第一个节点 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34; \ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
 docker run：Docker 命令启动一个新的容器。
 -d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
 --name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
 --hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
 --net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
--p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。">
+-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。
+-v &#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data&#34;：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。
+3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。">
 <script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"初探 Cockroachdb","item":"https://jsharkc.github.io/post/cockroachdb/"}]}</script>
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"初探 Cockroachdb","name":"初探 Cockroachdb","description":"初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。\n1  docker network create -d bridge roachnet  我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。\n2.启动第一个节点 1 2 3 4 5 6 7  docker run -d \\ --name=roach1 \\ --hostname=roach1 \\ --net=roachnet \\ -p 26257:26257 -p 8080:8080 \\ -v \u0026#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data\u0026#34; \\ cockroachdb/cockroach:v1.0.4 start --insecure  此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：\ndocker run：Docker 命令启动一个新的容器。\n-d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。\n--name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。\n--hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。\n--net：用于容器加入的网桥。有关详细信息，请参阅步骤1。\n-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。","keywords":["cockroach"],"articleBody":"初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。\n1  docker network create -d bridge roachnet  我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。\n2.启动第一个节点 1 2 3 4 5 6 7  docker run -d \\ --name=roach1 \\ --hostname=roach1 \\ --net=roachnet \\ -p 26257:26257 -p 8080:8080 \\ -v \"${PWD}/cockroach-data/roach1:/cockroach/cockroach-data\" \\ cockroachdb/cockroach:v1.0.4 start --insecure  此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：\ndocker run：Docker 命令启动一个新的容器。\n-d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。\n--name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。\n--hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。\n--net：用于容器加入的网桥。有关详细信息，请参阅步骤1。\n-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。\n-v \"${PWD}/cockroach-data/roach1:/cockroach/cockroach-data\"：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。\n3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。\n要模拟真正的部署，通过添加另外两个节点来扩展集群：\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15  # Start the second container/node:docker run -d \\ --name=roach2 \\ --hostname=roach2 \\ --net=roachnet \\ -v \"${PWD}/cockroach-data/roach2:/cockroach/cockroach-data\" \\ cockroachdb/cockroach:v1.0.4 start --insecure --join=roach1# Start the third container/node:docker run -d \\ --name=roach3 \\ --hostname=roach3 \\ --net=roachnet \\ -v \"${PWD}/cockroach-data/roach3:/cockroach/cockroach-data\" \\ cockroachdb/cockroach:v1.0.4 start --insecure --join=roach1  这些命令添加了两个容器，并在其中启动 CockroachDB 节点，并将它们连接到第一个节点。从步骤2中只需要注意几点：\n-v：该标志挂载作为数据卷的主机目录。数据和日志这些节点将被存储在 ${PWD}/cockroach-data/roach2与${PWD}/cockroach-data/roach3 主机上和容器停止或删除之后将继续存在。 --join：该标志使用第一个容器将新节点连接到集群 hostname。否则，所有 cockroach start 默认值都被接受。请注意，由于每个节点都在唯一的容器中，所以使用相同的默认端口不会引起冲突。\n4.测试集群 现在已经扩展到3个节点，可以使用任何节点作为集群的 SQL 网关。为了演示这一点，使用 docker exec 命令在第一个容器中启动内置的 SQL shell：\n1 2 3 4  docker exec -it roach1 ./cockroach sql --insecure# Welcome to the cockroach SQL interface.# All statements must be terminated by a semicolon.# To exit: CTRL + D.  运行一些基本的 CockroachDB SQL 语句：\n1 2 3 4 5 6 7  CREATEDATABASEbank;CREATETABLEbank.accounts(idINTPRIMARYKEY,balanceDECIMAL);INSERTINTObank.accountsVALUES(1,1000.50);SELECT*FROMbank.accounts;  1 2 3 4 5 6  +----+---------+ |id|balance|+----+---------+ |1|1000.5|+----+---------+ (1row)  退出节点1上的 SQL shell：\n1  \\q  然后在第二个容器中启动 SQL shell：\n1 2 3 4  docker exec -it roach2 ./cockroach sql --insecure# Welcome to the cockroach SQL interface.# All statements must be terminated by a semicolon.# To exit: CTRL + D.  现在运行相同的 SELECT 查询：\n1  SELECT*FROMbank.accounts;  1 2 3 4 5  +----+---------+ |id|balance|+----+---------+ |1|1000.5|+----+---------+   1  (1row)  如您所见，节点1和节点2的行为与 SQL 网关相同。\n完成后，退出节点2上的 SQL shell：\n1  \\q  5.监控集群 当启动第一个容器/节点时，将节点的默认HTTP端口映射8080到8080主机上的端口。要查看集群的管理UI，请将浏览器指向该端口localhost，即 http://localhost:8080。\n如前所述，CockroachDB会自动将您的数据复制到幕后。要验证上一步中写入的数据是否已成功复制，请向下滚动到每个商店的副本图表并将其悬停在该行上：\n每个节点上的副本计数相同，表示集群中的所有数据都被复制3次（默认值）。\n6.停止集群 使用 docker stop 和 docker rm 命令停止和删除容器（因此集群）：\n1 2 3 4 5  # Stop the containers:docker stop roach1 roach2 roach3# Remove the containers:docker rm roach1 roach2 roach3  ","wordCount":"305","inLanguage":"en","datePublished":"2017-03-17T14:50:37Z","dateModified":"2017-03-17T14:50:37Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/cockroachdb/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"初探 Cockroachdb","name":"初探 Cockroachdb","description":"初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。\ndocker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。\n2.启动第一个节点 docker run -d \\ --name=roach1 \\ --hostname=roach1 \\ --net=roachnet \\ -p 26257:26257 -p 8080:8080 \\ -v \u0026#34;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data\u0026#34; \\ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：\ndocker run：Docker 命令启动一个新的容器。\n-d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。\n--name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。\n--hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。\n--net：用于容器加入的网桥。有关详细信息，请参阅步骤1。\n-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。\n-v \u0026quot;${PWD}/cockroach-data/roach1:/cockroach/cockroach-data\u0026quot;：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。\n3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。","keywords":["cockroach"],"articleBody":"初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。\ndocker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。\n2.启动第一个节点 docker run -d \\ --name=roach1 \\ --hostname=roach1 \\ --net=roachnet \\ -p 26257:26257 -p 8080:8080 \\ -v \"${PWD}/cockroach-data/roach1:/cockroach/cockroach-data\" \\ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：\ndocker run：Docker 命令启动一个新的容器。\n-d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。\n--name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。\n--hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。\n--net：用于容器加入的网桥。有关详细信息，请参阅步骤1。\n-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。\n-v \"${PWD}/cockroach-data/roach1:/cockroach/cockroach-data\"：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。\n3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。\n要模拟真正的部署，通过添加另外两个节点来扩展集群：\n# Start the second container/node:docker run -d \\ --name=roach2 \\ --hostname=roach2 \\ --net=roachnet \\ -v \"${PWD}/cockroach-data/roach2:/cockroach/cockroach-data\" \\ cockroachdb/cockroach:v1.0.4 start --insecure --join=roach1# Start the third container/node:docker run -d \\ --name=roach3 \\ --hostname=roach3 \\ --net=roachnet \\ -v \"${PWD}/cockroach-data/roach3:/cockroach/cockroach-data\" \\ cockroachdb/cockroach:v1.0.4 start --insecure --join=roach1这些命令添加了两个容器，并在其中启动 CockroachDB 节点，并将它们连接到第一个节点。从步骤2中只需要注意几点：\n-v：该标志挂载作为数据卷的主机目录。数据和日志这些节点将被存储在 ${PWD}/cockroach-data/roach2与${PWD}/cockroach-data/roach3 主机上和容器停止或删除之后将继续存在。 --join：该标志使用第一个容器将新节点连接到集群 hostname。否则，所有 cockroach start 默认值都被接受。请注意，由于每个节点都在唯一的容器中，所以使用相同的默认端口不会引起冲突。\n4.测试集群 现在已经扩展到3个节点，可以使用任何节点作为集群的 SQL 网关。为了演示这一点，使用 docker exec 命令在第一个容器中启动内置的 SQL shell：\ndocker exec -it roach1 ./cockroach sql --insecure# Welcome to the cockroach SQL interface.# All statements must be terminated by a semicolon.# To exit: CTRL + D.运行一些基本的 CockroachDB SQL 语句：\n CREATE DATABASE bank;  CREATE TABLE bank.accounts (id INT PRIMARY KEY, balance DECIMAL);  INSERT INTO bank.accounts VALUES (1, 1000.50);  SELECT * FROM bank.accounts; +----+---------+ | id | balance | +----+---------+ | 1 | 1000.5 | +----+---------+ (1 row) 退出节点1上的 SQL shell：\n \\q 然后在第二个容器中启动 SQL shell：\ndocker exec -it roach2 ./cockroach sql --insecure# Welcome to the cockroach SQL interface.# All statements must be terminated by a semicolon.# To exit: CTRL + D.现在运行相同的 SELECT 查询：\n SELECT * FROM bank.accounts; +----+---------+ | id | balance | +----+---------+ | 1 | 1000.5 | +----+---------+  (1 row) 如您所见，节点1和节点2的行为与 SQL 网关相同。\n完成后，退出节点2上的 SQL shell：\n \\q 5.监控集群 当启动第一个容器/节点时，将节点的默认HTTP端口映射8080到8080主机上的端口。要查看集群的管理UI，请将浏览器指向该端口localhost，即 http://localhost:8080。\n如前所述，CockroachDB会自动将您的数据复制到幕后。要验证上一步中写入的数据是否已成功复制，请向下滚动到每个商店的副本图表并将其悬停在该行上：\n每个节点上的副本计数相同，表示集群中的所有数据都被复制3次（默认值）。\n6.停止集群 使用 docker stop 和 docker rm 命令停止和删除容器（因此集群）：\n# Stop the containers:docker stop roach1 roach2 roach3# Remove the containers:docker rm roach1 roach2 roach3","wordCount":"296","inLanguage":"en","datePublished":"2017-03-17T14:50:37Z","dateModified":"2017-03-17T14:50:37Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/cockroachdb/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
 </head>
 <body class=dark id=top>
 <script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
@@ -97,7 +103,7 @@ docker run：Docker 命令启动一个新的容器。
 <h1 class=post-title>
 初探 Cockroachdb
 </h1>
-<div class=post-meta>March 17, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog/content/post/cockroachdb.md rel="noopener noreferrer" target=_blank>Suggest Changes</a>
+<div class=post-meta>March 17, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog rel="noopener noreferrer" target=_blank>Suggest Changes</a>
 </div>
 </header> <div class=toc>
 <details open>
@@ -129,37 +135,17 @@ docker run：Docker 命令启动一个新的容器。
 <div class=post-content><h1 id=初探-cockroachdb>初探 Cockroachdb<a hidden class=anchor aria-hidden=true href=#初探-cockroachdb>#</a></h1>
 <h2 id=1创建网桥>1.创建网桥<a hidden class=anchor aria-hidden=true href=#1创建网桥>#</a></h2>
 <p>由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-docker data-lang=docker>docker network create -d bridge roachnet<span class=err>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>我们在 <code>roachnet</code> 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker>docker network create -d bridge roachnet<span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>我们在 <code>roachnet</code> 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。</p>
 <h2 id=2启动第一个节点>2.启动第一个节点<a hidden class=anchor aria-hidden=true href=#2启动第一个节点>#</a></h2>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-docker data-lang=docker>docker run -d <span class=se>\
-</span><span class=se></span>--name<span class=o>=</span>roach1 <span class=se>\
-</span><span class=se></span>--hostname<span class=o>=</span>roach1 <span class=se>\
-</span><span class=se></span>--net<span class=o>=</span>roachnet <span class=se>\
-</span><span class=se></span>-p 26257:26257 -p 8080:8080  <span class=se>\
-</span><span class=se></span>-v <span class=s2>&#34;</span><span class=si>${</span><span class=nv>PWD</span><span class=si>}</span><span class=s2>/cockroach-data/roach1:/cockroach/cockroach-data&#34;</span>  <span class=se>\
-</span><span class=se></span>cockroachdb/cockroach:v1.0.4 start --insecure<span class=err>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker>docker run -d <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--name<span style=color:#f92672>=</span>roach1 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--hostname<span style=color:#f92672>=</span>roach1 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--net<span style=color:#f92672>=</span>roachnet <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-p 26257:26257 -p 8080:8080  <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-v <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>PWD<span style=color:#e6db74>}</span><span style=color:#e6db74>/cockroach-data/roach1:/cockroach/cockroach-data&#34;</span>  <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>cockroachdb/cockroach:v1.0.4 start --insecure<span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：</p>
 <p><code>docker run</code>：Docker 命令启动一个新的容器。</p>
 <p><code>-d</code>：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。</p>
 <p><code>--name</code>：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。</p>
@@ -171,168 +157,63 @@ docker run：Docker 命令启动一个新的容器。
 <h2 id=3将节点添加到集群>3.将节点添加到集群<a hidden class=anchor aria-hidden=true href=#3将节点添加到集群>#</a></h2>
 <p>在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。</p>
 <p>要模拟真正的部署，通过添加另外两个节点来扩展集群：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span><span class=lnt>13
-</span><span class=lnt>14
-</span><span class=lnt>15
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-docker data-lang=docker><span class=c># Start the second container/node:</span><span class=err>
-</span><span class=err></span>docker run -d <span class=se>\
-</span><span class=se></span>--name<span class=o>=</span>roach2 <span class=se>\
-</span><span class=se></span>--hostname<span class=o>=</span>roach2 <span class=se>\
-</span><span class=se></span>--net<span class=o>=</span>roachnet <span class=se>\
-</span><span class=se></span>-v <span class=s2>&#34;</span><span class=si>${</span><span class=nv>PWD</span><span class=si>}</span><span class=s2>/cockroach-data/roach2:/cockroach/cockroach-data&#34;</span> <span class=se>\
-</span><span class=se></span>cockroachdb/cockroach:v1.0.4 start --insecure --join<span class=o>=</span>roach1<span class=err>
-</span><span class=err>
-</span><span class=err></span><span class=c># Start the third container/node:</span><span class=err>
-</span><span class=err></span>docker run -d <span class=se>\
-</span><span class=se></span>--name<span class=o>=</span>roach3 <span class=se>\
-</span><span class=se></span>--hostname<span class=o>=</span>roach3 <span class=se>\
-</span><span class=se></span>--net<span class=o>=</span>roachnet <span class=se>\
-</span><span class=se></span>-v <span class=s2>&#34;</span><span class=si>${</span><span class=nv>PWD</span><span class=si>}</span><span class=s2>/cockroach-data/roach3:/cockroach/cockroach-data&#34;</span> <span class=se>\
-</span><span class=se></span>cockroachdb/cockroach:v1.0.4 start --insecure --join<span class=o>=</span>roach1<span class=err>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>这些命令添加了两个容器，并在其中启动 CockroachDB 节点，并将它们连接到第一个节点。从步骤2中只需要注意几点：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker><span style=color:#75715e># Start the second container/node:</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span>docker run -d <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--name<span style=color:#f92672>=</span>roach2 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--hostname<span style=color:#f92672>=</span>roach2 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--net<span style=color:#f92672>=</span>roachnet <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-v <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>PWD<span style=color:#e6db74>}</span><span style=color:#e6db74>/cockroach-data/roach2:/cockroach/cockroach-data&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>cockroachdb/cockroach:v1.0.4 start --insecure --join<span style=color:#f92672>=</span>roach1<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Start the third container/node:</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span>docker run -d <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--name<span style=color:#f92672>=</span>roach3 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--hostname<span style=color:#f92672>=</span>roach3 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--net<span style=color:#f92672>=</span>roachnet <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>-v <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>PWD<span style=color:#e6db74>}</span><span style=color:#e6db74>/cockroach-data/roach3:/cockroach/cockroach-data&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>cockroachdb/cockroach:v1.0.4 start --insecure --join<span style=color:#f92672>=</span>roach1<span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>这些命令添加了两个容器，并在其中启动 CockroachDB 节点，并将它们连接到第一个节点。从步骤2中只需要注意几点：</p>
 <p><code>-v</code>：该标志挂载作为数据卷的主机目录。数据和日志这些节点将被存储在 <code>${PWD}/cockroach-data/roach2与${PWD}/cockroach-data/roach3</code> 主机上和容器停止或删除之后将继续存在。
 <code>--join</code>：该标志使用第一个容器将新节点连接到集群 <code>hostname</code>。否则，所有 <code>cockroach start</code> 默认值都被接受。请注意，由于每个节点都在唯一的容器中，所以使用相同的默认端口不会引起冲突。</p>
 <h2 id=4测试集群>4.测试集群<a hidden class=anchor aria-hidden=true href=#4测试集群>#</a></h2>
 <p>现在已经扩展到3个节点，可以使用任何节点作为集群的 SQL 网关。为了演示这一点，使用 docker exec 命令在第一个容器中启动内置的 SQL shell：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-docker data-lang=docker>docker <span class=nb>exec</span> -it roach1 ./cockroach sql --insecure<span class=err>
-</span><span class=err></span><span class=c># Welcome to the cockroach SQL interface.</span><span class=err>
-</span><span class=err></span><span class=c># All statements must be terminated by a semicolon.</span><span class=err>
-</span><span class=err></span><span class=c># To exit: CTRL + D.</span><span class=err>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>运行一些基本的 CockroachDB SQL 语句：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span><span class=lnt>7
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=o>&gt;</span><span class=w> </span><span class=k>CREATE</span><span class=w> </span><span class=k>DATABASE</span><span class=w> </span><span class=n>bank</span><span class=p>;</span><span class=w>
-</span><span class=w>
-</span><span class=w></span><span class=o>&gt;</span><span class=w> </span><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=n>bank</span><span class=p>.</span><span class=n>accounts</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=w> </span><span class=nb>INT</span><span class=w> </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=p>,</span><span class=w> </span><span class=n>balance</span><span class=w> </span><span class=nb>DECIMAL</span><span class=p>);</span><span class=w>
-</span><span class=w>
-</span><span class=w></span><span class=o>&gt;</span><span class=w> </span><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=n>bank</span><span class=p>.</span><span class=n>accounts</span><span class=w> </span><span class=k>VALUES</span><span class=w> </span><span class=p>(</span><span class=mi>1</span><span class=p>,</span><span class=w> </span><span class=mi>1000</span><span class=p>.</span><span class=mi>50</span><span class=p>);</span><span class=w>
-</span><span class=w>
-</span><span class=w></span><span class=o>&gt;</span><span class=w> </span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>bank</span><span class=p>.</span><span class=n>accounts</span><span class=p>;</span><span class=w>
-</span></code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span><span class=lnt>6
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=o>+</span><span class=c1>----+---------+
-</span><span class=c1></span><span class=o>|</span><span class=w> </span><span class=n>id</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>balance</span><span class=w> </span><span class=o>|</span><span class=w>
-</span><span class=w></span><span class=o>+</span><span class=c1>----+---------+
-</span><span class=c1></span><span class=o>|</span><span class=w>  </span><span class=mi>1</span><span class=w> </span><span class=o>|</span><span class=w>  </span><span class=mi>1000</span><span class=p>.</span><span class=mi>5</span><span class=w> </span><span class=o>|</span><span class=w>
-</span><span class=w></span><span class=o>+</span><span class=c1>----+---------+
-</span><span class=c1></span><span class=p>(</span><span class=mi>1</span><span class=w> </span><span class=k>row</span><span class=p>)</span><span class=w>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>退出节点1上的 SQL shell：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=o>&gt;</span><span class=w> </span><span class=err>\</span><span class=n>q</span><span class=w>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>然后在第二个容器中启动 SQL shell：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-docker data-lang=docker>docker <span class=nb>exec</span> -it roach2 ./cockroach sql --insecure<span class=err>
-</span><span class=err></span><span class=c># Welcome to the cockroach SQL interface.</span><span class=err>
-</span><span class=err></span><span class=c># All statements must be terminated by a semicolon.</span><span class=err>
-</span><span class=err></span><span class=c># To exit: CTRL + D.</span><span class=err>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>现在运行相同的 SELECT 查询：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=o>&gt;</span><span class=w> </span><span class=k>SELECT</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>bank</span><span class=p>.</span><span class=n>accounts</span><span class=p>;</span><span class=w>
-</span></code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=o>+</span><span class=c1>----+---------+
-</span><span class=c1></span><span class=o>|</span><span class=w> </span><span class=n>id</span><span class=w> </span><span class=o>|</span><span class=w> </span><span class=n>balance</span><span class=w> </span><span class=o>|</span><span class=w>
-</span><span class=w></span><span class=o>+</span><span class=c1>----+---------+
-</span><span class=c1></span><span class=o>|</span><span class=w>  </span><span class=mi>1</span><span class=w> </span><span class=o>|</span><span class=w>  </span><span class=mi>1000</span><span class=p>.</span><span class=mi>5</span><span class=w> </span><span class=o>|</span><span class=w>
-</span><span class=w></span><span class=o>+</span><span class=c1>----+---------+
-</span></code></pre></td></tr></table>
-</div>
-</div><div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=o>&gt;</span><span class=w> </span><span class=p>(</span><span class=mi>1</span><span class=w> </span><span class=k>row</span><span class=p>)</span><span class=w>
-</span></code></pre></td></tr></table>
-</div>
-</div><p>如您所见，节点1和节点2的行为与 SQL 网关相同。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker>docker exec -it roach1 ./cockroach sql --insecure<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Welcome to the cockroach SQL interface.</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># All statements must be terminated by a semicolon.</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># To exit: CTRL + D.</span><span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>运行一些基本的 CockroachDB SQL 语句：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>DATABASE</span> bank;
+
+<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>TABLE</span> bank.accounts (id INT <span style=color:#66d9ef>PRIMARY</span> <span style=color:#66d9ef>KEY</span>, balance DECIMAL);
+
+<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> bank.accounts <span style=color:#66d9ef>VALUES</span> (<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>1000</span>.<span style=color:#ae81ff>50</span>);
+
+<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>SELECT</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>FROM</span> bank.accounts;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#f92672>+</span><span style=color:#75715e>----+---------+
+</span><span style=color:#75715e></span><span style=color:#f92672>|</span> id <span style=color:#f92672>|</span> balance <span style=color:#f92672>|</span>
+<span style=color:#f92672>+</span><span style=color:#75715e>----+---------+
+</span><span style=color:#75715e></span><span style=color:#f92672>|</span>  <span style=color:#ae81ff>1</span> <span style=color:#f92672>|</span>  <span style=color:#ae81ff>1000</span>.<span style=color:#ae81ff>5</span> <span style=color:#f92672>|</span>
+<span style=color:#f92672>+</span><span style=color:#75715e>----+---------+
+</span><span style=color:#75715e></span>(<span style=color:#ae81ff>1</span> <span style=color:#66d9ef>row</span>)
+</code></pre></div><p>退出节点1上的 SQL shell：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#f92672>&gt;</span> <span style=color:#960050;background-color:#1e0010>\</span>q
+</code></pre></div><p>然后在第二个容器中启动 SQL shell：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker>docker exec -it roach2 ./cockroach sql --insecure<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Welcome to the cockroach SQL interface.</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># All statements must be terminated by a semicolon.</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># To exit: CTRL + D.</span><span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>现在运行相同的 SELECT 查询：</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>SELECT</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>FROM</span> bank.accounts;
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#f92672>+</span><span style=color:#75715e>----+---------+
+</span><span style=color:#75715e></span><span style=color:#f92672>|</span> id <span style=color:#f92672>|</span> balance <span style=color:#f92672>|</span>
+<span style=color:#f92672>+</span><span style=color:#75715e>----+---------+
+</span><span style=color:#75715e></span><span style=color:#f92672>|</span>  <span style=color:#ae81ff>1</span> <span style=color:#f92672>|</span>  <span style=color:#ae81ff>1000</span>.<span style=color:#ae81ff>5</span> <span style=color:#f92672>|</span>
+<span style=color:#f92672>+</span><span style=color:#75715e>----+---------+
+</span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#f92672>&gt;</span> (<span style=color:#ae81ff>1</span> <span style=color:#66d9ef>row</span>)
+</code></pre></div><p>如您所见，节点1和节点2的行为与 SQL 网关相同。</p>
 <p>完成后，退出节点2上的 SQL shell：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=o>&gt;</span><span class=w> </span><span class=err>\</span><span class=n>q</span><span class=w>
-</span></code></pre></td></tr></table>
-</div>
-</div><h2 id=5监控集群>5.监控集群<a hidden class=anchor aria-hidden=true href=#5监控集群>#</a></h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#f92672>&gt;</span> <span style=color:#960050;background-color:#1e0010>\</span>q
+</code></pre></div><h2 id=5监控集群>5.监控集群<a hidden class=anchor aria-hidden=true href=#5监控集群>#</a></h2>
 <p>当启动第一个容器/节点时，将节点的默认HTTP端口映射8080到8080主机上的端口。要查看集群的管理UI，请将浏览器指向该端口localhost，即 http://localhost:8080。</p>
 <p><img loading=lazy src=https://www.cockroachlabs.com/docs/images/admin_ui.png alt=CockroachDB管理界面>
 </p>
@@ -342,23 +223,12 @@ docker run：Docker 命令启动一个新的容器。
 <p>每个节点上的副本计数相同，表示集群中的所有数据都被复制3次（默认值）。</p>
 <h2 id=6停止集群>6.停止集群<a hidden class=anchor aria-hidden=true href=#6停止集群>#</a></h2>
 <p>使用 docker stop 和 docker rm 命令停止和删除容器（因此集群）：</p>
-<div class=highlight><div class=chroma>
-<table class=lntable><tr><td class=lntd>
-<pre tabindex=0 class=chroma><code><span class=lnt>1
-</span><span class=lnt>2
-</span><span class=lnt>3
-</span><span class=lnt>4
-</span><span class=lnt>5
-</span></code></pre></td>
-<td class=lntd>
-<pre tabindex=0 class=chroma><code class=language-docker data-lang=docker><span class=c># Stop the containers:</span><span class=err>
-</span><span class=err></span>docker stop roach1 roach2 roach3<span class=err>
-</span><span class=err>
-</span><span class=err></span><span class=c># Remove the containers:</span><span class=err>
-</span><span class=err></span>docker rm roach1 roach2 roach3<span class=err>
-</span></code></pre></td></tr></table>
-</div>
-</div>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-docker data-lang=docker><span style=color:#75715e># Stop the containers:</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span>docker stop roach1 roach2 roach3<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Remove the containers:</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span>docker rm roach1 roach2 roach3<span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div>
 </div>
 <footer class=post-footer>
 <ul class=post-tags>
@@ -380,7 +250,7 @@ docker run：Docker 命令启动一个新的容器。
 </article>
 </main>
 <footer class=footer>
-<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
 <span>
 Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &

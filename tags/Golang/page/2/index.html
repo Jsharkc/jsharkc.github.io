@@ -3,11 +3,11 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
 <meta name=robots content="index, follow">
-<title>oh-my-zsh | Jacobc's blog</title>
+<title>Golang | Jacobc's blog</title>
 <meta name=keywords content>
 <meta name=description content="Jacobc's blog, welcome to my blog">
 <meta name=author content="Jsharkc">
-<link rel=canonical href=https://jsharkc.github.io/tags/oh-my-zsh/>
+<link rel=canonical href=https://jsharkc.github.io/tags/golang/>
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
@@ -20,16 +20,16 @@
 <meta name=theme-color content="#2e2e33">
 <meta name=msapplication-TileColor content="#2e2e33">
 <meta name=generator content="Hugo 0.86.1">
-<link rel=alternate type=application/rss+xml href=https://jsharkc.github.io/tags/oh-my-zsh/index.xml>
+<link rel=alternate type=application/rss+xml href=https://jsharkc.github.io/tags/golang/index.xml>
 <noscript>
 <style>#theme-toggle,.top-link{display:none}</style>
-</noscript><meta property="og:title" content="oh-my-zsh">
+</noscript><meta property="og:title" content="Golang">
 <meta property="og:description" content="Jacobc's blog, welcome to my blog">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://jsharkc.github.io/tags/oh-my-zsh/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta property="og:url" content="https://jsharkc.github.io/tags/golang/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="Jacobc'S BLOG">
 <meta name=twitter:card content="summary_large_image">
 <meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
-<meta name=twitter:title content="oh-my-zsh">
+<meta name=twitter:title content="Golang">
 <meta name=twitter:description content="Jacobc's blog, welcome to my blog">
 </head>
 <body class="list dark" id=top>
@@ -64,24 +64,59 @@
 </header>
 <main class=main>
 <header class=page-header><div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/tags/>Tags</a></div>
-<h1>oh-my-zsh</h1>
+<h1>Golang</h1>
 </header>
 <article class="post-entry tag-entry">
 <header class=entry-header>
-<h2>Centos 安装 oh-my-zsh
+<h2>Go 程序的性能优化及 pprof 的使用
 </h2>
 </header>
 <section class=entry-content>
-<p>查看、安装 zsh 查看是否安装了 zsh
-# 方法一： chsh -l # 方法二： cat /etc/shells # 可能结果： /bin/sh /bin/bash /sbin/nologin /usr/bin/sh /usr/bin/bash /usr/sbin/nologin /bin/zsh # 如果有 /bin/zsh 代表已经安装，反之则没有 安装 zsh
-yum install -y zsh 切换 shell 为 zsh
-chsh -s /bin/zsh 安装 oh-my-zsh 安装需要 git，没有安装需要先安装：
-yum install -y git 1、可以通过别人已经写好的脚本安装，用 curl 或者 wget 下载脚本来安装：
-通过 curl sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 通过 wget sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 2、也可以自己用 git 安装...</p>
+<p>Go 程序的性能优化及 pprof 的使用 转自snowInPluto
+程序的性能优化无非就是对程序占用资源的优化。对于服务器而言，最重要的两项资源莫过于 CPU 和内存。性能优化，就是在对于不影响程序数据处理能力的情况下，我们通常要求程序的 CPU 的内存占用尽量低。反过来说，也就是当程序 CPU 和内存占用不变的情况下，尽量地提高程序的数据处理能力或者说是吞吐量。
+Go 的原生工具链中提供了非常多丰富的工具供开发者使用，其中包括 pprof。
+对于 pprof 的使用要分成下面两部分来说。
+Web 程序使用 pprof 先写一个简单的 Web 服务程序。程序在 9876 端口上接收请求。
+package main import ( "bytes" "io/ioutil" "log" "math/rand" "net/http" _ "net/http/pprof" ) func main() { http.HandleFunc("/test", handler) log.Fatal(http.ListenAndServe(":9876", nil)) } func handler(w http.ResponseWriter, r *http.Request) { err := r.ParseForm() if nil != err { w.Write([]byte(err.Error())) return } doSomeThingOne(10000) buff := genSomeBytes() b, err := ioutil....</p>
 </section>
-<footer class=entry-footer>November 17, 2019&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Centos 安装 oh-my-zsh" href=https://jsharkc.github.io/post/centos-install-oh-my-zsh/></a>
+<footer class=entry-footer>March 12, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Go 程序的性能优化及 pprof 的使用" href=https://jsharkc.github.io/post/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96pprof/></a>
 </article>
+<article class="post-entry tag-entry">
+<header class=entry-header>
+<h2>Golang I/O 包的妙用
+</h2>
+</header>
+<section class=entry-content>
+<p>Golang I/O 包的妙用 作者：icexin 转自简书
+golang标准库对io的抽象非常精巧，各个组件可以随意组合，可以作为接口设计的典范。这篇文章结合一个实际的例子来和大家分享一下。
+背景 以一个RPC的协议包来说，每个包有如下结构
+type Packet struct { TotalSize uint32 Magic [4]byte Payload []byte Checksum uint32 } 其中TotalSize是整个包除去TotalSize后的字节数， Magic是一个固定长度的字串，Payload是包的实际内容，包含业务逻辑的数据。 Checksum是对Magic和Payload的adler32校验和。
+编码(encode) 我们使用一个原型为func EncodePacket(w io.Writer, payload []byte) error的函数来把数据打包，结合encoding/binary我们很容易写出第一版，演示需要，错误处理方面就简化处理了。
+var RPC_MAGIC = [4]byte{'p', 'y', 'x', 'i'} func EncodePacket(w io.Writer, payload []byte) error { // len(Magic) + len(Checksum) == 8 totalsize := uint32(len(payload) + 8) // write total size binary.Write(w, binary.BigEndian, totalsize) // write magic bytes binary....</p>
+</section>
+<footer class=entry-footer>December 14, 2016&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Golang I/O 包的妙用" href=https://jsharkc.github.io/post/golang_io%E5%8C%85_%E5%A6%99%E7%94%A8/></a>
+</article>
+<article class="post-entry tag-entry">
+<header class=entry-header>
+<h2>Go注意点总结
+</h2>
+</header>
+<section class=entry-content>
+<p>Go >注意点&lt; 总结 1. 布尔类型 ​ 布尔类型 不能 接受其他类型的赋值，不支持 自动或者强制的类型转换
+var b bool b = 1 // 编译错误 b = bool(1) // 编译错误 2. int与int32 ​ **注意：**int和int32在Go语言里被认为是两种不同的类型，编译器也不会帮你自动做类型转换
+var value2 int32 value1:= 64 // value1将会被自动推导为int类型 value2 = value1 // 编译错误 // 可用强制转换解决这个编译错误： value2 = int32(value1) // 编译通过 3. 整数值比较 ​ 两种 不同 类型的整型数 不能 直接比较，比如 int8 类型的数和 int 类型的数不能直接比较，但各种类型的整型变量都可以直接与字面常量 ( literal ) 进行比较
+4. ^x 表示对 x 取反 5....</p>
+</section>
+<footer class=entry-footer>November 15, 2016&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Go注意点总结" href=https://jsharkc.github.io/post/gonote/></a>
+</article>
+<footer class=page-footer>
+<nav class=pagination>
+<a class=prev href=https://jsharkc.github.io/tags/golang/>« Prev Page</a>
+</nav>
+</footer>
 </main>
 <footer class=footer>
 <span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>

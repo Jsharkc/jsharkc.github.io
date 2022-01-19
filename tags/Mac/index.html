@@ -74,9 +74,9 @@
 <section class=entry-content>
 <p>flutter 最新版 2.5.3 安装 CocoaPods 需要 ruby 2.6 以上，而我 MAC 上 ruby 只有 2.5 所以需要更新 ruby，brew install ruby 后，就碰到了这个问题。
 报错信息：
-1 2 3 4 dyld: Library not loaded: /usr/local/opt/ruby/lib/libruby.2.5.dylib Referenced from: /usr/local/bin/vi Reason: image not found 也就是说，现在 ruby 2.6 所以找不到 ruby 2.5 了
+dyld: Library not loaded: /usr/local/opt/ruby/lib/libruby.2.5.dylib Referenced from: /usr/local/bin/vi Reason: image not found 也就是说，现在 ruby 2.6 所以找不到 ruby 2.5 了
 首先
-1 2 3 4 5 6 7 8 9 10 11 12 > which vi 找到 vi 所在的位置，/usr/local/bin/vi，然后 通过 otool 找到该命令依赖的库 > otool -L /usr/local/bin/vi /usr/local/bin/vi: ....</p>
+> which vi 找到 vi 所在的位置，/usr/local/bin/vi，然后 通过 otool 找到该命令依赖的库 > otool -L /usr/local/bin/vi /usr/local/bin/vi: ... /usr/local/opt/ruby/lib/libruby.dylib (compatibility version 2.5.0, current version 2.5.1) /usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0) ... 有很多内容，为了能看清楚，我用 ....</p>
 </section>
 <footer class=entry-footer>October 16, 2021&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to 修复 dyld: Library not loaded" href=https://jsharkc.github.io/post/fix-dyld-library-not-loaded/></a>
@@ -101,7 +101,7 @@
 </article>
 </main>
 <footer class=footer>
-<span>&copy; 2021 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
+<span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
 <span>
 Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
