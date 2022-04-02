@@ -3,11 +3,11 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
 <meta name=robots content="index, follow">
-<title>Docker | Jacobc's blog</title>
+<title>mongo | Jacobc's blog</title>
 <meta name=keywords content>
 <meta name=description content="Jacobc's blog, welcome to my blog">
 <meta name=author content="Jsharkc">
-<link rel=canonical href=https://jsharkc.github.io/tags/docker/>
+<link rel=canonical href=https://jsharkc.github.io/tags/mongo/>
 <meta name=google-site-verification content="XYZabc">
 <meta name=yandex-verification content="XYZabc">
 <meta name=msvalidate.01 content="XYZabc">
@@ -20,16 +20,16 @@
 <meta name=theme-color content="#2e2e33">
 <meta name=msapplication-TileColor content="#2e2e33">
 <meta name=generator content="Hugo 0.86.1">
-<link rel=alternate type=application/rss+xml href=https://jsharkc.github.io/tags/docker/index.xml>
+<link rel=alternate type=application/rss+xml href=https://jsharkc.github.io/tags/mongo/index.xml>
 <noscript>
 <style>#theme-toggle,.top-link{display:none}</style>
-</noscript><meta property="og:title" content="Docker">
+</noscript><meta property="og:title" content="mongo">
 <meta property="og:description" content="Jacobc's blog, welcome to my blog">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://jsharkc.github.io/tags/docker/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="Jacobc'S BLOG">
+<meta property="og:url" content="https://jsharkc.github.io/tags/mongo/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="Jacobc'S BLOG">
 <meta name=twitter:card content="summary_large_image">
 <meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
-<meta name=twitter:title content="Docker">
+<meta name=twitter:title content="mongo">
 <meta name=twitter:description content="Jacobc's blog, welcome to my blog">
 </head>
 <body class="list dark" id=top>
@@ -64,37 +64,25 @@
 </header>
 <main class=main>
 <header class=page-header><div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/tags/>Tags</a></div>
-<h1>Docker</h1>
+<h1>mongo</h1>
 </header>
 <article class="post-entry tag-entry">
 <header class=entry-header>
-<h2>Centos7 安装 Docker
+<h2>限制内存 mongo docker-compsoe 部署
 </h2>
 </header>
 <section class=entry-content>
-<p>一条命令安装 官方脚本：
-curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun 国内 daocloud 安装命令：
-curl -sSL https://get.daocloud.io/docker | sh 手动安装指定版本 卸载旧版本 sudo yum remove docker \ docker-client \ docker-client-latest \ docker-common \ docker-latest \ docker-latest-logrotate \ docker-logrotate \ docker-engine \ container-selinux \ docker-selinux 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定 stable 版和 test 版...</p>
+<p>用 docker 起 mongo，有两种限制方式：
+通过 Docker 限制内存 通过 MongoDB 自己的配置文件限制 一、通过 Docker 限制内存 内存限制相关参数：
+参数 简介 -m, –memory 内存限制，格式：数字+单位，单位可以是b, k, m, g，最小4M – -memory-swap 存和交换空间总大小限制，注意：必须比-m参数大，-1 表示不受限 例子：
+docker run -m 100M --memory-swap -1 mongo:5.0 二、通过 mongo 配置文件限制 配置文件位置：
+3.x : /etc/mongod.conf
+4.x : /etc/mongod.conf.orig
+默认配置：
+storage: # mongod 进程存储数据目录，此配置仅对 mongod 进程有效 dbPath: /data/mongodb/db 是否开启 journal 日志持久存储，journal 日志用来数据恢复，是 mongod 最基础的特性，通常用于故障恢复。64 位系统默认为 true，32 位默认为 false，建议开启，仅对 mongod 进程有效。 journal: enabled: true # 存储引擎类型，mongodb 3....</p>
 </section>
-<footer class=entry-footer>November 15, 2021&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Centos7 安装 Docker" href=https://jsharkc.github.io/post/centos7-install-docker/></a>
-</article>
-<article class="post-entry tag-entry">
-<header class=entry-header>
-<h2>Docker Note
-</h2>
-</header>
-<section class=entry-content>
-<p>Docker Note 镜像 虚悬镜像 ​ 没有仓库名，也没有标签，均为&lt;none>的为虚悬镜像：
-&lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为&lt;none>，可用下面的命令专门显示这类镜像：
-$ docker images -f dangling=ture REPOSITORY TAG IMAGE ID CREATED SIZE &lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
-$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
-​ docker images 还支持强大的过滤器参数 --filter ，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
-$ docker images -f since=mongo:3.2 REPOSITORY TAG IMAGE ID CREATED SIZE redis latest 5f515359c7f8 5 days ago 183 MB nginx latest 05a60462f8ba 5 days ago 181 MB ​ 想查看某个位置之前的镜像也可以，只需要吧since换成before即可。...</p>
-</section>
-<footer class=entry-footer>April 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Docker Note" href=https://jsharkc.github.io/post/docker-note/></a>
+<footer class=entry-footer>April 2, 2022&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to 限制内存 mongo docker-compsoe 部署" href=https://jsharkc.github.io/post/mongo-compose/></a>
 </article>
 </main>
 <footer class=footer>

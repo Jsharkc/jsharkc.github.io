@@ -81,11 +81,11 @@ package log import ( "fmt" "os" "strings" "time" "github.com/natefinch/lumberjac
 </article>
 <article class="post-entry tag-entry">
 <header class=entry-header>
-<h2>Mac 使用 V2ray 科学上网
+<h2>Mac 使用 V2ray
 </h2>
 </header>
 <section class=entry-content>
-<p>Mac 使用 V2ray 科学上网 Install v2ray-core step 1: Add official tap
+<p>Install v2ray-core step 1: Add official tap
 brew tap v2ray/v2ray step 2: Install v2ray-core:
 brew install v2ray-core Update v2ray-core step 1: update tap
 brew update step 2: update v2ray-core
@@ -95,10 +95,10 @@ brew upgrade v2ray-core 使用 直接在命令行上输入 v2ray 就可以运行
 vim /usr/local/etc/config.json 配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
 config.json 添加 http 代理：
 "inboundDetour": [{ "protocol": "http", "port": 1081, "settings": { "udp": true } }], .zshrc 添加
-# proxy alias proxy='export https_proxy=http://127....</p>
+# proxy alias proxy='export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080' alias unproxy='unset https_proxy http_proxy socks5_proxy' 然后配置一下 chrome 插件 Proxy SwitchyOmega...</p>
 </section>
 <footer class=entry-footer>April 7, 2018&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Mac 使用 V2ray 科学上网" href=https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/></a>
+<a class=entry-link aria-label="post link to Mac 使用 V2ray" href=https://jsharkc.github.io/post/v2ray%E4%BD%BF%E7%94%A8/></a>
 </article>
 <article class="post-entry tag-entry">
 <header class=entry-header>
@@ -159,7 +159,7 @@ func main() { L: for { select { case &lt;-time.After(time.Second): fmt.Println("
 如果需要退出循环，我会将 for-select 封装到函数中：...</p>
 </section>
 <footer class=entry-footer>May 26, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to 十条有用的 GO 技术" href=https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/></a>
+<a class=entry-link aria-label="post link to 十条有用的 GO 技术" href=https://jsharkc.github.io/post/ten-useful-go-tip/></a>
 </article>
 <article class="post-entry tag-entry">
 <header class=entry-header>

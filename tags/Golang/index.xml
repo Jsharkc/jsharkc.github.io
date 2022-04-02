@@ -22,12 +22,12 @@ package log import ( &amp;#34;fmt&amp;#34; &amp;#34;os&amp;#34; &amp;#34;strings
     </item>
     
     <item>
-      <title>Mac 使用 V2ray 科学上网</title>
-      <link>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
+      <title>Mac 使用 V2ray</title>
+      <link>https://jsharkc.github.io/post/v2ray%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Sat, 07 Apr 2018 21:42:23 +0000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
-      <description>Mac 使用 V2ray 科学上网 Install v2ray-core step 1: Add official tap
+      <guid>https://jsharkc.github.io/post/v2ray%E4%BD%BF%E7%94%A8/</guid>
+      <description>Install v2ray-core step 1: Add official tap
 brew tap v2ray/v2ray step 2: Install v2ray-core:
 brew install v2ray-core Update v2ray-core step 1: update tap
 brew update step 2: update v2ray-core
@@ -37,7 +37,7 @@ brew upgrade v2ray-core 使用 直接在命令行上输入 v2ray 就可以运行
 vim /usr/local/etc/config.json 配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
 config.json 添加 http 代理：
 &amp;#34;inboundDetour&amp;#34;: [{ &amp;#34;protocol&amp;#34;: &amp;#34;http&amp;#34;, &amp;#34;port&amp;#34;: 1081, &amp;#34;settings&amp;#34;: { &amp;#34;udp&amp;#34;: true } }], .zshrc 添加
-# proxy alias proxy=&#39;export https_proxy=http://127.</description>
+# proxy alias proxy=&#39;export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080&#39; alias unproxy=&#39;unset https_proxy http_proxy socks5_proxy&#39; 然后配置一下 chrome 插件 Proxy SwitchyOmega</description>
     </item>
     
     <item>
@@ -80,10 +80,10 @@ type eface struct { _type *_type data unsafe.Pointer } type _type struct { size 
     
     <item>
       <title>十条有用的 GO 技术</title>
-      <link>https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/</link>
+      <link>https://jsharkc.github.io/post/ten-useful-go-tip/</link>
       <pubDate>Fri, 26 May 2017 09:42:23 +0000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/</guid>
+      <guid>https://jsharkc.github.io/post/ten-useful-go-tip/</guid>
       <description>十条有用的 Go 技术 转自 mikespook.com
 这里是我过去几年中编写的大量 Go 代码的经验总结而来的自己的最佳实践。我相信它们具有弹性的。这里的弹性是指： 某个应用需要适配一个灵活的环境。你不希望每过 3 到 4 个月就不得不将它们全部重构一遍。添加新的特性应当很容易。许多人参与开发该应用，它应当可以被理解，且维护简单。许多人使用该应用，bug 应该容易被发现并且可以快速的修复。我用了很长的时间学到了这些事情。其中的一些很微小，但对于许多事情都会有影响。所有这些都仅仅是建议，具体情况具体对待，并且如果有帮助的话务必告诉我。随时留言:)
 1. 使用单一的 GOPATH 多个 GOPATH 的情况并不具有弹性。GOPATH 本身就是高度自我完备的（通过导入路径）。有多个 GOPATH 会导致某些副作用，例如可能使用了给定的库的不同的版本。你可能在某个地方升级了它，但是其他地方却没有升级。而且，我还没遇到过任何一个需要使用多个 GOPATH 的情况。所以只使用单一的 GOPATH，这会提升你 Go 的开发进度。

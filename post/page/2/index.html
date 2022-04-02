@@ -69,6 +69,38 @@
 </header>
 <article class=post-entry>
 <header class=entry-header>
+<h2>Android手机作为linux服务器
+</h2>
+</header>
+<section class=entry-content>
+<p>有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。
+下载 Termux Termux 下载地址
+下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
+配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
+apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
+whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
+ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com....</p>
+</section>
+<footer class=entry-footer>November 16, 2019&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Android手机作为linux服务器" href=https://jsharkc.github.io/post/android-phone-as-linux-server/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>文件描述符 fd
+</h2>
+</header>
+<section class=entry-content>
+<p>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。
+文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于 UNIX、Linux 这样的操作系统。
+Linux下两个进程打开同一个文件返回的文件描述符一样吗？ 答案：不一样
+两个进程中分别产生生成两个独立的fd 两个进程可以任意对文件进行读写操作，操作系统并不保证写的原子性 进程可以通过系统调用对文件加锁，从而实现对文件内容的保护 任何一个进程删除该文件时，另外一个进程不会立即出现读写失败 两个进程可以分别读取文件的不同部分而不会相互影响 一个进程对文件长度和内容的修改另外一个进程可以立即感知 文件描述符与打开文件的关系 内核中，对应于每个进程都有一个文件描述符表，表示这个进程打开的所有文件。 文件描述表中每一项都是一个指针，指向一个用于描述打开的文件的数据块——file对象，file对象中描述了文件的打开模式，读写位置等重要信息，当进程打开一个文件时，内核就会创建一个新的file对象。 file对象不是专属于某个进程的，不同进程的文件描述符表中的指针可以指向相同的file对象，从而共享这个打开的文件。 file对象有引用计数，记录了引用这个对象的文件描述符个数，只有当引用计数为0时，内核才销毁file对象，因此某个进程关闭文件，不影响与之共享同一个file对象的进程。 参考文章：
+linux下两个进程可以同时打开同一个文件吗？返回的文件描述符一样吗？ Linux IO模式及 select、poll、epoll详解 </p>
+</section>
+<footer class=entry-footer>November 15, 2019&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to 文件描述符 fd" href=https://jsharkc.github.io/post/linux-file-descriptor/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
 <h2>Mysql update 结合另一个表更新数据
 </h2>
 </header>
@@ -93,11 +125,11 @@ Android 端 MainActivity 代码如下 package com.dreamreal.example; import andr
 </article>
 <article class=post-entry>
 <header class=entry-header>
-<h2>Mac 使用 V2ray 科学上网
+<h2>Mac 使用 V2ray
 </h2>
 </header>
 <section class=entry-content>
-<p>Mac 使用 V2ray 科学上网 Install v2ray-core step 1: Add official tap
+<p>Install v2ray-core step 1: Add official tap
 brew tap v2ray/v2ray step 2: Install v2ray-core:
 brew install v2ray-core Update v2ray-core step 1: update tap
 brew update step 2: update v2ray-core
@@ -107,10 +139,10 @@ brew upgrade v2ray-core 使用 直接在命令行上输入 v2ray 就可以运行
 vim /usr/local/etc/config.json 配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
 config.json 添加 http 代理：
 "inboundDetour": [{ "protocol": "http", "port": 1081, "settings": { "udp": true } }], .zshrc 添加
-# proxy alias proxy='export https_proxy=http://127....</p>
+# proxy alias proxy='export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080' alias unproxy='unset https_proxy http_proxy socks5_proxy' 然后配置一下 chrome 插件 Proxy SwitchyOmega...</p>
 </section>
 <footer class=entry-footer>April 7, 2018&nbsp;·&nbsp;1 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Mac 使用 V2ray 科学上网" href=https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/></a>
+<a class=entry-link aria-label="post link to Mac 使用 V2ray" href=https://jsharkc.github.io/post/v2ray%E4%BD%BF%E7%94%A8/></a>
 </article>
 <article class=post-entry>
 <header class=entry-header>
@@ -139,34 +171,6 @@ type Command struct { Use string // The one-line usage message. Short string // 
 </section>
 <footer class=entry-footer>July 17, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
 <a class=entry-link aria-label="post link to Cobra - 一个 Golang 命令行项目生成工具" href=https://jsharkc.github.io/post/cobra%E5%85%A5%E9%97%A8%E5%B0%8F%E6%95%99%E7%A8%8B/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Golang slice 切片原理
-</h2>
-</header>
-<section class=entry-content>
-<p>Golang slice 切片原理 ​ golang 中的 slice 是比较好用的一种结构，能根据需求变长，相对于 array 的死板，slice 更加灵活也更加常用，有道说：知其然，知其所以然。现在，我们就看看 slice 到底是怎样一种结构。
-slice源码 type slice struct { array unsafe.Pointer len int cap int } ​ 根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。
-​ 有同学可能不知道 unsafe.Pointer是什么，那么我们一并在这讲解一下。
-package unsafe type ArbitraryType int // - A pointer value of any type can be converted to a Pointer. // - A Pointer can be converted to a pointer value of any type....</p>
-</section>
-<footer class=entry-footer>July 10, 2017&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Golang slice 切片原理" href=https://jsharkc.github.io/post/slice%E6%9C%BA%E5%88%B6/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Jobrunner 源码解析
-</h2>
-</header>
-<section class=entry-content>
-<p>安装 go get github.com/bamzi/jobrunner 使用 eg1 package main import "github.com/bamzi/jobrunner" func main() { jobrunner.Start() jobrunner.Schedule("@every 5s", ReminderEmails{}) select{} } type ReminderEmails struct {} func (e ReminderEmails) Run() { fmt.Printf("Every 5 sec send reminder emails \n") } ***解析：***在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。
-Jobrunner 支持两种时间格式：
-“@XXX”
-“@yearly”, “@annually” 每年 “@monthly” 每月 “@weekly” 每星期 “@daily”, “@midnight” 每天 “@hourly” 每小时 “@every 5s” 支持 “ns”, “us” (or “µs”), “ms”, “s”, “m”, “h”。 “x x x x x x”...</p>
-</section>
-<footer class=entry-footer>June 27, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Jobrunner 源码解析" href=https://jsharkc.github.io/post/jobrunner/></a>
 </article>
 <footer class=page-footer>
 <nav class=pagination>

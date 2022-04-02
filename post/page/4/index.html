@@ -69,6 +69,43 @@
 </header>
 <article class=post-entry>
 <header class=entry-header>
+<h2>初探 Cockroachdb
+</h2>
+</header>
+<section class=entry-content>
+<p>初探 Cockroachdb 1.创建网桥 由于在单个主机上运行多个 Docker 容器，因此每个容器有一个 CockroachDB 节点，需要创建Docker所指的桥接网络。桥接网络将使容器能够作为单个群集进行通信，同时保持与外部网络的隔离。
+docker network create -d bridge roachnet我们在 roachnet 这里和随后的步骤中使用了网络名称，但是请随时给您的网络任何您喜欢的名字。
+2.启动第一个节点 docker run -d \ --name=roach1 \ --hostname=roach1 \ --net=roachnet \ -p 26257:26257 -p 8080:8080 \ -v "${PWD}/cockroach-data/roach1:/cockroach/cockroach-data" \ cockroachdb/cockroach:v1.0.4 start --insecure此命令创建一个容器并启动其中的第一个 CockroachDB 节点。我们来看看每个部分：
+docker run：Docker 命令启动一个新的容器。
+-d：这个标志在后台运行容器，所以你可以在同一个shell中继续下一步。
+--name：容器的名称。这是可选的，但是自定义名称使得在其他命令中引用容器更容易，例如在容器中打开Bash会话或停止容器时。
+--hostname：容器的主机名。您将使用它将其他容器/节点连接到集群。
+--net：用于容器加入的网桥。有关详细信息，请参阅步骤1。
+-p 26257:26257 -p 8080:8080：这些标志将用于节点间和客户端节点通信（26257）的默认端口和 8080 从容器到主机的管理UI（）的 HTTP 请求的默认端口映射。这允许集装箱间通信，并可以从浏览器调用管理 UI。
+-v "${PWD}/cockroach-data/roach1:/cockroach/cockroach-data"：该标志挂载作为数据卷的主机目录。这意味着该节点的数据和日志将存储在 ${PWD}/cockroach-data/roach1 主机上，并在容器停止或删除后持续。有关更多详细信息，请参阅 Docker 将主机目录作为数据卷主题。 cockroachdb/cockroach:v1.0.4 start --insecure：CockroachDB 命令以不安全的方式启动容器中的一个节点。
+3.将节点添加到集群 在这一点上，您的群集是实时和可操作的。只需一个节点，您就可以连接一个 SQL 客户端并开始构建数据库。然而，在实际部署中，您总是希望3个或更多节点可以利用 CockroachDB 的自动复制，重新平衡和容错能力。...</p>
+</section>
+<footer class=entry-footer>March 17, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to 初探 Cockroachdb" href=https://jsharkc.github.io/post/cockroachdb/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
+<h2>Go 程序的性能优化及 pprof 的使用
+</h2>
+</header>
+<section class=entry-content>
+<p>Go 程序的性能优化及 pprof 的使用 转自snowInPluto
+程序的性能优化无非就是对程序占用资源的优化。对于服务器而言，最重要的两项资源莫过于 CPU 和内存。性能优化，就是在对于不影响程序数据处理能力的情况下，我们通常要求程序的 CPU 的内存占用尽量低。反过来说，也就是当程序 CPU 和内存占用不变的情况下，尽量地提高程序的数据处理能力或者说是吞吐量。
+Go 的原生工具链中提供了非常多丰富的工具供开发者使用，其中包括 pprof。
+对于 pprof 的使用要分成下面两部分来说。
+Web 程序使用 pprof 先写一个简单的 Web 服务程序。程序在 9876 端口上接收请求。
+package main import ( "bytes" "io/ioutil" "log" "math/rand" "net/http" _ "net/http/pprof" ) func main() { http.HandleFunc("/test", handler) log.Fatal(http.ListenAndServe(":9876", nil)) } func handler(w http.ResponseWriter, r *http.Request) { err := r.ParseForm() if nil != err { w.Write([]byte(err.Error())) return } doSomeThingOne(10000) buff := genSomeBytes() b, err := ioutil....</p>
+</section>
+<footer class=entry-footer>March 12, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
+<a class=entry-link aria-label="post link to Go 程序的性能优化及 pprof 的使用" href=https://jsharkc.github.io/post/go%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96pprof/></a>
+</article>
+<article class=post-entry>
+<header class=entry-header>
 <h2>跨域资源共享 CORS 详解
 </h2>
 </header>
@@ -78,23 +115,6 @@
 </section>
 <footer class=entry-footer>January 30, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;yusank</footer>
 <a class=entry-link aria-label="post link to 跨域资源共享 CORS 详解" href=https://jsharkc.github.io/post/cors/></a>
-</article>
-<article class=post-entry>
-<header class=entry-header>
-<h2>Centos7 安装 Docker-CE 社区版
-</h2>
-</header>
-<section class=entry-content>
-<p>Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
-安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-> yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
-> yum-config-manager \ --add-repo \ https://download.docker.com/linux/centos/docker-ce.repo > yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
-> yum-config-manager \ --add-repo \ https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
-> yum-config-manager --disable docker-ce-edge ##安装 Docker
-> sudo yum makecache fast > sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2....</p>
-</section>
-<footer class=entry-footer>January 15, 2017&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Centos7 安装 Docker-CE 社区版" href=https://jsharkc.github.io/post/centos7-install-docker/></a>
 </article>
 <article class=post-entry>
 <header class=entry-header>

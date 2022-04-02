@@ -9,7 +9,35 @@
       <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 16 Oct 2021 14:37:03 +0800</lastBuildDate><atom:link href="https://jsharkc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 02 Apr 2022 17:29:23 +8000</lastBuildDate><atom:link href="https://jsharkc.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>限制内存 mongo docker-compsoe 部署</title>
+      <link>https://jsharkc.github.io/post/mongo-compose/</link>
+      <pubDate>Sat, 02 Apr 2022 17:29:23 +8000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mongo-compose/</guid>
+      <description>用 docker 起 mongo，有两种限制方式：
+ 通过 Docker 限制内存 通过 MongoDB 自己的配置文件限制  一、通过 Docker 限制内存 内存限制相关参数：
+   参数 简介     -m, &amp;ndash;memory 内存限制，格式：数字+单位，单位可以是b, k, m, g，最小4M   &amp;ndash; -memory-swap 存和交换空间总大小限制，注意：必须比-m参数大，-1 表示不受限    例子：
+docker run -m 100M --memory-swap -1 mongo:5.0 二、通过 mongo 配置文件限制  配置文件位置：
+3.x : /etc/mongod.conf
+4.x : /etc/mongod.conf.orig
+ 默认配置：
+storage: # mongod 进程存储数据目录，此配置仅对 mongod 进程有效 dbPath: /data/mongodb/db 是否开启 journal 日志持久存储，journal 日志用来数据恢复，是 mongod 最基础的特性，通常用于故障恢复。64 位系统默认为 true，32 位默认为 false，建议开启，仅对 mongod 进程有效。 journal: enabled: true # 存储引擎类型，mongodb 3.</description>
+    </item>
+    
+    <item>
+      <title>Centos7 安装 Docker</title>
+      <link>https://jsharkc.github.io/post/centos7-install-docker/</link>
+      <pubDate>Mon, 15 Nov 2021 17:42:23 +8000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/centos7-install-docker/</guid>
+      <description>一条命令安装 官方脚本：
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun 国内 daocloud 安装命令：
+curl -sSL https://get.daocloud.io/docker | sh 手动安装指定版本 卸载旧版本 sudo yum remove docker \  docker-client \  docker-client-latest \  docker-common \  docker-latest \  docker-latest-logrotate \  docker-logrotate \  docker-engine \  container-selinux \  docker-selinux 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
+yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定 stable 版和 test 版</description>
+    </item>
+    
     <item>
       <title>修复 dyld: Library not loaded</title>
       <link>https://jsharkc.github.io/post/fix-dyld-library-not-loaded/</link>
@@ -110,10 +138,10 @@ ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 
     
     <item>
       <title>文件描述符 fd</title>
-      <link>https://jsharkc.github.io/post/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</link>
+      <link>https://jsharkc.github.io/post/linux-file-descriptor/</link>
       <pubDate>Fri, 15 Nov 2019 18:13:00 +0000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</guid>
+      <guid>https://jsharkc.github.io/post/linux-file-descriptor/</guid>
       <description>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。
 文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于 UNIX、Linux 这样的操作系统。
 Linux下两个进程打开同一个文件返回的文件描述符一样吗？ 答案：不一样
@@ -142,12 +170,12 @@ Android 端 MainActivity 代码如下 package com.dreamreal.example; import andr
     </item>
     
     <item>
-      <title>Mac 使用 V2ray 科学上网</title>
-      <link>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
+      <title>Mac 使用 V2ray</title>
+      <link>https://jsharkc.github.io/post/v2ray%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Sat, 07 Apr 2018 21:42:23 +0000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/v2ray%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
-      <description>Mac 使用 V2ray 科学上网 Install v2ray-core step 1: Add official tap
+      <guid>https://jsharkc.github.io/post/v2ray%E4%BD%BF%E7%94%A8/</guid>
+      <description>Install v2ray-core step 1: Add official tap
 brew tap v2ray/v2ray step 2: Install v2ray-core:
 brew install v2ray-core Update v2ray-core step 1: update tap
 brew update step 2: update v2ray-core
@@ -157,7 +185,7 @@ brew upgrade v2ray-core 使用 直接在命令行上输入 v2ray 就可以运行
 vim /usr/local/etc/config.json 配置文件也可以从 http://free-ss.tk/或者http://free-ss.tk/ 下载：
 config.json 添加 http 代理：
 &amp;#34;inboundDetour&amp;#34;: [{ &amp;#34;protocol&amp;#34;: &amp;#34;http&amp;#34;, &amp;#34;port&amp;#34;: 1081, &amp;#34;settings&amp;#34;: { &amp;#34;udp&amp;#34;: true } }], .zshrc 添加
-# proxy alias proxy=&#39;export https_proxy=http://127.</description>
+# proxy alias proxy=&#39;export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080&#39; alias unproxy=&#39;unset https_proxy http_proxy socks5_proxy&#39; 然后配置一下 chrome 插件 Proxy SwitchyOmega</description>
     </item>
     
     <item>
@@ -224,10 +252,10 @@ type eface struct { _type *_type data unsafe.Pointer } type _type struct { size 
     
     <item>
       <title>十条有用的 GO 技术</title>
-      <link>https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/</link>
+      <link>https://jsharkc.github.io/post/ten-useful-go-tip/</link>
       <pubDate>Fri, 26 May 2017 09:42:23 +0000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/%E5%8D%81%E6%9D%A1%E6%9C%89%E7%94%A8%E7%9A%84-go-%E6%8A%80%E6%9C%AF/</guid>
+      <guid>https://jsharkc.github.io/post/ten-useful-go-tip/</guid>
       <description>十条有用的 Go 技术 转自 mikespook.com
 这里是我过去几年中编写的大量 Go 代码的经验总结而来的自己的最佳实践。我相信它们具有弹性的。这里的弹性是指： 某个应用需要适配一个灵活的环境。你不希望每过 3 到 4 个月就不得不将它们全部重构一遍。添加新的特性应当很容易。许多人参与开发该应用，它应当可以被理解，且维护简单。许多人使用该应用，bug 应该容易被发现并且可以快速的修复。我用了很长的时间学到了这些事情。其中的一些很微小，但对于许多事情都会有影响。所有这些都仅仅是建议，具体情况具体对待，并且如果有帮助的话务必告诉我。随时留言:)
 1. 使用单一的 GOPATH 多个 GOPATH 的情况并不具有弹性。GOPATH 本身就是高度自我完备的（通过导入路径）。有多个 GOPATH 会导致某些副作用，例如可能使用了给定的库的不同的版本。你可能在某个地方升级了它，但是其他地方却没有升级。而且，我还没遇到过任何一个需要使用多个 GOPATH 的情况。所以只使用单一的 GOPATH，这会提升你 Go 的开发进度。
@@ -267,10 +295,10 @@ $ docker images -f since=mongo:3.2 REPOSITORY	TAG	IMAGE ID CREATED	SIZE redis	la
     
     <item>
       <title>Linux防火墙-iptables</title>
-      <link>https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/</link>
+      <link>https://jsharkc.github.io/post/linux-iptables/</link>
       <pubDate>Sun, 02 Apr 2017 09:42:23 +0000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/linux%E9%98%B2%E7%81%AB%E5%A2%99-iptables/</guid>
+      <guid>https://jsharkc.github.io/post/linux-iptables/</guid>
       <description>Linux防火墙&amp;ndash;iptables学习 转自简书
 iptables是Linux系统提供的一个强大的防火墙工具，可以实现包过滤、包重定向、NAT转换等功能。iptables是免费的，iptables是一个工具，实际的功能是通过netfilter模块来实现的，在内核2.4版本后默认集成到了Linux内核中。
 一、 iptables的构成 1. 规则（rules） 规则是iptables对数据包进行操作的基本单元。即“当数据包符合规则定义的条件时，就按照规则中定义的动作去处理”。
@@ -341,21 +369,6 @@ package main import ( &amp;quot;bytes&amp;quot; &amp;quot;io/ioutil&amp;quot; &a
 &lt;p&gt;CORS是一个W3C标准，全称是&amp;quot;跨域资源共享&amp;quot;（Cross-origin resource sharing）。
 它允许浏览器向跨源服务器，发出&lt;code&gt;XMLHttpRequest&lt;/code&gt;请求，从而克服了AJAX只能&lt;strong&gt;同源&lt;/strong&gt;使用的限制。
 本文详细介绍CORS的内部机制。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Centos7 安装 Docker-CE 社区版</title>
-      <link>https://jsharkc.github.io/post/centos7-install-docker/</link>
-      <pubDate>Sun, 15 Jan 2017 17:42:23 +8000</pubDate>
-      
-      <guid>https://jsharkc.github.io/post/centos7-install-docker/</guid>
-      <description>Centos7 安装 Docker-CE 社区版 今天在自己的阿里云服务器上装了 docker-ce，记录一下，以后再装的话可以参考。
-安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-&amp;gt; yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定stable版和月度更新的edge版
-&amp;gt; yum-config-manager \  --add-repo \  https://download.docker.com/linux/centos/docker-ce.repo &amp;gt; yum-config-manager --enable docker-ce-edge 由于docker.com服务器下载很慢,所以改为国内镜像.
-&amp;gt; yum-config-manager \  --add-repo \  https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo 如需禁止edge版本, 可以执行下面的命令
-&amp;gt; yum-config-manager --disable docker-ce-edge ##安装 Docker
-&amp;gt; sudo yum makecache fast &amp;gt; sudo yum install docker-ce Error: docker-ce conflicts with 2:docker-1.12.6-28.git1398f24.el7.centos.x86_64 Error: docker-ce-selinux conflicts with 2:container-selinux-2.</description>
     </item>
     
     <item>
