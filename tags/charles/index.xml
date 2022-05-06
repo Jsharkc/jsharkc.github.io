@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>charles on Jacobc&#39; Blog</title>
+    <link>https://jsharkc.github.io/tags/charles/</link>
+    <description>Recent content in charles on Jacobc&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 17 Dec 2021 12:40:56 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/charles/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mac安装破解版 Charles</title>
+      <link>https://jsharkc.github.io/post/mac-install-charles/</link>
+      <pubDate>Fri, 17 Dec 2021 12:40:56 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mac-install-charles/</guid>
+      <description>文章转自 https://www.jianshu.com/p/4f0573f3c5db 步骤 下载Charles安装包 双击dmg文件，将charles拖入应用程序中 在应用程序中右键 Charles，选择「显示包内容」，打开</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="create-react-app 脚手架添加 less 支持和 antd 样式按需加载" />
+    <meta property="og:title" content="create-react-app 脚手架添加 less 支持和 antd 样式按需加载" />
+    <meta property="twitter:title" content="create-react-app 脚手架添加 less 支持和 antd 样式按需加载" />
+    
+
+    
+    <meta name="description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。">
+    <meta property="og:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    <meta property="twitter:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>create-react-app 脚手架添加 less 支持和 antd 样式按需加载-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/react-less-and-antd/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/react" title="React">
+                            React
+                        </a>
+                        
+                    </div>
+                    <h1>create-react-app 脚手架添加 less 支持和 antd 样式按需加载</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Sunday, February 3, 2019
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="create-react-app-脚手架添加-less-支持和-antd-样式按需加载">create-react-app 脚手架添加 less 支持和 antd 样式按需加载</h1>
+<h2 id="1-创建项目">1. 创建项目</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install -g create-react-app       /* 安装create-react-app，建议使用cnpm */
+
+create-react-app react-test           /* 使用命令创建应用，myapp为项目名称 */
+
+<span style="color:#8be9fd;font-style:italic">cd</span> react-test                         /* 进入目录，然后启动 */
+
+npm start
+</code></pre></div><h2 id="2create-react-app-把-webpack-配置文件暴露出来">2.create-react-app 把 webpack 配置文件暴露出来</h2>
+<p><code>create-react-app</code> 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Shell" data-lang="Shell">npm run eject
+</code></pre></div><h2 id="3-添加-babel-plugin-import">3. 添加 babel-plugin-import</h2>
+<p><strong>babel-plugin-import</strong> 是一个用于 <strong>按需加载</strong> <strong>组件代码和样式</strong> 的 <strong>babel</strong> 插件（原理）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install babel-plugin-import --save-dev
+</code></pre></div><h2 id="4添加-less-less-loader">4.添加 less 、less-loader</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Shell" data-lang="Shell">npm install less less-loader --save-dev
+</code></pre></div><h2 id="5修改-webpack-配置文件">5.修改 webpack 配置文件</h2>
+<p>修改 <code>webpack.config.dev.js</code> 和 <code>webpack.config-prod.js</code> 配置文件</p>
+<ul>
+<li><code>test: /\.css$/</code> 改为 <code>/\.(css|less)$/</code></li>
+<li><code>test: /\.css$/</code> 的 <code>use</code> 数组配置增加 <code>less-loader</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">{
+  test<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">/\.(css|less)$/</span>,
+  use<span style="color:#ff79c6">:</span> [
+    require.resolve(<span style="color:#f1fa8c">&#39;style-loader&#39;</span>),
+    {
+      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;css-loader&#39;</span>),
+      options<span style="color:#ff79c6">:</span> {
+        importLoaders<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">1</span>,
+      },
+    },
+    {
+      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;postcss-loader&#39;</span>),
+      options<span style="color:#ff79c6">:</span> {
+        <span style="color:#6272a4">// Necessary for external CSS imports to work
+</span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// https://github.com/facebookincubator/create-react-app/issues/2677
+</span><span style="color:#6272a4"></span>        ident<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;postcss&#39;</span>,
+        plugins<span style="color:#ff79c6">:</span> () =&gt; [
+          require(<span style="color:#f1fa8c">&#39;postcss-flexbugs-fixes&#39;</span>),
+          autoprefixer({
+            browsers<span style="color:#ff79c6">:</span> [
+              <span style="color:#f1fa8c">&#39;&gt;1%&#39;</span>,
+              <span style="color:#f1fa8c">&#39;last 4 versions&#39;</span>,
+              <span style="color:#f1fa8c">&#39;Firefox ESR&#39;</span>,
+              <span style="color:#f1fa8c">&#39;not ie &lt; 9&#39;</span>, <span style="color:#6272a4">// React doesn&#39;t support IE8 anyway
+</span><span style="color:#6272a4"></span>            ],
+            flexbox<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;no-2009&#39;</span>,
+          }),
+        ],
+      },
+    },
+    {
+      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;less-loader&#39;</span>) <span style="color:#6272a4">// compiles Less to CSS
+</span><span style="color:#6272a4"></span>    }
+  ],
+},
+</code></pre></div><h2 id="6修改-packagejson-文件添加-babelrc-文件">6.修改 package.json 文件，添加 .babelrc 文件</h2>
+<p>package.json</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Json" data-lang="Json"><span style="color:#f1fa8c">&#34;babel&#34;</span>: {
+    <span style="color:#ff79c6">&#34;presets&#34;</span>: [
+      <span style="color:#f1fa8c">&#34;react-app&#34;</span>
+    ],
+    <span style="color:#ff79c6">&#34;plugins&#34;</span>: [
+      [
+        <span style="color:#f1fa8c">&#34;import&#34;</span>,
+        {
+          <span style="color:#ff79c6">&#34;libraryName&#34;</span>: <span style="color:#f1fa8c">&#34;antd&#34;</span>,
+          <span style="color:#ff79c6">&#34;style&#34;</span>: <span style="color:#ff79c6">true</span>
+        }
+      ]
+    ]
+  },
+</code></pre></div><p>.babelrc</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+   <span style="color:#ff79c6">&#34;presets&#34;</span>: [
+      <span style="color:#f1fa8c">&#34;react-app&#34;</span>
+    ],
+    <span style="color:#ff79c6">&#34;plugins&#34;</span>: [
+      [
+        <span style="color:#f1fa8c">&#34;import&#34;</span>,
+        {
+          <span style="color:#ff79c6">&#34;libraryName&#34;</span>: <span style="color:#f1fa8c">&#34;antd&#34;</span>,
+          <span style="color:#ff79c6">&#34;style&#34;</span>: <span style="color:#ff79c6">true</span>
+        }
+      ]
+    ]
+}
+</code></pre></div><p>然后就可以了，哈哈哈！</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/post/v2ray%E4%BD%BF%E7%94%A8/" data-toggle="tooltip" data-placement="top" title="Mac 使用 V2ray">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="Golang I/O 包的妙用" />
+    <meta property="og:title" content="Golang I/O 包的妙用" />
+    <meta property="twitter:title" content="Golang I/O 包的妙用" />
+    
+
+    
+    <meta name="description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。">
+    <meta property="og:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    <meta property="twitter:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Golang I/O 包的妙用-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/go-io/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/golang" title="Golang">
+                            Golang
+                        </a>
+                        
+                    </div>
+                    <h1>Golang I/O 包的妙用</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Saturday, December 14, 2019
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="golang-io-包的妙用">Golang I/O 包的妙用</h1>
+<p>golang标准库对io的抽象非常精巧，各个组件可以随意组合，可以作为接口设计的典范。这篇文章结合一个实际的例子来和大家分享一下。</p>
+<h2 id="背景">背景</h2>
+<p>以一个RPC的协议包来说，每个包有如下结构</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">type</span> Packet <span style="color:#8be9fd;font-style:italic">struct</span> {
+    TotalSize <span style="color:#8be9fd">uint32</span>
+    Magic     [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>
+    Payload   []<span style="color:#8be9fd">byte</span>
+    Checksum  <span style="color:#8be9fd">uint32</span>
+}
+</code></pre></div><p>其中<code>TotalSize</code>是整个包除去TotalSize后的字节数， <code>Magic</code>是一个固定长度的字串，<code>Payload</code>是包的实际内容，包含业务逻辑的数据。
+<code>Checksum</code>是对<code>Magic</code>和<code>Payload</code>的<code>adler32</code>校验和。</p>
+<h2 id="编码encode">编码(encode)</h2>
+<p>我们使用一个原型为<code>func EncodePacket(w io.Writer, payload []byte) error</code>的函数来把数据打包，结合<a href="http://godoc.org/encoding/binary">encoding/binary</a>我们很容易写出第一版，演示需要，错误处理方面就简化处理了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">var</span> RPC_MAGIC = [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>{<span style="color:#f1fa8c">&#39;p&#39;</span>, <span style="color:#f1fa8c">&#39;y&#39;</span>, <span style="color:#f1fa8c">&#39;x&#39;</span>, <span style="color:#f1fa8c">&#39;i&#39;</span>}
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
+    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
+</span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">8</span>)
+    <span style="color:#6272a4">// write total size
+</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
+
+    <span style="color:#6272a4">// write magic bytes
+</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, RPC_MAGIC)
+
+    <span style="color:#6272a4">// write payload
+</span><span style="color:#6272a4"></span>    w.<span style="color:#50fa7b">Write</span>(payload)
+
+    <span style="color:#6272a4">// calculate checksum
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">var</span> buf bytes.Buffer
+    buf.<span style="color:#50fa7b">Write</span>(RPC_MAGIC[:])
+    buf.<span style="color:#50fa7b">Write</span>(payload)
+    checksum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">Checksum</span>(buf.<span style="color:#50fa7b">Bytes</span>())
+
+    <span style="color:#6272a4">// write checksum
+</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
+}
+</code></pre></div><p>在上面的实现中，为了计算checksum，我们使用了一个内存buffer来缓存数据，最后把所有的数据一次性读出来算checksum，考虑到计算checksum是一个不断update地过程，我们应该有方法直接略过内存buffer而计算checksum。</p>
+<p>查看<a href="http://godoc.org/hash/adler32#New">hash/adler32</a>我们得知，我们可以构造一个<a href="http://godoc.org/hash#Hash32">Hash32</a>的对象，这个对象内嵌了一个<a href="http://godoc.org/hash#Hash">Hash</a>的接口，这个接口的定义如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">type</span> Hash <span style="color:#8be9fd;font-style:italic">interface</span> {
+    <span style="color:#6272a4">// Write (via the embedded io.Writer interface) adds more data to the running hash.
+</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// It never returns an error.
+</span><span style="color:#6272a4"></span>    io.Writer
+
+    <span style="color:#6272a4">// Sum appends the current hash to b and returns the resulting slice.
+</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// It does not change the underlying hash state.
+</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Sum</span>(b []<span style="color:#8be9fd">byte</span>) []<span style="color:#8be9fd">byte</span>
+
+    <span style="color:#6272a4">// Reset resets the Hash to its initial state.
+</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Reset</span>()
+
+    <span style="color:#6272a4">// Size returns the number of bytes Sum will return.
+</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Size</span>() <span style="color:#8be9fd">int</span>
+
+    <span style="color:#6272a4">// BlockSize returns the hash&#39;s underlying block size.
+</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// The Write method must be able to accept any amount
+</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// of data, but it may operate more efficiently if all writes
+</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// are a multiple of the block size.
+</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">BlockSize</span>() <span style="color:#8be9fd">int</span>
+}
+</code></pre></div><p>这是一个通用的计算hash的接口，标准库里面所有计算hash的对象都实现了这个接口，比如<a href="http://godoc.org/crypto/md5#New">md5</a>, <a href="http://godoc.org/hash/crc32#NewIEEE">crc32</a>等。由于<code>Hash</code>实现了<code>io.Writer</code>接口，因此我们可以把所有要计算的数据像写入文件一样写入到这个对象中，最后调用<code>Sum(nil)</code>就可以得到最终的hash的byte数组。利用这个思路，第二版可以这样写:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket2</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
+    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
+</span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(RPC_MAGIC) <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span>)
+    <span style="color:#6272a4">// write total size
+</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
+
+    <span style="color:#6272a4">// write magic bytes
+</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, RPC_MAGIC)
+
+    <span style="color:#6272a4">// write payload
+</span><span style="color:#6272a4"></span>    w.<span style="color:#50fa7b">Write</span>(payload)
+
+    <span style="color:#6272a4">// calculate checksum
+</span><span style="color:#6272a4"></span>    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
+    sum.<span style="color:#50fa7b">Write</span>(RPC_MAGIC[:])
+    sum.<span style="color:#50fa7b">Write</span>(payload)
+    checksum <span style="color:#ff79c6">:=</span> sum.<span style="color:#50fa7b">Sum32</span>()
+
+    <span style="color:#6272a4">// write checksum
+</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
+}
+</code></pre></div><p>注意这次的变化，前面写入TotalSize，Magic，Payload部分没有变化，在计算checksum的时候去掉了bytes.Buffer，减少了一次内存申请和拷贝。</p>
+<p>考虑到<code>sum</code>和<code>w</code>都是<code>io.Writer</code>，利用神奇的<a href="http://godoc.org/io#MultiWriter">io.MultiWriter</a>，我们可以这样写</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
+    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
+</span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(RPC_MAGIC) <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span>)
+    <span style="color:#6272a4">// write total size
+</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
+
+    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
+    ww <span style="color:#ff79c6">:=</span> io.<span style="color:#50fa7b">MultiWriter</span>(sum, w)
+    <span style="color:#6272a4">// write magic bytes
+</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(ww, binary.BigEndian, RPC_MAGIC)
+
+    <span style="color:#6272a4">// write payload
+</span><span style="color:#6272a4"></span>    ww.<span style="color:#50fa7b">Write</span>(payload)
+
+    <span style="color:#6272a4">// calculate checksum
+</span><span style="color:#6272a4"></span>    checksum <span style="color:#ff79c6">:=</span> sum.<span style="color:#50fa7b">Sum32</span>()
+
+    <span style="color:#6272a4">// write checksum
+</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
+}
+</code></pre></div><p>注意MultiWriter的使用，我们把<code>w</code>和<code>sum</code>利用MultiWriter绑在了一起创建了一个新的Writer，向这个Writer里面写入数据就同时向<code>w</code>和<code>sum</code>里面都写入数据，这样就完成了发送数据和计算checksum的同步进行，而对于<code>binary.Write</code>来说没有任何区别，因为它需要的是一个实现了<code>Write</code>方法的对象。</p>
+<h2 id="解码decode">解码(decode)</h2>
+<p>基于上面的思想，解码也可以把接收数据和计算checksum一起进行，完整代码如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">DecodePacket</span>(r io.Reader) ([]<span style="color:#8be9fd">byte</span>, <span style="color:#8be9fd">error</span>) {
+    <span style="color:#8be9fd;font-style:italic">var</span> totalsize <span style="color:#8be9fd">uint32</span>
+    err <span style="color:#ff79c6">:=</span> binary.<span style="color:#50fa7b">Read</span>(r, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>totalsize)
+    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read total size&#34;</span>)
+    }
+
+    <span style="color:#6272a4">// at least len(magic) + len(checksum)
+</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> totalsize &lt; <span style="color:#bd93f9">8</span> {
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;bad packet. header:%d&#34;</span>, totalsize)
+    }
+
+    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
+    rr <span style="color:#ff79c6">:=</span> io.<span style="color:#50fa7b">TeeReader</span>(r, sum)
+
+    <span style="color:#8be9fd;font-style:italic">var</span> magic [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>
+    err = binary.<span style="color:#50fa7b">Read</span>(rr, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>magic)
+    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read magic&#34;</span>)
+    }
+    <span style="color:#ff79c6">if</span> magic <span style="color:#ff79c6">!=</span> RPC_MAGIC {
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;bad rpc magic:%v&#34;</span>, magic)
+    }
+
+    payload <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">byte</span>, totalsize<span style="color:#ff79c6">-</span><span style="color:#bd93f9">8</span>)
+    _, err = io.<span style="color:#50fa7b">ReadFull</span>(rr, payload)
+    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read payload&#34;</span>)
+    }
+
+    <span style="color:#8be9fd;font-style:italic">var</span> checksum <span style="color:#8be9fd">uint32</span>
+    err = binary.<span style="color:#50fa7b">Read</span>(r, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>checksum)
+    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read checksum&#34;</span>)
+    }
+
+    <span style="color:#ff79c6">if</span> checksum <span style="color:#ff79c6">!=</span> sum.<span style="color:#50fa7b">Sum32</span>() {
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;checkSum error, %d(calc) %d(remote)&#34;</span>, sum.<span style="color:#50fa7b">Sum32</span>(), checksum)
+    }
+    <span style="color:#ff79c6">return</span> payload, <span style="color:#ff79c6">nil</span>
+}
+</code></pre></div><p>上面代码中，我们使用了<a href="http://godoc.org/io#TeeReader">io.TeeReader</a>，这个函数的原型为<code>func TeeReader(r Reader, w Writer) Reader</code>，它返回一个Reader，这个Reader是参数<code>r</code>的代理，读取的数据还是来自<code>r</code>，不过同时把读取的数据写入到<code>w</code>里面。</p>
+<h2 id="一切皆文件">一切皆文件</h2>
+<p>unix下有一切皆文件的思想，golang把这个思想贯彻到更远，因为本质上我们对文件的抽象就是一个可读可写的一个对象，也就是实现了<code>io.Writer</code>和<code>io.Reader</code>的对象我们都可以称为文件，在上面的例子中无论是<code>EncodePacket</code>还是<code>DecodePacket</code>我们都没有假定编码后的数据是发送到socket，还是从内存读取数据解码，因此我们可以这样调用EncodePacket</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
+<span style="color:#50fa7b">EncodePacket</span>(conn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
+</code></pre></div><p>把数据直接发送到socket，也可以这样</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
+bufconn <span style="color:#ff79c6">:=</span> bufio.<span style="color:#50fa7b">NewWriter</span>(conn)
+<span style="color:#50fa7b">EncodePacket</span>(bufconn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
+</code></pre></div><p>对socket加上一个buffer来增加吞吐量，也可以这样</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
+zip <span style="color:#ff79c6">:=</span> zlib.<span style="color:#50fa7b">NewWriter</span>(conn)
+bufconn <span style="color:#ff79c6">:=</span> bufio.<span style="color:#50fa7b">NewWriter</span>(conn)
+<span style="color:#50fa7b">EncodePacket</span>(bufconn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
+</code></pre></div><p>加上一个zip压缩，还可以利用加上<a href="http://godoc.org/crypto/aes">crypto/aes</a>来个AES加密&hellip;</p>
+<p>在这个时候，文件已经不再局限于io，可以是一个内存buffer，也可以是一个计算hash的对象，甚至是一个计数器，流量限速器。golang灵活的接口机制为我们提供了无限可能。</p>
+<h2 id="结尾">结尾</h2>
+<p>我一直认为一个好的语言一定有一个设计良好的标准库，golang的标准库是作者们多年系统编程的沉淀，值得我们细细品味</p>
+<p>作者：icexin <a href="http://www.jianshu.com/p/8c33f7c84509">转自简书</a></p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/cors/" data-toggle="tooltip" data-placement="top" title="跨域资源共享 CORS 详解">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/jobrunner/" data-toggle="tooltip" data-placement="top" title="Jobrunner 源码解析">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

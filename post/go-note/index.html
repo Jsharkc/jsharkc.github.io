@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="Go注意点总结" />
+    <meta property="og:title" content="Go注意点总结" />
+    <meta property="twitter:title" content="Go注意点总结" />
+    
+
+    
+    <meta name="description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。">
+    <meta property="og:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    <meta property="twitter:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Go注意点总结-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/go-note/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/golang" title="Golang">
+                            Golang
+                        </a>
+                        
+                    </div>
+                    <h1>Go注意点总结</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Jacobc
+                             
+                            on 
+                            Friday, November 15, 2019
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="go-注意点-总结">Go &gt;注意点&lt; 总结</h1>
+<h4 id="1-__布尔类型__">1. <strong>布尔类型</strong></h4>
+<p>​     布尔类型 <em>不能</em> 接受其他类型的赋值，<em>不支持</em> 自动或者强制的类型转换</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">     <span style="color:#8be9fd;font-style:italic">var</span> b <span style="color:#8be9fd">bool</span>
+     b = <span style="color:#bd93f9">1</span>  <span style="color:#6272a4">// 编译错误
+</span><span style="color:#6272a4"></span>     b = <span style="color:#8be9fd;font-style:italic">bool</span>(<span style="color:#bd93f9">1</span>) <span style="color:#6272a4">// 编译错误
+</span></code></pre></div><hr>
+<h4 id="2-int与int32">2. int与int32</h4>
+<p>​     **注意：**int和int32在Go语言里被认为是两种不同的类型，编译器也不会帮你自动做类型转换</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   <span style="color:#8be9fd;font-style:italic">var</span> value2 <span style="color:#8be9fd">int32</span>
+   value1<span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">64</span>   <span style="color:#6272a4">// value1将会被自动推导为int类型
+</span><span style="color:#6272a4"></span>   value2 = value1   <span style="color:#6272a4">// 编译错误
+</span><span style="color:#6272a4"></span>   <span style="color:#6272a4">// 可用强制转换解决这个编译错误：
+</span><span style="color:#6272a4"></span>   value2 = <span style="color:#8be9fd;font-style:italic">int32</span>(value1)   <span style="color:#6272a4">// 编译通过
+</span></code></pre></div><hr>
+<h4 id="3-整数值比较">3. 整数值比较</h4>
+<p>​     两种 <strong>不同</strong> 类型的整型数 <strong>不能</strong> 直接比较，比如 int8 类型的数和 int 类型的数不能直接比较，但各种类型的整型变量都可以直接与<em>字面常量</em> ( literal ) 进行比较</p>
+<hr>
+<h4 id="4-x--表示对-x-取反">4. ^x  表示对 x 取反</h4>
+<hr>
+<h4 id="5-字符串">5. 字符串</h4>
+<p>​    字符串的内容可以用类似 <em>数组下标</em> 的方式获取，但不能在初始化后被修改</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   eg.
+   	str <span style="color:#ff79c6">:=</span> “Hello world”  
+   	str[<span style="color:#bd93f9">0</span>] = ‘X’    <span style="color:#6272a4">//编译错误
+</span></code></pre></div><hr>
+<h4 id="6-一种特殊的switch">6. 一种特殊的switch</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   <span style="color:#ff79c6">for</span> k,v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> m{
+        <span style="color:#ff79c6">switch</span> vv <span style="color:#ff79c6">:=</span> v.(<span style="color:#8be9fd;font-style:italic">type</span>) {
+         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">string</span>:
+             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is string&#34;</span>, vv)
+         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">int</span>:
+             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is int&#34;</span>, vv)
+         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">float64</span>:
+             fmt.<span style="color:#50fa7b">Println</span>(k,<span style="color:#f1fa8c">&#34;is float64&#34;</span>,vv)
+         <span style="color:#ff79c6">case</span> []<span style="color:#8be9fd;font-style:italic">interface</span>{}:
+             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is an array:&#34;</span>)
+             <span style="color:#ff79c6">for</span> i, u <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> vv {
+                 fmt.<span style="color:#50fa7b">Println</span>(i, u)
+             }
+         <span style="color:#ff79c6">default</span>:
+             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is of a type I don&#39;t know how to handle&#34;</span>)
+         }
+   }
+</code></pre></div><hr>
+<h4 id="7-make-函数创建数组切片">7. make() 函数创建数组切片</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   <span style="color:#6272a4">// 创建一个初始元素个数为5的数组切片，元素初始值为0:
+</span><span style="color:#6272a4"></span>   mySlice1 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">5</span>) <span style="color:#6272a4">// 创建一个初始元素个数为5的数组切片，
+</span><span style="color:#6272a4"></span>   <span style="color:#6272a4">// 元素初始值为0，并预留10个元素的存储空间:
+</span><span style="color:#6272a4"></span>   mySlice2 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">10</span>) 
+   <span style="color:#6272a4">// 直接创建并初始化包含5个元素的数组切片:
+</span><span style="color:#6272a4"></span>   mySlice3 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>} 
+   <span style="color:#6272a4">// 直接创建并初始化包含5个元素的数组切片 :
+</span><span style="color:#6272a4"></span>   mySlice3 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">3</span>:<span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>}  <span style="color:#6272a4">// [0 0 0 4 5]
+</span></code></pre></div><p>当然，事实上还会有一个匿名数组被创建出来，只是不需要我们来操心而已。</p>
+<hr>
+<h4 id="8-数组切片追加">8. 数组切片追加</h4>
+<p>​    将一个数组切片 <strong>追加</strong> 到另一个数组切片的末尾：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   mySlice2 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">8</span>,<span style="color:#bd93f9">9</span>,<span style="color:#bd93f9">10</span>}
+   mySlice = <span style="color:#8be9fd;font-style:italic">append</span>(mySlice,mySlice2<span style="color:#ff79c6">...</span>)
+</code></pre></div><p>**注意：**在第二个参数后面加三个点，不加会有编译错误，加省略号表示把mySlice2包含的元素打散后传入</p>
+<hr>
+<h4 id="9-判断能否从-map-中获取一个值的做法">9. 判断能否从 map 中获取一个值的做法</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">    value, ok <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">map</span>[key]
+    <span style="color:#ff79c6">if</span> ok{  <span style="color:#6272a4">//找到了
+</span><span style="color:#6272a4"></span>       <span style="color:#6272a4">//处理找到的value
+</span><span style="color:#6272a4"></span>    }
+</code></pre></div><hr>
+<h4 id="10--创建并初始化类型的对象实例">10.  创建并初始化类型的对象实例</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">rect1 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">new</span>(Rect)
+
+rect2 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{}
+
+rect3 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">100</span>,<span style="color:#bd93f9">200</span>}
+
+rect4 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{width:<span style="color:#bd93f9">100</span>,height:<span style="color:#bd93f9">200</span>}
+</code></pre></div><hr>
+<h4 id="11未显示初始化">11.未显示初始化</h4>
+<p>​     Go语言中，未 <strong>显式初始化</strong> 的变量都会被初始化为该类型的 <strong>零值</strong> ，<strong>bool</strong> 类型零值为 <strong>false</strong> , <strong>Int</strong> 类型的零值为 <strong>0</strong>，<strong>string</strong> 类型的零值为 <strong>空字符串</strong>, <strong>接口</strong>或<strong>引用类型</strong>（包括 <strong>slice</strong>、<strong>map</strong>、<strong>chan</strong> 和函数）变量对应的零值是<strong>nil</strong></p>
+<hr>
+<h4 id="12-无构造函数">12. 无构造函数</h4>
+<p>​    Go语言中 <strong>没有构造函数</strong> 的概念，对象的创建通常交由一个全局的创建函数来完成，以NewXXX来命名，表示“构造函数”</p>
+<hr>
+<h4 id="13--go中最好用的超时机制-select-case">13.  go中最好用的超时机制——&gt; select-case</h4>
+<p>​    <code>select</code>默认是阻塞的，只有当监听的 channel 中有发送或接收可以进行时才会运行，当多个 channel 都准备好的时候，select 是随机的选择一个执行的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">timeout <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">bool</span>, <span style="color:#bd93f9">1</span>)
+<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+    time.<span style="color:#50fa7b">Sleep</span>(<span style="color:#bd93f9">1e9</span>) <span style="color:#6272a4">// 等待1秒钟
+</span><span style="color:#6272a4"></span>    timeout <span style="color:#ff79c6">&lt;-</span> <span style="color:#ff79c6">true</span> 
+}()
+
+   <span style="color:#6272a4">// 然后我们把timeout这个channel利用起来 
+</span><span style="color:#6272a4"></span>   
+<span style="color:#ff79c6">select</span> {
+    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ch:
+    <span style="color:#6272a4">// 从ch中读取到数据
+</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>timeout:
+    <span style="color:#6272a4">// 一直没有从ch中读取到数据，但从timeout中读取到了数据
+</span><span style="color:#6272a4"></span>    }
+</code></pre></div><p><strong>另一种实现方法</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+    c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+    o <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">bool</span>)
+    <span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+        <span style="color:#ff79c6">for</span> {
+            <span style="color:#ff79c6">select</span> {
+                <span style="color:#ff79c6">case</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span> c:
+                    <span style="color:#8be9fd;font-style:italic">println</span>(v)
+                <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span> time.<span style="color:#50fa7b">After</span>(<span style="color:#bd93f9">5</span> <span style="color:#ff79c6">*</span> time.Second):
+                    <span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#34;timeout&#34;</span>)
+                    o <span style="color:#ff79c6">&lt;-</span> <span style="color:#ff79c6">true</span>
+                    <span style="color:#ff79c6">break</span>
+            }
+        }
+    }()
+    <span style="color:#ff79c6">&lt;-</span> o
+}
+</code></pre></div><p>​    在 select 里面还有 default 语法，select 其实就是类似switch 的功能，default 就是当监听的 channel 都没有准备好的时候，默认执行的（ select 不再阻塞等待 channel ）。</p>
+<hr>
+<h4 id="14--单向channel变量的声明">14.  单向channel变量的声明</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">var</span> ch1 <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>        <span style="color:#6272a4">//ch1是一个正常的channel，不是单向的
+</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">var</span> ch2 <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">float64</span>  <span style="color:#6272a4">//ch2是单向channel，只用于写float64数据
+</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">var</span> ch3 <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>      <span style="color:#6272a4">//ch3是单向channel，只用于读取int了数据
+</span></code></pre></div><hr>
+<h4 id="15-关闭和判断channel">15. 关闭和判断channel</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">  <span style="color:#6272a4">// 关闭 ch channel
+</span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">close</span>(ch)
+  <span style="color:#6272a4">// 判断一个channel是否关闭
+</span><span style="color:#6272a4"></span>  x,ok <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>ch
+</code></pre></div><hr>
+<p>####16. runtime goroutine</p>
+<p>Runtime 包中有几个处理 goroutine 的函数</p>
+<ul>
+<li>
+<p>Goexit</p>
+<p>退出当前执行的 goroutine , 但是 defer 函数还会继续调用</p>
+</li>
+<li>
+<p>Gosched</p>
+<p>让出当前 goroutine 的执行权限， 调度器安排其他等待的任务运行，并在下次某个时候从该位置恢复运行</p>
+</li>
+<li>
+<p>NumCPU</p>
+<p>返回 CPU 核数量</p>
+</li>
+<li>
+<p>NumGroutine</p>
+<p>返回正在执行和排队的任务总数</p>
+</li>
+<li>
+<p>GOMAXPROCS</p>
+<p>用来设置可以并行计算的CPU核数的最大值，并返回之前的值</p>
+</li>
+</ul>
+<hr>
+<h4 id="17-一些链接">17. 一些链接</h4>
+<p>Golang学习思维导图
+<a href="http://yougg.github.io/static/gonote/GolangStudy.html">http://yougg.github.io/static/gonote/GolangStudy.html</a></p>
+<hr>
+<h4 id="18-函数中局部变量">18. 函数中局部变量</h4>
+<p>​        在Go语言中，返回 <strong>函数中局部变量</strong> 的地址也是 <strong>安全</strong> 的。例如下面的代码，调用f函数时创建局部变量v，在局部变量地址被返回之后依然有效，因为指针p依然引用这个变量。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">var</span> p = <span style="color:#50fa7b">f</span>()
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">f</span>() <span style="color:#ff79c6">*</span><span style="color:#8be9fd">int</span> {
+    v <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">1</span>
+    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>v
+}
+</code></pre></div><hr>
+<h4 id="19-flag-包小例子">19. flag 包小例子</h4>
+<p>​	早些的echo版本中，就包含了两个可选的命令行参数：<code>-n</code>用于忽略行尾的换行符，<code>-s sep</code>用于指定分隔字符（默认是空格）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">gopl.io<span style="color:#ff79c6">/</span>ch2<span style="color:#ff79c6">/</span>echo4
+<span style="color:#6272a4">// Echo4 prints its command-line arguments.
+</span><span style="color:#6272a4"></span><span style="color:#ff79c6">package</span> main
+
+<span style="color:#ff79c6">import</span> (
+    <span style="color:#f1fa8c">&#34;flag&#34;</span>
+    <span style="color:#f1fa8c">&#34;fmt&#34;</span>
+    <span style="color:#f1fa8c">&#34;strings&#34;</span>
+)
+
+<span style="color:#8be9fd;font-style:italic">var</span> n = flag.<span style="color:#50fa7b">Bool</span>(<span style="color:#f1fa8c">&#34;n&#34;</span>, <span style="color:#ff79c6">false</span>, <span style="color:#f1fa8c">&#34;omit trailing newline&#34;</span>)
+<span style="color:#8be9fd;font-style:italic">var</span> sep = flag.<span style="color:#50fa7b">String</span>(<span style="color:#f1fa8c">&#34;s&#34;</span>, <span style="color:#f1fa8c">&#34; &#34;</span>, <span style="color:#f1fa8c">&#34;separator&#34;</span>)
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+    flag.<span style="color:#50fa7b">Parse</span>()
+    fmt.<span style="color:#50fa7b">Print</span>(strings.<span style="color:#50fa7b">Join</span>(flag.<span style="color:#50fa7b">Args</span>(), <span style="color:#ff79c6">*</span>sep))
+    <span style="color:#ff79c6">if</span> !<span style="color:#ff79c6">*</span>n {
+        fmt.<span style="color:#50fa7b">Println</span>()
+    }
+}
+</code></pre></div><p>​	调用 <strong>flag.Bool</strong> 函数会创建一个新的对应布尔型标志参数的变量。它有三个属性：第一个是的命令行标志参数的名字“n”，然后是该标志参数的默认值（这里是false），最后是该标志参数对应的描述信息。如果用户在命令行输入了一个无效的标志参数，或者输入<code>-h</code>或<code>-help</code>参数，那么将打印所有标志参数的名字、默认值和描述信息。类似的，调用flag.String函数将于创建一个对应字符串类型的标志参数变量，同样包含命令行标志参数对应的参数名、默认值、和描述信息。程序中的<code>sep</code>和<code>n</code>变量分别是指向对应命令行标志参数变量的指针，因此必须用<code>*sep</code>和<code>*n</code>形式的指针语法间接引用它们。</p>
+<p>​	当程序运行时，必须在使用标志参数对应的变量之前调用先flag.Parse函数，用于更新每个标志参数对应变量的值（之前是默认值）。对于非标志参数的普通命令行参数可以通过调用flag.Args()函数来访问，返回值对应对应一个字符串类型的slice。如果在flag.Parse函数解析命令行参数时遇到错误，默认将打印相关的提示信息，然后调用os.Exit(2)终止程序。</p>
+<p>​	运行一些echo测试用例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">$ <span style="color:#ff79c6">go</span> build gopl.io<span style="color:#ff79c6">/</span>ch2<span style="color:#ff79c6">/</span>echo4
+$ .<span style="color:#ff79c6">/</span>echo4 a bc def
+a bc def
+$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>s <span style="color:#ff79c6">/</span> a bc def
+a<span style="color:#ff79c6">/</span>bc<span style="color:#ff79c6">/</span>def
+$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>n a bc def
+a bc def$
+$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>help
+Usage of .<span style="color:#ff79c6">/</span>echo4:
+  <span style="color:#ff79c6">-</span>n    omit trailing newline
+  <span style="color:#ff79c6">-</span>s <span style="color:#8be9fd">string</span>
+        <span style="color:#50fa7b">separator</span> (<span style="color:#ff79c6">default</span> <span style="color:#f1fa8c">&#34; &#34;</span>)
+</code></pre></div><hr>
+<h4 id="20-rune">20. Rune</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;unicode/utf8&#34;</span>
+
+s <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;Hello, 世界&#34;</span>
+fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#8be9fd;font-style:italic">len</span>(s))                    <span style="color:#6272a4">// &#34;13&#34;
+</span><span style="color:#6272a4"></span>fmt.<span style="color:#50fa7b">Println</span>(utf8.<span style="color:#50fa7b">RuneCountInString</span>(s)) <span style="color:#6272a4">// &#34;9&#34;
+</span></code></pre></div><hr>
+<h4 id="21内置函数">21.内置函数</h4>
+<table>
+<thead>
+<tr>
+<th>- 名称</th>
+<th>- 说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>close</td>
+<td>用于管道通信</td>
+</tr>
+<tr>
+<td>len/cap</td>
+<td></td>
+</tr>
+<tr>
+<td>new/make</td>
+<td>new 和 make 均是用于 <strong>分配内存</strong> ： new(T) 分配类型 T 的零值并返回其 <strong>地址</strong>，也就是指向类型 T 的指针。它也可以被用于基本类型：<code>v := new(int)</code>。make(T) 返回类型 T 的初始化之后的 <strong>值</strong></td>
+</tr>
+<tr>
+<td>copy/append</td>
+<td>用于复制和连接切片</td>
+</tr>
+<tr>
+<td>panic/recover</td>
+<td>两者均用于错误处理机制</td>
+</tr>
+<tr>
+<td>print/println</td>
+<td>底层打印函数，在部署环境中建议使用 fmt 包</td>
+</tr>
+<tr>
+<td>complex/realimag</td>
+<td>用于创建和操作复数</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="22-for-range-结构">22. for-range 结构</h4>
+<p>一般形式为：<code>for ix, val := range coll { }</code></p>
+<p>要注意的是，<code>val</code> 始终为集合中对应索引的值拷贝，因此它一般只具有只读性质，对它所做的任何修改都不会影响到集合中原有的值（<strong>译者注：如果 val 为指针，则会产生指针的拷贝，依旧可以修改集合中的原值</strong>）。一个字符串是 Unicode 编码的字符（或称之为 <code>rune</code>）集合，因此您也可以用它迭代字符串：</p>
+<pre><code>for pos, char := range str {
+...
+}
+</code></pre><p>每个 rune 字符和索引在 for-range 循环中是一一对应的。它能够自动根据 UTF-8 规则识别 Unicode 编码的字符。</p>
+<hr>
+<h4 id="23-从字符串生成字节切片">23. 从字符串生成字节切片</h4>
+<p>​	假设 s 是一个字符串（本质上是一个字节数组），那么就可以直接通过 <code>c := []byte(s)</code> 来获取一个字节的切片 c。另外，还可以通过 copy 函数来达到相同的目的：<code>copy(dst []byte, src string)</code>。</p>
+<p>​	可以通过代码 <code>len([]int32(s))</code> 来获得字符串中字符的数量，但使用 <code>utf8.RuneCountInString(s)</code> 效率会更高一点。</p>
+<p>​	还可以将一个字符串追加到某一个字符数组的尾部：</p>
+<pre><code>var b []byte
+var s string
+b = append(b, s...)
+</code></pre><hr>
+<h4 id="24-常量">24. 常量</h4>
+<p><strong>常量</strong> 中的 <strong>数据类型</strong> 只可以是 <strong>布尔型</strong>、<strong>数字型</strong>（<strong>整数型</strong>、<strong>浮点型</strong>和<strong>复数</strong>）和<strong>字符串型</strong>。</p>
+<p>常量的定义格式：<code>const identifier [type] = value</code>，例如：</p>
+<pre><code>const Pi = 3.14159
+</code></pre><p>在 Go 语言中，你可以省略类型说明符 <code>[type]</code>，因为编译器可以根据变量的值来推断其类型。</p>
+<ul>
+<li>显式类型定义： <code>const b string = &quot;abc&quot;</code></li>
+<li>隐式类型定义： <code>const b = &quot;abc&quot;</code></li>
+</ul>
+<p><strong>注：常量的值必须是能够在编译时就能够确定的</strong></p>
+<hr>
+<h4 id="25-方法">25. 方法</h4>
+<p>​	<strong>类型</strong> 和 <strong>作用在它上面定义的方法</strong> 必须在 <strong>同一个包里</strong> 定义，这就是为什么不能在 int、float 或类似这些的类型上定义方法。试图在 int 类型上定义方法会得到一个编译错误</p>
+<hr>
+<h4 id="26-反射">26. 反射</h4>
+<p>​	变量的最基本信息就是类型和值：反射包的   <code>Type</code> 用来表示一个 Go 类型，反射包的 <code>Value</code> 为 Go 值提供了反射接口。</p>
+<p>​	两个简单的函数，<code>reflect.TypeOf</code> 和 <code>reflect.ValueOf</code>，返回被检查对象的 <strong>类型</strong> 和 <strong>值</strong> 。例如，x 被定义为：<code>var x float64 = 3.4</code>，那么 <code>reflect.TypeOf(x)</code> 返回 <code>float64</code>，<code>reflect.ValueOf(x)</code> 返回 <code>&lt;float64 Value&gt;</code></p>
+<ul>
+<li>Value 有一个 Type 方法返回 reflect.Value 的 Type。</li>
+</ul>
+<p>​        Type 和 Value 都有 Kind 方法返回一个常量来表示类型：Uint、Float64、Slice 等等 。</p>
+<pre><code>const (
+	Invalid Kind = iota
+	Bool
+	Int
+	Int8
+	Int16
+	Int32
+	Int64
+	Uint
+	Uint8
+	Uint16
+	Uint32
+	Uint64
+	Uintptr
+	Float32
+	Float64
+	Complex64
+	Complex128
+	Array
+	Chan
+	Func
+	Interface
+	Map
+	Ptr
+	Slice
+	String
+	Struct
+	UnsafePointer
+)
+</code></pre><p>​	变量 v 的    <code>Interface()</code> 方法可以得到还原（接口）值，所以可以这样打印 v 的值：<code>fmt.Println(v.Interface())</code>。</p>
+<p>​	通过 Type() 我们看到 v 现在的类型是   <code>*float64</code> 并且仍然是不可设置的。</p>
+<p>要想让其可设置我们需要使用 <code>Elem()</code> 函数，这间接的使用指针：<code>v = v.Elem()</code></p>
+<hr>
+<h4 id="27-一种限制速率的方法">27. 一种限制速率的方法</h4>
+<p><code>time.Tick()</code> 函数声明为 <code>Tick(d Duration) &lt;-chan Time</code>，当你想返回一个通道而不必关闭它的时候这个函数非常有用：它以 d 为周期给返回的通道发送时间，d是纳秒数。如果需要像下边的代码一样，限制处理频率</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;time&#34;</span>
+
+rate_per_sec <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">10</span>
+<span style="color:#8be9fd;font-style:italic">var</span> dur Duration = <span style="color:#bd93f9">1e9</span> <span style="color:#ff79c6">/</span> rate_per_sec
+chRate <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Tick</span>(dur) <span style="color:#6272a4">// a tick every 1/10th of a second
+</span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> req <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> requests {
+    <span style="color:#ff79c6">&lt;-</span> chRate <span style="color:#6272a4">// rate limit our Service.Method RPC calls
+</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">go</span> client.<span style="color:#50fa7b">Call</span>(<span style="color:#f1fa8c">&#34;Service.Method&#34;</span>, req, <span style="color:#ff79c6">...</span>)
+}
+</code></pre></div>
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/docker-note/" data-toggle="tooltip" data-placement="top" title="Docker Note">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/cors/" data-toggle="tooltip" data-placement="top" title="跨域资源共享 CORS 详解">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

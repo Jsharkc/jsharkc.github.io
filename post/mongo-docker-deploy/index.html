@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="限制内存 mongo docker-compsoe 部署" />
+    <meta property="og:title" content="限制内存 mongo docker-compsoe 部署" />
+    <meta property="twitter:title" content="限制内存 mongo docker-compsoe 部署" />
+    
+
+    
+    <meta name="description" content="1. 通过 Docker 限制内存 2. 通过 MongoDB 配置文件限制内存">
+    <meta property="og:description" content="1. 通过 Docker 限制内存 2. 通过 MongoDB 配置文件限制内存" />
+    <meta property="twitter:description" content="1. 通过 Docker 限制内存 2. 通过 MongoDB 配置文件限制内存" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>限制内存 mongo docker-compsoe 部署-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/mongo-docker-deploy/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                    </div>
+                    <h1>限制内存 mongo docker-compsoe 部署</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Saturday, April 2, 2022
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>用 docker 起 mongo，有两种限制方式：</p>
+<ol>
+<li>通过 Docker 限制内存</li>
+<li>通过 MongoDB 自己的配置文件限制</li>
+</ol>
+<h4 id="一通过-docker-限制内存">一、通过 Docker 限制内存</h4>
+<p>内存限制相关参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-m, &ndash;memory</td>
+<td>内存限制，格式：数字+单位，单位可以是b, k, m, g，最小4M</td>
+</tr>
+<tr>
+<td>&ndash; -memory-swap</td>
+<td>存和交换空间总大小限制，注意：必须比-m参数大，-1 表示不受限</td>
+</tr>
+</tbody>
+</table>
+<p>例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run -m 100M --memory-swap -1 mongo:5.0
+</code></pre></div><h4 id="二通过-mongo-配置文件限制">二、通过 mongo 配置文件限制</h4>
+<blockquote>
+<p>配置文件位置：</p>
+<p>3.x : /etc/mongod.conf</p>
+<p>4.x : /etc/mongod.conf.orig</p>
+</blockquote>
+<p>默认配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ff79c6">storage</span>:
+  <span style="color:#6272a4"># mongod 进程存储数据目录，此配置仅对 mongod 进程有效</span>
+  <span style="color:#ff79c6">dbPath</span>: /data/mongodb/db
+  是否开启 journal 日志持久存储，journal 日志用来数据恢复，是 mongod 最基础的特性，通常用于故障恢复。64 位系统默认为 true，32 位默认为 false，建议开启，仅对 mongod 进程有效。
+  <span style="color:#ff79c6">journal</span>:
+    <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">true</span>
+ <span style="color:#6272a4"># 存储引擎类型，mongodb 3.0 之后支持 “mmapv1”、“wiredTiger” 两种引擎，默认值为“mmapv1”；官方宣称 wiredTiger 引擎更加优秀。</span>
+  <span style="color:#ff79c6">engine</span>: mmapv1
+
+<span style="color:#ff79c6">systemLog</span>:
+  <span style="color:#6272a4"># 日志输出目的地，可以指定为 “file” 或者“syslog”，表述输出到日志文件，如果不指定，则会输出到标准输出中（standard output）</span>
+  <span style="color:#ff79c6">destination</span>: file
+  <span style="color:#6272a4"># 如果为 true，当 mongod/mongos 重启后，将在现有日志的尾部继续添加日志。否则，将会备份当前日志文件，然后创建一个新的日志文件；默认为 false。</span>
+  <span style="color:#ff79c6">logAppend</span>: <span style="color:#ff79c6">true</span>
+  <span style="color:#6272a4"># 日志路径</span>
+  <span style="color:#ff79c6">path</span>: /var/log/mongodb/mongod.log
+
+<span style="color:#ff79c6">net</span>:
+ <span style="color:#6272a4"># 指定端口</span>
+  <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">27017</span>
+  <span style="color:#6272a4"># 绑定外网 op 多个用逗号分隔</span>
+  <span style="color:#ff79c6">bindIp</span>: <span style="color:#bd93f9">0.0.0.0</span>
+  <span style="color:#ff79c6">maxIncomingConnections</span>: <span style="color:#bd93f9">10000</span>
+</code></pre></div><p>限制内存、使用 wiredTiger 引擎后配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#6272a4"># mongod.conf</span>
+
+<span style="color:#6272a4"># for documentation of all options, see:</span>
+<span style="color:#6272a4">#   http://docs.mongodb.org/manual/reference/configuration-options/</span>
+
+<span style="color:#6272a4"># Where and how to store data.</span>
+<span style="color:#ff79c6">storage</span>:
+  <span style="color:#ff79c6">dbPath</span>: /data/db
+  <span style="color:#ff79c6">journal</span>:
+    <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">true</span>
+  <span style="color:#ff79c6">engine</span>: wiredTiger
+    <span style="color:#ff79c6">wiredTiger</span>:
+      <span style="color:#ff79c6">engineConfig</span>:
+        <span style="color:#6272a4"># 限制 5GB 内存大小</span>
+        <span style="color:#ff79c6">cacheSizeGB</span>: <span style="color:#bd93f9">5</span>
+
+<span style="color:#6272a4"># where to write logging data.</span>
+<span style="color:#ff79c6">systemLog</span>:
+  <span style="color:#ff79c6">destination</span>: file
+  <span style="color:#ff79c6">logAppend</span>: <span style="color:#ff79c6">true</span>
+  <span style="color:#ff79c6">path</span>: /var/log/mongodb/mongod.log
+
+<span style="color:#6272a4"># network interfaces</span>
+<span style="color:#ff79c6">net</span>:
+  <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">27017</span>
+  <span style="color:#ff79c6">bindIp</span>: <span style="color:#bd93f9">0.0.0.0</span>
+	<span style="color:#ff79c6">maxIncomingConnections</span>: <span style="color:#bd93f9">10000</span>
+
+<span style="color:#6272a4"># how the process runs</span>
+<span style="color:#ff79c6">processManagement</span>:
+  <span style="color:#ff79c6">timeZoneInfo</span>: /usr/share/zoneinfo
+
+</code></pre></div><h4 id="三用-docker-compose-启动">三、用 docker-compose 启动</h4>
+<p>docker-comopose 文件内容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;2&#39;</span>
+<span style="color:#ff79c6">services</span>:
+  <span style="color:#ff79c6">mongo</span>:
+    <span style="color:#ff79c6">image</span>: <span style="color:#f1fa8c">&#34;mongo:5.0&#34;</span>
+    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;mongo-v5&#34;</span>
+    <span style="color:#ff79c6">restart</span>: always
+    <span style="color:#ff79c6">mem_limit</span>: 6G
+    <span style="color:#ff79c6">environment</span>:
+      <span style="color:#ff79c6">MONGO_INITDB_ROOT_USERNAME</span>: admin
+      <span style="color:#ff79c6">MONGO_INITDB_ROOT_PASSWORD</span>: xxxxxx
+    <span style="color:#ff79c6">ports</span>:
+      - <span style="color:#bd93f9">27017</span>:<span style="color:#bd93f9">27017</span>
+    <span style="color:#ff79c6">volumes</span>:
+      - ./db:/data/db
+      - ./logs:/var/log/mongodb
+      - ./mongod.conf.orig:/etc/mongod.conf.orig
+    <span style="color:#ff79c6">command</span>: mongod --auth
+
+  <span style="color:#ff79c6">mongo-express</span>:
+    <span style="color:#ff79c6">image</span>: <span style="color:#f1fa8c">&#34;mongo-express:0.54&#34;</span>
+    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;mongo-express&#34;</span>
+    <span style="color:#ff79c6">links</span>:
+      - mongo
+    <span style="color:#ff79c6">depends_on</span>:
+      - mongo
+    <span style="color:#ff79c6">ports</span>:
+      - <span style="color:#bd93f9">8081</span>:<span style="color:#bd93f9">8081</span>
+    <span style="color:#ff79c6">environment</span>:
+      <span style="color:#ff79c6">ME_CONFIG_BASICAUTH_USERNAME</span>: admin
+      <span style="color:#ff79c6">ME_CONFIG_BASICAUTH_PASSWORD</span>: xxxxxx
+      <span style="color:#ff79c6">ME_CONFIG_MONGODB_ADMINUSERNAME</span>: admin
+      <span style="color:#ff79c6">ME_CONFIG_MONGODB_ADMINPASSWORD</span>: xxxxxx
+</code></pre></div><p>做了 volume 映射，<code>./db:/data/db</code> 保证容器删了数据不会丢失，<code>./mongod.conf.orig</code> 记得放到该 <code>docker-compose.yam </code> 同目录。<code>./logs</code> 查看 MongoDB 日志。另外起了 <code>mongo-express</code> 容器方便查看数据。</p>
+<p>至此，完。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/centos-install-oh-my-zsh/" data-toggle="tooltip" data-placement="top" title="Centos 安装 oh-my-zsh">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

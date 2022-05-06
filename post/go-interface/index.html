@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="Golang Interface 解析" />
+    <meta property="og:title" content="Golang Interface 解析" />
+    <meta property="twitter:title" content="Golang Interface 解析" />
+    
+
+    
+    <meta name="description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。">
+    <meta property="og:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    <meta property="twitter:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Golang Interface 解析-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/go-interface/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/golang" title="Golang">
+                            Golang
+                        </a>
+                        
+                    </div>
+                    <h1>Golang Interface 解析</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Monday, April 6, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="interface-解析">Interface 解析</h1>
+<p><a href="https://zhuanlan.zhihu.com/p/27652856">原文链接</a></p>
+<p>先看一段代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Foo</span>(x <span style="color:#8be9fd;font-style:italic">interface</span>{}) {
+    <span style="color:#ff79c6">if</span> x <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">nil</span> {
+        fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;empty interface&#34;</span>)
+        <span style="color:#ff79c6">return</span>
+    }
+    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;non-empty interface&#34;</span>)
+}
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+    <span style="color:#8be9fd;font-style:italic">var</span> x <span style="color:#ff79c6">*</span><span style="color:#8be9fd">int</span> = <span style="color:#ff79c6">nil</span>
+    <span style="color:#50fa7b">Foo</span>(x)
+}
+</code></pre></div><p>上面的例子的输出结果如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">$ <span style="color:#ff79c6">go</span> run test_interface.<span style="color:#ff79c6">go</span>
+non<span style="color:#ff79c6">-</span>empty <span style="color:#8be9fd;font-style:italic">interface</span>
+</code></pre></div><p>可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。</p>
+<h3 id="interface-底层结构">interface 底层结构</h3>
+<p>根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> eface <span style="color:#8be9fd;font-style:italic">struct</span> {
+    _type <span style="color:#ff79c6">*</span>_type
+    data  unsafe.Pointer
+}
+
+<span style="color:#8be9fd;font-style:italic">type</span> _type <span style="color:#8be9fd;font-style:italic">struct</span> {
+    size       <span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// type size
+</span><span style="color:#6272a4"></span>    ptrdata    <span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// size of memory prefix holding all pointers
+</span><span style="color:#6272a4"></span>    hash       <span style="color:#8be9fd">uint32</span>  <span style="color:#6272a4">// hash of type; avoids computation in hash tables
+</span><span style="color:#6272a4"></span>    tflag      tflag   <span style="color:#6272a4">// extra type information flags
+</span><span style="color:#6272a4"></span>    align      <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// alignment of variable with this type
+</span><span style="color:#6272a4"></span>    fieldalign <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// alignment of struct field with this type
+</span><span style="color:#6272a4"></span>    kind       <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// enumeration for C
+</span><span style="color:#6272a4"></span>    alg        <span style="color:#ff79c6">*</span>typeAlg  <span style="color:#6272a4">// algorithm table
+</span><span style="color:#6272a4"></span>    gcdata    <span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>    <span style="color:#6272a4">// garbage collection data
+</span><span style="color:#6272a4"></span>    str       nameOff  <span style="color:#6272a4">// string form
+</span><span style="color:#6272a4"></span>    ptrToThis typeOff  <span style="color:#6272a4">// type for pointer to this type, may be zero
+</span><span style="color:#6272a4"></span>}
+</code></pre></div><p>iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.fun 变量里。如果 interface 包含多个 method，这里只有一个 fun 变量怎么存呢？这个下面再细说。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> iface <span style="color:#8be9fd;font-style:italic">struct</span> {
+    tab  <span style="color:#ff79c6">*</span>itab
+    data unsafe.Pointer
+}
+
+<span style="color:#6272a4">// layout of Itab known to compilers
+</span><span style="color:#6272a4">// allocated in non-garbage-collected memory
+</span><span style="color:#6272a4">// Needs to be in sync with
+</span><span style="color:#6272a4">// ../cmd/compile/internal/gc/reflect.go:/^func.dumptypestructs.
+</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">type</span> itab <span style="color:#8be9fd;font-style:italic">struct</span> {
+    inter  <span style="color:#ff79c6">*</span>interfacetype
+    _type  <span style="color:#ff79c6">*</span>_type
+    link   <span style="color:#ff79c6">*</span>itab
+    bad    <span style="color:#8be9fd">int32</span>
+    inhash <span style="color:#8be9fd">int32</span>      <span style="color:#6272a4">// has this itab been added to hash?
+</span><span style="color:#6272a4"></span>    fun    [<span style="color:#bd93f9">1</span>]<span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// variable sized
+</span><span style="color:#6272a4"></span>}
+</code></pre></div><p>我们使用实际程序来看一下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#ff79c6">package</span> main
+
+<span style="color:#ff79c6">import</span> (
+    <span style="color:#f1fa8c">&#34;fmt&#34;</span>
+)
+
+<span style="color:#8be9fd;font-style:italic">type</span> MyInterface <span style="color:#8be9fd;font-style:italic">interface</span> {
+    <span style="color:#50fa7b">Print</span>()
+}
+
+<span style="color:#8be9fd;font-style:italic">type</span> MyStruct <span style="color:#8be9fd;font-style:italic">struct</span>{}
+<span style="color:#8be9fd;font-style:italic">func</span> (ms MyStruct) <span style="color:#50fa7b">Print</span>() {}
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+    x <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">1</span>
+    <span style="color:#8be9fd;font-style:italic">var</span> y <span style="color:#8be9fd;font-style:italic">interface</span>{} = x
+    <span style="color:#8be9fd;font-style:italic">var</span> s MyStruct
+    <span style="color:#8be9fd;font-style:italic">var</span> t MyInterface = s
+    fmt.<span style="color:#50fa7b">Println</span>(y, z)
+}
+</code></pre></div><p>查看汇编代码。</p>
+<pre><code>$ go build -gcflags '-l' -o interface11 interface11.go
+$ go tool objdump -s &quot;main\.main&quot; interface11
+TEXT main.main(SB) /Users/kltao/code/go/examples/interface11.go
+    interface11.go:15   0x10870f0   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX
+    interface11.go:15   0x10870f9   483b6110        CMPQ 0x10(CX), SP
+    interface11.go:15   0x10870fd   0f86de000000        JBE 0x10871e1
+    interface11.go:15   0x1087103   4883ec70        SUBQ $0x70, SP
+    interface11.go:15   0x1087107   48896c2468      MOVQ BP, 0x68(SP)
+    interface11.go:15   0x108710c   488d6c2468      LEAQ 0x68(SP), BP
+    interface11.go:17   0x1087111   48c744243001000000  MOVQ $0x1, 0x30(SP)
+    interface11.go:17   0x108711a   488d057fde0000      LEAQ 0xde7f(IP), AX
+    interface11.go:17   0x1087121   48890424        MOVQ AX, 0(SP)
+    interface11.go:17   0x1087125   488d442430      LEAQ 0x30(SP), AX
+    interface11.go:17   0x108712a   4889442408      MOVQ AX, 0x8(SP)
+    interface11.go:17   0x108712f   e87c45f8ff      CALL runtime.convT2E(SB)
+    interface11.go:17   0x1087134   488b442410      MOVQ 0x10(SP), AX
+    interface11.go:17   0x1087139   4889442438      MOVQ AX, 0x38(SP)
+    interface11.go:17   0x108713e   488b4c2418      MOVQ 0x18(SP), CX
+    interface11.go:17   0x1087143   48894c2440      MOVQ CX, 0x40(SP)
+    interface11.go:19   0x1087148   488d15b1000800      LEAQ 0x800b1(IP), DX
+    interface11.go:19   0x108714f   48891424        MOVQ DX, 0(SP)
+    interface11.go:19   0x1087153   488d542430      LEAQ 0x30(SP), DX
+    interface11.go:19   0x1087158   4889542408      MOVQ DX, 0x8(SP)
+    interface11.go:19   0x108715d   e8fe45f8ff      CALL runtime.convT2I(SB)
+</code></pre><p>代码 17 行 var y interface{} = x 调用了函数 runtime.convT2E，将 int 类型的 x 转换成 empty interface。代码 19 行 var t MyInterface = s 将 MyStruct 类型转换成 non-empty interface: MyInterface。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">convT2E</span>(t <span style="color:#ff79c6">*</span>_type, elem unsafe.Pointer) (e eface) {
+    <span style="color:#ff79c6">...</span>
+  
+    x <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">newobject</span>(t)
+    <span style="color:#50fa7b">typedmemmove</span>(t, x, elem)
+    e._type = t
+    e.data = x
+    <span style="color:#ff79c6">return</span>
+}
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">convT2I</span>(tab <span style="color:#ff79c6">*</span>itab, elem unsafe.Pointer) (i iface) {
+    t <span style="color:#ff79c6">:=</span> tab._type
+    
+    <span style="color:#ff79c6">...</span>
+  
+    x <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">newobject</span>(t)
+    <span style="color:#50fa7b">typedmemmove</span>(t, x, elem)
+    i.tab = tab
+    i.data = x
+    <span style="color:#ff79c6">return</span>
+}
+</code></pre></div><p>看上面的函数原型，可以看出中间过程编译器将根据我们的转换目标类型的 empty interface 还是 non-empty interface，来对原数据类型进行转换（转换成 &lt;*_type, unsafe.Pointer&gt; 或者 &lt;*itab, unsafe.Pointer&gt;）。这里对于 struct 满不满足 interface 的类型要求（也就是 struct 是否实现了 interface 的所有 method），是由编译器来检测的。</p>
+<h3 id="itab">itab</h3>
+<p>iface 结构中最重要的是 itab 结构。itab 可以理解为 pair&lt;interface type, concrete type&gt; 。当然 itab 里面还包含一些其他信息，比如 interface 里面包含的 method 的具体实现。下面细说。itab 的结构如下。</p>
+<pre><code>type itab struct {
+    inter  *interfacetype
+    _type  *_type
+    link   *itab
+    bad    int32
+    inhash int32      // has this itab been added to hash?
+    fun    [1]uintptr // variable sized
+}
+
+</code></pre><p>其中 interfacetype 包含了一些关于 interface 本身的信息，比如 package path，包含的 method。上面提到的 iface 和 eface 是数据类型（built-in 和 type-define）转换成 interface 之后的实体的 struct 结构，而这里的 interfacetype 是我们定义 interface 时候的一种抽象表示。</p>
+<pre><code>type interfacetype struct {
+    typ     _type
+    pkgpath name
+    mhdr    []imethod
+}
+
+type imethod struct {   //这里的 method 只是一种函数声明的抽象，比如  func Print() error
+    name nameOff
+    ityp typeOff
+}
+</code></pre><p>_type 表示 concrete type。fun 表示的 interface 里面的 method 的具体实现。比如 interface type 包含了 method A, B，则通过 fun 就可以找到这两个 method 的具体实现。这里有个问题 fun 是长度为 1 的 uintptr 数组，那么怎么表示多个 method 呢？看一下测试程序。</p>
+<pre><code>package main
+
+type MyInterface interface {
+    Print()
+    Hello()
+    World()
+    AWK()
+}
+
+func Foo(me MyInterface) {
+    me.Print()
+    me.Hello()
+    me.World()
+    me.AWK()
+}
+
+type MyStruct struct {}
+
+func (me MyStruct) Print() {}
+func (me MyStruct) Hello() {}
+func (me MyStruct) World() {}
+func (me MyStruct) AWK() {}
+
+func main() {
+    var me MyStruct
+    Foo(me)
+}
+
+</code></pre><p>看一下函数调用对应的汇编代码。</p>
+<pre><code>$ go build -gcflags '-l' -o interface8 interface8.go
+$ go tool objdump -s &quot;main\.Foo&quot; interface8
+TEXT main.Foo(SB) /Users/kltao/code/go/examples/interface8.go
+    interface8.go:10    0x104c060   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX
+    interface8.go:10    0x104c069   483b6110        CMPQ 0x10(CX), SP
+    interface8.go:10    0x104c06d   7668            JBE 0x104c0d7
+    interface8.go:10    0x104c06f   4883ec10        SUBQ $0x10, SP
+    interface8.go:10    0x104c073   48896c2408      MOVQ BP, 0x8(SP)
+    interface8.go:10    0x104c078   488d6c2408      LEAQ 0x8(SP), BP
+    interface8.go:11    0x104c07d   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:11    0x104c082   488b4830        MOVQ 0x30(AX), CX //取得 Print 函数地址
+    interface8.go:11    0x104c086   488b542420      MOVQ 0x20(SP), DX
+    interface8.go:11    0x104c08b   48891424        MOVQ DX, 0(SP)
+    interface8.go:11    0x104c08f   ffd1            CALL CX     // 调用 Print()
+    interface8.go:12    0x104c091   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:12    0x104c096   488b4828        MOVQ 0x28(AX), CX //取得 Hello 函数地址
+    interface8.go:12    0x104c09a   488b542420      MOVQ 0x20(SP), DX
+    interface8.go:12    0x104c09f   48891424        MOVQ DX, 0(SP)
+    interface8.go:12    0x104c0a3   ffd1            CALL CX           //调用 Hello()
+    interface8.go:13    0x104c0a5   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:13    0x104c0aa   488b4838        MOVQ 0x38(AX), CX //取得 World 函数地址
+    interface8.go:13    0x104c0ae   488b542420      MOVQ 0x20(SP), DX 
+    interface8.go:13    0x104c0b3   48891424        MOVQ DX, 0(SP)
+    interface8.go:13    0x104c0b7   ffd1            CALL CX           //调用 World()
+    interface8.go:14    0x104c0b9   488b442418      MOVQ 0x18(SP), AX
+    interface8.go:14    0x104c0be   488b4020        MOVQ 0x20(AX), AX //取得 AWK 函数地址
+    interface8.go:14    0x104c0c2   488b4c2420      MOVQ 0x20(SP), CX
+    interface8.go:14    0x104c0c7   48890c24        MOVQ CX, 0(SP)
+    interface8.go:14    0x104c0cb   ffd0            CALL AX           //调用 AWK()
+    interface8.go:15    0x104c0cd   488b6c2408      MOVQ 0x8(SP), BP
+    interface8.go:15    0x104c0d2   4883c410        ADDQ $0x10, SP
+    interface8.go:15    0x104c0d6   c3          RET
+    interface8.go:10    0x104c0d7   e8f48bffff      CALL runtime.morestack_noctxt(SB)
+    interface8.go:10    0x104c0dc   eb82            JMP main.Foo(SB)
+
+</code></pre><p>其中 0x18(SP) 对应的 itab 的地址。fun 在 x86-64 机器上对应 itab 内的地址偏移为 8+8+8+4+4 = 32 = 0x20，也就是 0x20(AX) 对应的 fun 的值，此时存放的 AWK 函数地址。然后 0x28(AX) = &amp;Hello，0x30(AX) = &amp;Print，0x38(AX) = &amp;World。对的，每次函数是按字典序排序存放的。</p>
+<p>我们再来看一下函数地址究竟是怎么写入的？首先 Golang 中的 uintptr 一般用来存放指针的值，这里对应的就是函数指针的值（也就是函数的调用地址）。但是这里的 fun 是一个长度为 1 的 uintptr 数组。我们看一下 runtime 包的 additab 函数。</p>
+<pre><code>func additab(m *itab, locked, canfail bool) {
+    ...
+    *(*unsafe.Pointer)(add(unsafe.Pointer(&amp;m.fun[0]), uintptr(k)*sys.PtrSize)) = ifn
+    ...
+}
+
+</code></pre><p>上面的代码的意思是在 fun[0] 的地址后面依次写入其他 method 对应的函数指针。熟悉 C++ 的同学可以类比 C++ 的虚函数表指针来看。</p>
+<p>剩下的还有 bad，link，inhash。其中 bad 是一个表征 itab 状态的变量。而这里的 link 是 *itab 类型，是不是表示 interface 的嵌套呢？并不是，interface 的嵌套也是把 method 平铺而已。link 要和 inhash 一起来说。在 runtime 包里面有一个 hash 表，通过 hash[hashitab(interface_type, concrete_type)] 可以取得 itab，这是出于性能方面的考虑。主要代码如下，这里就不再赘述了。</p>
+<pre><code>const (
+    hashSize = 1009
+)
+
+var (
+    ifaceLock mutex // lock for accessing hash
+    hash      [hashSize]*itab
+)
+
+func itabhash(inter *interfacetype, typ *_type) uint32 {
+    // compiler has provided some good hash codes for us.
+    h := inter.typ.hash
+    h += 17 * typ.hash
+    // TODO(rsc): h += 23 * x.mhash ?
+    return h % hashSize
+}
+
+func additab(...) {
+    ...
+    h := itabhash(inter, typ)
+    m.link = hash[h]
+    m.inhash = 1
+    atomicstorep(unsafe.Pointer(&amp;hash[h]), unsafe.Pointer(m))
+}
+</code></pre><h2 id="3-type-assertion"><strong>3. Type Assertion</strong></h2>
+<p>我们知道使用 interface type assertion (中文一般叫断言) 的时候需要注意，不然很容易引入 panic。</p>
+<pre><code>func do(v interface{}) {
+    n := v.(int)    // might panic
+}
+
+func do(v interface{}) {
+    n, ok := v.(int)
+    if !ok {
+        // 断言失败处理
+    }
+}
+
+</code></pre><p>这个过程体现在下面的几个函数上。</p>
+<pre><code>// The assertXXX functions may fail (either panicking or returning false,
+// depending on whether they are 1-result or 2-result).
+func assertI2I(inter *interfacetype, i iface) (r iface) {
+    tab := i.tab
+    if tab == nil {
+        // explicit conversions require non-nil interface value.
+        panic(&amp;TypeAssertionError{&quot;&quot;, &quot;&quot;, inter.typ.string(), &quot;&quot;})
+    }
+    if tab.inter == inter {
+        r.tab = tab
+        r.data = i.data
+        return
+    }
+    r.tab = getitab(inter, tab._type, false)
+    r.data = i.data
+    return
+}
+func assertI2I2(inter *interfacetype, i iface) (r iface, b bool) {
+    tab := i.tab
+    if tab == nil {
+        return
+    }
+    if tab.inter != inter {
+        tab = getitab(inter, tab._type, true)
+        if tab == nil {
+            return
+        }
+    }
+    r.tab = tab
+    r.data = i.data
+    b = true
+    return
+}
+
+// 类似
+func assertE2I(inter *interfacetype, e eface) (r iface)
+func assertE2I2(inter *interfacetype, e eface) (r iface, b bool)
+
+</code></pre><h2 id="4-总结"><strong>4. 总结</strong></h2>
+<p>从某种意义上来说，Golang 的 interface 也是一种多态的体现。对比其他支持多态特性的语言，实现还是略有差异，很难说谁好谁坏。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/go-slice/" data-toggle="tooltip" data-placement="top" title="Golang slice 切片原理">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/go-cobra/" data-toggle="tooltip" data-placement="top" title="Cobra - 一个 Golang 命令行项目生成工具">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>mongo on Jacobc&#39;s blog</title>
+    <title>mongo on Jacobc&#39; Blog</title>
     <link>https://jsharkc.github.io/tags/mongo/</link>
-    <description>Recent content in mongo on Jacobc&#39;s blog</description>
-    <image>
-      <url>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
-    </image>
+    <description>Recent content in mongo on Jacobc&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
     <lastBuildDate>Sat, 02 Apr 2022 17:29:23 +8000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/mongo/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>限制内存 mongo docker-compsoe 部署</title>
-      <link>https://jsharkc.github.io/post/mongo-compose/</link>
+      <link>https://jsharkc.github.io/post/mongo-docker-deploy/</link>
       <pubDate>Sat, 02 Apr 2022 17:29:23 +8000</pubDate>
       
-      <guid>https://jsharkc.github.io/post/mongo-compose/</guid>
-      <description>用 docker 起 mongo，有两种限制方式：
- 通过 Docker 限制内存 通过 MongoDB 自己的配置文件限制  一、通过 Docker 限制内存 内存限制相关参数：
-   参数 简介     -m, &amp;ndash;memory 内存限制，格式：数字+单位，单位可以是b, k, m, g，最小4M   &amp;ndash; -memory-swap 存和交换空间总大小限制，注意：必须比-m参数大，-1 表示不受限    例子：
-docker run -m 100M --memory-swap -1 mongo:5.0 二、通过 mongo 配置文件限制  配置文件位置：
-3.x : /etc/mongod.conf
-4.x : /etc/mongod.conf.orig
- 默认配置：
-storage: # mongod 进程存储数据目录，此配置仅对 mongod 进程有效 dbPath: /data/mongodb/db 是否开启 journal 日志持久存储，journal 日志用来数据恢复，是 mongod 最基础的特性，通常用于故障恢复。64 位系统默认为 true，32 位默认为 false，建议开启，仅对 mongod 进程有效。 journal: enabled: true # 存储引擎类型，mongodb 3.</description>
+      <guid>https://jsharkc.github.io/post/mongo-docker-deploy/</guid>
+      <description>用 docker 起 mongo，有两种限制方式： 通过 Docker 限制内存 通过 MongoDB 自己的配置文件限制 一、通过 Docker 限制内存 内存限制相关参数： 参数 简介 -m, &amp;ndash;memory 内存限制，格式：数字</description>
+    </item>
+    
+    <item>
+      <title>MongoDB 的正确打开方式 Part1</title>
+      <link>https://jsharkc.github.io/post/mongo-use-1/</link>
+      <pubDate>Sat, 05 Dec 2020 16:52:24 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mongo-use-1/</guid>
+      <description>MongoDB 的正确打开方式 Part1 在关系型数据库中，处理关系时，总是会有一张关系表，不论关系的规模，但在 MongoDB 数据库中，需要考虑关系的规模，我们用一对多关系举例</description>
     </item>
     
   </channel>

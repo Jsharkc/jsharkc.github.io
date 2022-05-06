@@ -1,114 +1,680 @@
-<!doctype html><html lang=en dir=auto>
-<head><meta charset=utf-8>
-<meta http-equiv=x-ua-compatible content="IE=edge">
-<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-<meta name=robots content="index, follow">
-<title>Docker | Jacobc's blog</title>
-<meta name=keywords content>
-<meta name=description content="Jacobc's blog, welcome to my blog">
-<meta name=author content="Jsharkc">
-<link rel=canonical href=https://jsharkc.github.io/tags/docker/>
-<meta name=google-site-verification content="XYZabc">
-<meta name=yandex-verification content="XYZabc">
-<meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
-<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<meta name=theme-color content="#2e2e33">
-<meta name=msapplication-TileColor content="#2e2e33">
-<meta name=generator content="Hugo 0.86.1">
-<link rel=alternate type=application/rss+xml href=https://jsharkc.github.io/tags/docker/index.xml>
-<noscript>
-<style>#theme-toggle,.top-link{display:none}</style>
-</noscript><meta property="og:title" content="Docker">
-<meta property="og:description" content="Jacobc's blog, welcome to my blog">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://jsharkc.github.io/tags/docker/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="Jacobc'S BLOG">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
-<meta name=twitter:title content="Docker">
-<meta name=twitter:description content="Jacobc's blog, welcome to my blog">
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="Docker" />
+    <meta property="og:title" content="Docker" />
+    <meta property="twitter:title" content="Docker" />
+    
+
+    
+    <meta name="description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。">
+    <meta property="og:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    <meta property="twitter:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Docker-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/tags/docker/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
 </head>
-<body class="list dark" id=top>
-<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
-<header class=header>
-<nav class=nav>
-<div class=logo>
-<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
-<span class=logo-switches>
-<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-</button>
-</span>
-</div>
-<ul id=menu>
-<li>
-<a href=https://jsharkc.github.io/archives/ title=Archives>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=https://jsharkc.github.io/tags title=Tags>
-<span>Tags</span>
-</a>
-</li>
-<li>
-<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
-<span>Search</span>
-</a>
-</li>
-</ul>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
 </nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+<header class="intro-header" style="background-image: url('/img/home-bg-swide.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Jacobc&#39; Blog </h1>
+                    
+		    <span class="subheading">如果你知道去哪，全世界都会为你让路</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </header>
-<main class=main>
-<header class=page-header><div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/tags/>Tags</a></div>
-<h1>Docker</h1>
-</header>
-<article class="post-entry tag-entry">
-<header class=entry-header>
-<h2>Centos7 安装 Docker
-</h2>
-</header>
-<section class=entry-content>
-<p>一条命令安装 官方脚本：
-curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun 国内 daocloud 安装命令：
-curl -sSL https://get.daocloud.io/docker | sh 手动安装指定版本 卸载旧版本 sudo yum remove docker \ docker-client \ docker-client-latest \ docker-common \ docker-latest \ docker-latest-logrotate \ docker-logrotate \ docker-engine \ container-selinux \ docker-selinux 安装相关依赖 yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.
-yum install -y yum-utils device-mapper-persistent-data lvm2 配置版本镜像库 季度更新的稳定 stable 版和 test 版...</p>
-</section>
-<footer class=entry-footer>November 15, 2021&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Centos7 安装 Docker" href=https://jsharkc.github.io/post/centos7-install-docker/></a>
-</article>
-<article class="post-entry tag-entry">
-<header class=entry-header>
-<h2>Docker Note
-</h2>
-</header>
-<section class=entry-content>
-<p>Docker Note 镜像 虚悬镜像 ​ 没有仓库名，也没有标签，均为&lt;none>的为虚悬镜像：
-&lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为&lt;none>，可用下面的命令专门显示这类镜像：
-$ docker images -f dangling=ture REPOSITORY TAG IMAGE ID CREATED SIZE &lt;none> &lt;none> 00285df0df87 5 days ago 342 MB ​ 一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。
-$ docker rmi $(docker images -q -f dangling=ture) docker images ####—filter -f
-​ docker images 还支持强大的过滤器参数 --filter ，或者简写-f。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在mongo:3.2之后建立的镜像，可以用下面的命令：
-$ docker images -f since=mongo:3.2 REPOSITORY TAG IMAGE ID CREATED SIZE redis latest 5f515359c7f8 5 days ago 183 MB nginx latest 05a60462f8ba 5 days ago 181 MB ​ 想查看某个位置之前的镜像也可以，只需要吧since换成before即可。...</p>
-</section>
-<footer class=entry-footer>April 12, 2017&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Jsharkc</footer>
-<a class=entry-link aria-label="post link to Docker Note" href=https://jsharkc.github.io/post/docker-note/></a>
-</article>
-</main>
-<footer class=footer>
-<span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
-<span>
-Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
-</span>
+
+
+
+  
+<div class="container">
+    <div class="row">
+        
+        
+   	    <div class="
+            col-lg-8 col-lg-offset-1
+            col-md-8 col-md-offset-1
+            col-sm-12
+            col-xs-12
+            post-container
+        ">
+            
+
+<div class="post-preview">
+    <a href="https://jsharkc.github.io/post/docker-install-centos7/">
+        <h2 class="post-title">
+            Centos7 安装 Docker
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            一条命令安装，或者安装指定版本
+        
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Jacobc&#39; Blog on Monday, November 15, 2021
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="https://jsharkc.github.io/post/docker-note/">
+        <h2 class="post-title">
+            Docker Note
+        </h2>
+	
+        <div class="post-content-preview">
+	
+            Docker Note 镜像 虚悬镜像 ​ 没有仓库名，也没有标签，均为&lt;none&gt;的为虚悬镜像： &lt;none&gt; &lt;none&gt; 00285df0df87 5 days ago 342 MB ​ 由于新旧镜像同名，旧镜像名称被取消，从
+       
+        </div>
+    </a>
+    <p class="post-meta">
+    
+        Posted by Jacobc&#39; Blog on Saturday, October 12, 2019
+        
+        
+    
+    </p>
+
+</div>
+<hr>
+
+
+            
+
+
+
+       	</div>
+        
+
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+	
+    <section class="visible-md visible-lg">
+	
+        <div class="short-about">
+            
+            <a href="/top/about">
+               <img src="/img/wangye.jpeg" alt="avatar" style="cursor: pointer" />
+            </a>
+            
+            
+                <p>Play game, play world</p>
+            
+           
+           <ul class="list-inline">
+               
+               <li>
+                   <a href="mailto:liu666888@111.com">
+                      <span class="fa-stack fa-lg">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                      </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+               <li>
+                   <a target="_blank" href="/liu1773867204">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               <li>
+                   <a target="_blank" href="https://github.com/Jsharkc">
+                       <span class="fa-stack fa-lg">
+                           <i class="fas fa-circle fa-stack-2x"></i>
+                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+            
+            
+               
+               
+               
+               
+                </ul>
+            </div>
+    </section>
+	
+    
+    
+    <section>
+        <hr>
+        <h5>QUICK LINKS</h5>
+        <ul class="list-inline">
+            
+            <li><a target="_blank" href="http://www.servicemesher.com">ServiceMesher</a></li>
+            
+        </ul>
+    </section>
+    
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FEATURED TAGS</h5>
+        <div class="tags">
+            
+            
+               
+                    <a href="/tags/android" title="android">
+                        android
+                    </a>
+               
+            
+               
+                    <a href="/tags/centos" title="centos">
+                        centos
+                    </a>
+               
+            
+               
+                    <a href="/tags/charles" title="charles">
+                        charles
+                    </a>
+               
+            
+               
+                    <a href="/tags/cobra" title="cobra">
+                        cobra
+                    </a>
+               
+            
+               
+                    <a href="/tags/cockroach" title="cockroach">
+                        cockroach
+                    </a>
+               
+            
+               
+                    <a href="/tags/docker" title="docker">
+                        docker
+                    </a>
+               
+            
+               
+                    <a href="/tags/flutter" title="flutter">
+                        flutter
+                    </a>
+               
+            
+               
+                    <a href="/tags/git" title="git">
+                        git
+                    </a>
+               
+            
+               
+                    <a href="/tags/golang" title="golang">
+                        golang
+                    </a>
+               
+            
+               
+                    <a href="/tags/k8s" title="k8s">
+                        k8s
+                    </a>
+               
+            
+               
+                    <a href="/tags/linux" title="linux">
+                        linux
+                    </a>
+               
+            
+               
+                    <a href="/tags/mac" title="mac">
+                        mac
+                    </a>
+               
+            
+               
+                    <a href="/tags/mongo" title="mongo">
+                        mongo
+                    </a>
+               
+            
+               
+                    <a href="/tags/mysql" title="mysql">
+                        mysql
+                    </a>
+               
+            
+               
+                    <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                        oh-my-zsh
+                    </a>
+               
+            
+               
+                    <a href="/tags/react" title="react">
+                        react
+                    </a>
+               
+            
+               
+                    <a href="/tags/ssh" title="ssh">
+                        ssh
+                    </a>
+               
+            
+               
+                    <a href="/tags/termux" title="termux">
+                        termux
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                        后端
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                        服务器
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                        线程
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                        软件
+                    </a>
+               
+            
+               
+                    <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                        进程
+                    </a>
+               
+            
+        </div>
+    </section>
+    
+
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FRIENDS</h5>
+        <ul class="list-inline">
+            
+            <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+            
+        </ul>
+    </section>
+    
+</div>
+
+	</div>
+</div>
+
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='/tags/docker/index.xml' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
 </footer>
-<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
-</a>
-<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
-<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
-<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
 </body>
 </html>

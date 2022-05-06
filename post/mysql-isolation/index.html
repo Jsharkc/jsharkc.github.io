@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="MySQL 四种隔离级别 &amp; 间隙锁" />
+    <meta property="og:title" content="MySQL 四种隔离级别 &amp; 间隙锁" />
+    <meta property="twitter:title" content="MySQL 四种隔离级别 &amp; 间隙锁" />
+    
+
+    
+    <meta name="description" content="事务特征、隔离级别以及间隙锁">
+    <meta property="og:description" content="事务特征、隔离级别以及间隙锁" />
+    <meta property="twitter:description" content="事务特征、隔离级别以及间隙锁" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>MySQL 四种隔离级别 &amp; 间隙锁-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/mysql-isolation/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                    </div>
+                    <h1>MySQL 四种隔离级别 &amp; 间隙锁</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Wednesday, August 19, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h2 id="一事务的四个特征acid">一、事务的四个特征（ACID）</h2>
+<p>事务具有四个特征：原子性（ Atomicity ）、一致性（ Consistency ）、隔离性（ Isolation ）和持续性（ Durability ）。这四个特性简称为 ACID 特性。</p>
+<p><strong>1. 原子性 (Atomicity)</strong></p>
+<p>事务是数据库的逻辑工作单位，事务中包含的各操作要么都做，要么都不做</p>
+<p><strong>2. 一致性 (Consistency )</strong></p>
+<p>事务执行的结果必须是使数据库从一个一致性状态变到另一个一致性状态。因此当数据库只包含成功事务提交的结果时，就说数据库处于一致性状态。如果数据库系统 运行中发生故障，有些事务尚未完成就被迫中断，这些未完成事务对数据库所做的修改有一部分已写入物理数据库，这时数据库就处于一种不正确的状态，或者说是 不一致的状态。</p>
+<p><strong>3. 隔离性 (Isolation )</strong></p>
+<p>一个事务的执行不能其它事务干扰。即一个事务内部的操作及使用的数据对其它并发事务是隔离的，并发执行的各个事务之间不能互相干扰。</p>
+<p><strong>4. 持续性 (Durability )</strong></p>
+<p>也称永久性，指一个事务一旦提交，它对数据库中的数据的改变就应该是永久性的。接下来的其它操作或故障不应该对其执行结果有任何影响。</p>
+<h2 id="二mysql-的四种隔离级别">二、MySQL 的四种隔离级别</h2>
+<p>SQL 标准定义了 4 类隔离级别，包括了一些具体规则，用来限定事务内外的哪些改变是可见的，哪些是不可见的。低级别的隔离级一般支持更高的并发处理，并拥有更低的系统开销。</p>
+<p><strong>1. Read Uncommitted（RU: 读取未提交内容）</strong></p>
+<p>在该隔离级别，所有事务都可以看到其他未提交事务的执行结果。本隔离级别很少用于实际应用，因为它的性能也不比其他级别好多少。读取未提交的数据，也被称之为脏读（Dirty Read）。</p>
+<p><strong>2. Read Committed（RC: 读取提交内容）</strong></p>
+<p>这是大多数数据库系统的默认隔离级别（但不是MySQL默认的）。它满足了隔离的简单定义：一个事务只能看见已经提交事务所做的改变。这种隔离级别 也支持所谓的不可重复读（Nonrepeatable Read），因为同一事务的其他实例在该实例处理其间可能会有新的commit，所以同一select可能返回不同结果。</p>
+<p><strong>3. Repeatable Read（RR: 可重读）</strong></p>
+<p>这是MySQL的默认事务隔离级别，它确保同一事务的多个实例在并发读取数据时，会看到同样的数据行。不过理论上，这会导致另一个棘手的问题：幻读 （Phantom Read）。简单的说，幻读指当用户读取某一范围的数据行时，另一个事务又在该范围内插入了新行，当用户再读取该范围的数据行时，会发现有新的“幻影” 行。InnoDB和Falcon存储引擎通过多版本并发控制（MVCC，Multiversion Concurrency Control）机制解决了该问题。</p>
+<p><strong>4. Serializable（可串行化）</strong></p>
+<p>这是最高的隔离级别，它通过强制事务排序，使之不可能相互冲突，从而解决幻读问题。简言之，它是在每个读的数据行上加上共享锁。在这个级别，可能导致大量的超时现象和锁竞争。</p>
+<h2 id="三出现问题">三、出现问题</h2>
+<p>这四种隔离级别采取不同的锁类型来实现，若读取的是同一个数据的话，就容易发生问题。</p>
+<p>例如：</p>
+<ol>
+<li>
+<p><strong>脏读(Drity Read)</strong>：事务 A 更新了一份数据，但还未提交，另一个事务 B 在此时读取了这份数据，这就是<strong>脏读</strong>，由于某些原因，前一个事务 A RollBack 了操作，则后一个事务 B 所读取的数据就会是不正确的。</p>
+</li>
+<li>
+<p><strong>不可重复读(Non-repeatable read)</strong>: 事务 A 修改了一份数据，并 commit，另一个事务 B 在事务 A 提交前后各查询一次，查询出来的数据不同，这就是<strong>不可重复读</strong>。</p>
+</li>
+<li>
+<p><strong>幻读(Phantom Read)</strong>: 在一个事务的两次查询中数据笔数不一致，例如有一个事务查询了几列(Row)数据，而另一个事务却在此时插入了新的几列数据，先前的事务在接下来的查询中，就会发现有几列数据是它先前所没有的。</p>
+</li>
+</ol>
+<h2 id="四mysql-幻读解决办法">四、MySQL 幻读解决办法</h2>
+<p>MySQL <strong>Innodb 引擎</strong> 在 <strong>可重复读隔离级别</strong> 下使用 <strong>间隙锁（Gap Lock）</strong> 解决幻读问题，幻读的问题存在是因为新增或者更新操作，这时如果进行范围查询的时候（加锁查询），会出现不一致的问题，这时使用不同的行锁已经没有办法满足要求，需要对一定范围内的数据进行加锁，间隙锁就是解决这类问题的。在 <strong>可重复读隔离级别</strong> 下，数据库是通过 <strong>行锁</strong> 和 <strong>间隙锁</strong> 共同组成的 <strong>（next-key lock）</strong>，来实现的</p>
+<p>加锁规则有以下特性，我们会在后面的案例中逐一解释：</p>
+<p>​	1. 加锁的基本单位是（next-key lock），他是前开后闭原则</p>
+<p>​	2. 事务查询过程中访问的对象会增加锁</p>
+<p>​	3. 索引上的等值查询 - - 给唯一索引加锁的时候，next-key lock升级为行锁</p>
+<p>​	4. 索引上的等值查询 - - 向右遍历时最后一个值不满足查询需求时，next-key lock 退化为间隙锁</p>
+<p>​	5. 唯一索引上的范围查询会访问到不满足条件的第一个值为止</p>
+<p><strong>案例数据：</strong></p>
+<table>
+<thead>
+<tr>
+<th>id(主键)</th>
+<th>c（普通索引）</th>
+<th>d（无索引）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr>
+<td>15</td>
+<td>15</td>
+<td>15</td>
+</tr>
+<tr>
+<td>20</td>
+<td>20</td>
+<td>20</td>
+</tr>
+<tr>
+<td>25</td>
+<td>25</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+<p>以上数据为了解决幻读问题，更新的时候不只是对上述的五条数据增加行锁，还对于中间的取值范围增加了 6 间隙锁，（-∞，5]（5，10]（10，15]（15，20]（20，25]（25，+supernum] （其中supernum 是数据库维护的最大的值。为了保证间隙锁都是左开右闭原则。）</p>
+<h4 id="案例一间隙锁简单案例">案例一：间隙锁简单案例</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->select * from t where id = 11  for update;</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>insert into user value(12,12,12) 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+</tr>
+<tr>
+<td>3</td>
+<td>commit;</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>当有如上事务 A 和事务 B 时，事务 A 会对数据库表增加（10，15] 这个区间锁，这时insert id = 12 的数据的时候就会因为区间锁（10，15] 而被锁住无法执行。</p>
+<h4 id="案例二-间隙锁死锁问题">案例二： 间隙锁死锁问题</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->select * from t where id = 9  for update;</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>begin; select * from t where id = 6  for update;</td>
+</tr>
+<tr>
+<td>3</td>
+<td>-</td>
+<td>insert into user value(7,7,7) 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+</tr>
+<tr>
+<td>4</td>
+<td>insert into user value(7,7,7) 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>不同于写锁相互之间是互斥的原则，间隙锁之间不是互斥的，如果一个事务A获取到了（5,10] 之间的间隙锁，另一个事务B也可以获取到（5,10] 之间的间隙锁。这时就可能会发生死锁问题，如下案例。
+事务A获取到（5,10] 之间的间隙锁不允许其他的 DML 操作，在事务提交，间隙锁释放之前，事务B也获取到了间隙锁（5,10]，这时两个事务就处于死锁状态</p>
+<h4 id="案例三-等值查询-----唯一索引">案例三： 等值查询 - - 唯一索引</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+<th>事务C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->update u set d= d+ 1 where id = 7;</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>insert into u (8,8,8); 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>-</td>
+<td>-</td>
+<td>update set d = d+ 1 where id = 10</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>加锁的范围是（5,10] 的范围锁</li>
+<li>由于数据是等值查询，并且表中最后数据id = 10 不满足id= 7的查询要求，故id=10 的行级锁退化为间隙锁，（5,10）</li>
+<li>所以事务B中id=8会被锁住，而id=10的时候不会被锁住</li>
+</ol>
+<h4 id="案例四-等值查询-----普通索引">案例四： 等值查询 - - 普通索引</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+<th>事务C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->select id form t where c = 5 lock in share mode;</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>update t set d = d + 1 where id = 5</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>-</td>
+<td>-</td>
+<td>insert into values (7,7,7)
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>加锁的范围是（0,5]，（5,10]的范围锁</li>
+<li>由于c是普通索引，根据原则4，搜索到5后继续向后遍历直到搜索到10才放弃，故加锁范围为（5,10]</li>
+<li>由于查询是等值查询，并且最后一个值不满足查询要求，故间隙锁退化为（5,10）</li>
+<li>因为加锁是对普通索引c加锁，而且因为索引覆盖，没有对主键进行加锁，所以事务B执行正常</li>
+<li>因为加锁范围（5,10）故事务C执行阻塞</li>
+<li>需要注意的是，lock in share mode 因为覆盖索引故没有锁主键索引，如果使用for update 程序会觉得之后会执行更新操作故会将主键索引一同锁住</li>
+</ol>
+<h4 id="案例五-范围查询-----唯一索引">案例五： 范围查询 - - 唯一索引</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+<th>事务C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->select *  form t where id &gt;= 10 and id &lt;11  for update</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>insert into values(8,8,8)   insert into values(13,13,13) 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>-</td>
+<td>-</td>
+<td>update t set d = d+ 1 where id = 15 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>next-key lock 增加范围锁（5,10]</li>
+<li>根据原则5，唯一索引的范围查询会到第一个不符合的值位置，故增加（10，15]</li>
+<li>因为等值查询有id =10 根据原则3间隙锁升级为行锁，故剩余锁[10,15]</li>
+<li>因为查询并不是等值查询，故[10,15]不会退化成[10,15)</li>
+<li>故事务B（13,13,13）阻塞，事务C阻塞</li>
+</ol>
+<h4 id="案例六-范围查询-----普通索引">案例六： 范围查询 - - 普通索引</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+<th>事务C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->select *  form t where c &gt;= 10 and c &lt;11 for update</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>insert into values(8,8,8)   
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>-</td>
+<td>-</td>
+<td>update t set d = d+ 1 where c = 15 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>next-key lock 增加范围锁（5,10]，（10，15]</li>
+<li>因为c是非唯一索引，故（5,10]不会退化为10</li>
+<li>因为查询并不是等值查询，故[10,15]不会退化成[10,15)</li>
+<li>所以事务B和事务C全部堵塞</li>
+</ol>
+<h4 id="案例七-普通索引-----等值问题">案例七： 普通索引 - - 等值问题</h4>
+<p>上面的数据增加一行（30,10,30），这样在数据库中存在的c=10的就有两条记录</p>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1ymgn6pa7j20hz03xjrh.jpg" alt="">
+
+</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+<th>事务C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->delete from t where c = 10</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>insert into values(12,12,12)   
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bblocked%7D" alt="\color{red}{blocked}">
+
+</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>-</td>
+<td>-</td>
+<td>update t set d = d+ 1 where c = 15 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bok%7D" alt="\color{red}{ok}">
+
+</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>next-key lock 增加范围锁（5,10]，（10，15]</li>
+<li>因为是等值查询故退化为（5,10]，（10，15），故事务B阻塞，事务C执行成功
+加锁的范围如下图</li>
+</ol>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1ymh5eay4j20hu04zglr.jpg" alt="">
+
+</p>
+<h4 id="案例八-普通索引-----等值limit问题">案例八： 普通索引 - - 等值Limit问题</h4>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>事务A</th>
+<th>事务B</th>
+<th>事务C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin; <!-- raw HTML omitted -->delete from t where c = 10  limit 2</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>insert into values(12,12,12)   
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7BOK%7D" alt="\color{red}{OK}">
+
+</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>-</td>
+<td>-</td>
+<td>update t set d = d+ 1 where c = 15 
+  <img src="https://math.jianshu.com/math?formula=%5Ccolor%7Bred%7D%7Bok%7D" alt="\color{red}{ok}">
+
+</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>根据上面案例8改造，将delete增加limit操作2的操作</li>
+<li>因为知道了数据加锁值加2条，故在加锁（5，10]之后发现已经有两条数据，故后面不在向后匹配加锁。所以事务B执行成功，加锁范围如下</li>
+</ol>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1ylqhjhibj20hy03z0sx.jpg" alt="">
+
+</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/go-cobra/" data-toggle="tooltip" data-placement="top" title="Cobra - 一个 Golang 命令行项目生成工具">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/api-idempotent/" data-toggle="tooltip" data-placement="top" title="接口幂等性设计">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

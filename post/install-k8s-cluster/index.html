@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="kubeadm 安装 k8s" />
+    <meta property="og:title" content="kubeadm 安装 k8s" />
+    <meta property="twitter:title" content="kubeadm 安装 k8s" />
+    
+
+    
+    <meta name="description" content="安装 k8s，记录下来，备忘">
+    <meta property="og:description" content="安装 k8s，记录下来，备忘" />
+    <meta property="twitter:description" content="安装 k8s，记录下来，备忘" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>kubeadm 安装 k8s-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/install-k8s-cluster/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                    </div>
+                    <h1>kubeadm 安装 k8s</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Tuesday, November 16, 2021
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h3 id="1-环境初始化">1. 环境初始化</h3>
+<p>文章转自 <a href="https://blog.csdn.net/zxycyj1989/article/details/117172414">CSDN博主「初码诛仙」 </a>，按照步骤搭建成功，记录下来，备忘</p>
+<h4 id="11-安装并配置-docker">1.1 安装并配置 Docker</h4>
+<h5 id="111-安装-docker">1.1.1 安装 Docker</h5>
+<p>安装 Docker 参考 <a href="/post/centos7-install-docker/">Docker安装</a></p>
+<h5 id="112-配置-cgroup-driver">1.1.2 配置 cgroup driver</h5>
+<p>编辑 /etc/docker/daemon.json 文件，没有则创建，添加如下内容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#ff79c6">&#34;exec-opts&#34;</span>: [<span style="color:#f1fa8c">&#34;native.cgroupdriver=systemd&#34;</span>]
+}
+</code></pre></div><h5 id="113-配置国内-registry">1.1.3 配置国内 registry</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#ff79c6">&#34;exec-opts&#34;</span>: [<span style="color:#f1fa8c">&#34;native.cgroupdriver=systemd&#34;</span>],
+  <span style="color:#ff79c6">&#34;registry-mirrors&#34;</span>:[<span style="color:#f1fa8c">&#34;https://hub-mirror.c.163.com&#34;</span>]
+}
+</code></pre></div><h5 id="114-检查-cgroup-driver">1.1.4 检查 cgroup driver</h5>
+<p>启动或重启 docker</p>
+<p>启动 docker：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl start docker
+</code></pre></div><p>重启 docker：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl restart docker
+</code></pre></div><p>检查 cgroup driver</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker info |grep Cgroup
+</code></pre></div><p>输出：</p>
+<blockquote>
+<p>​    Cgroup Driver: systemd</p>
+</blockquote>
+<h4 id="12-初始化主机名和-hosts">1.2 初始化主机名和 hosts</h4>
+<p>3 台 CentOS 7 机器，如下</p>
+<table>
+<thead>
+<tr>
+<th>ip</th>
+<th>Hostname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.10.16</td>
+<td>kubeadm1</td>
+</tr>
+<tr>
+<td>192.168.10.17</td>
+<td>kubenode1</td>
+</tr>
+<tr>
+<td>192.168.10.18</td>
+<td>kubenode2</td>
+</tr>
+</tbody>
+</table>
+<h5 id="121-设置主机名">1.2.1 设置主机名</h5>
+<p>主节点设置主机名，父节点同理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">hostnamectl set-hostname kubeadm1
+</code></pre></div><h5 id="122-配置-hosts">1.2.2 配置 hosts</h5>
+<p>编辑 /etc/hosts 文件，追加如下信息（3 台机器都要做）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">192.168.10.16 kubeadm1
+192.168.10.17 kubenode1
+192.168.10.18 kubenode2
+</code></pre></div><p>不配置 hosts 可能会报以下错误：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#ff79c6">[</span>WARNING Hostname<span style="color:#ff79c6">]</span>: hostname <span style="color:#f1fa8c">&#34;xxxx&#34;</span> could not be reached
+<span style="color:#ff79c6">[</span>WARNING Hostname<span style="color:#ff79c6">]</span>: hostname <span style="color:#f1fa8c">&#34;xxxx&#34;</span>: lookup xxx on 114.114.114.114:53: no such host
+</code></pre></div><h3 id="2-安装配置-master-节点">2. 安装配置 master 节点</h3>
+<h4 id="21-安装-kubeadm">2.1 安装 kubeadm</h4>
+<h5 id="211-配置-yum-源">2.1.1 配置 yum 源</h5>
+<p>在 /etc/yum.repos.d 目录下，创建 kubernetes.repo 文件，添加如下内容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#ff79c6">[</span>kubernetes<span style="color:#ff79c6">]</span>
+<span style="color:#8be9fd;font-style:italic">name</span><span style="color:#ff79c6">=</span>kubernetes
+<span style="color:#8be9fd;font-style:italic">baseurl</span><span style="color:#ff79c6">=</span>https://mirrors.tuna.tsinghua.edu.cn/kubernetes/yum/repos/kubernetes-el7-<span style="color:#8be9fd;font-style:italic">$basearch</span>
+<span style="color:#8be9fd;font-style:italic">enabled</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>
+<span style="color:#8be9fd;font-style:italic">gpgcheck</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">0</span>
+</code></pre></div><p>重建缓存：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum clean all
+yum makecache
+</code></pre></div><h5 id="212-安装-kubeadm">2.1.2 安装 kubeadm</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum -y install kubelet kebeadm kubectl
+</code></pre></div><blockquote>
+<p>注：这里没有指定版本，安装后默认为最新版本。在配置 kubeadm config 的时候，我们会指定 kubernetesVersion 的版本。如果指定的版本和这里安装的版本不一致，会出现如下报错：</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">error execution phase preflight: <span style="color:#ff79c6">[</span>preflight<span style="color:#ff79c6">]</span> Some fatal errors occurred:
+	<span style="color:#ff79c6">[</span>ERROR KubeletVersion<span style="color:#ff79c6">]</span>: the kubelet version is higher than the control plane version. This is not a supported version skew and may lead to a malfunctional cluster. Kubelet version: <span style="color:#f1fa8c">&#34;1.21.0&#34;</span> Control plane version: <span style="color:#f1fa8c">&#34;1.20.5&#34;</span>
+<span style="color:#ff79c6">[</span>preflight<span style="color:#ff79c6">]</span> If you know what you are doing, you can make a check non-fatal with <span style="color:#f1fa8c">`</span>--ignore-preflight-errors<span style="color:#ff79c6">=</span>...<span style="color:#f1fa8c">`</span>
+To see the stack trace of this error execute with --v<span style="color:#ff79c6">=</span><span style="color:#bd93f9">5</span> or higher
+</code></pre></div><blockquote>
+<p>所以，建议安装 kubelet、kubeadm 和 kubectl 的时候，可以通过如下方式指定版本：</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum -y install kubelet-1.20.5 kubeadm-1.20.5 kubectl-1.20.5
+</code></pre></div><blockquote>
+<p>k8s 版本要和 docker 版本匹配，具体匹配关系可以参考</p>
+<p><a href="https://www.cnblogs.com/sylvia-liu/p/14884920.html">https://www.cnblogs.com/sylvia-liu/p/14884920.html</a></p>
+<p><a href="https://blog.csdn.net/cd_yourheart/article/details/107559295">https://blog.csdn.net/cd_yourheart/article/details/107559295</a></p>
+<p>我用的 Docker 版本：19.03.9</p>
+<p>K8s 版本：1.20.5</p>
+</blockquote>
+<p>安装完成以后，由于集群还没有建立，所以目前还无法启动 kubelet 服务。我们可以把 kubelet 服务暂时加入开机启动：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl <span style="color:#8be9fd;font-style:italic">enable</span> kubelet
+</code></pre></div><h4 id="22-配置-kubeadm-config">2.2 配置 kubeadm config</h4>
+<p>kubeadm config 有如下 2 种配置方式：</p>
+<ul>
+<li>配置文件方式</li>
+<li>命令行传参</li>
+</ul>
+<h5 id="221-配置文件方式">2.2.1 配置文件方式</h5>
+<p>可以通过如下方式，获取默认配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubeadm config print init-defaults &gt; init.yaml
+</code></pre></div><p>会在当前目录下生成 init.yaml 文件，主要关注以下内容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">localAPIEndpoint:
+  advertiseAddress: 1.2.3.4
+nodeRegistration:
+  criSocket: /var/run/dockershim.sock
+  imagePullPolicy: IfNotPresent
+  name: node
+apiVersion: kubeadm.k8s.io/v1beta2
+imageRepository: k8s.gcr.io
+kind: ClusterConfiguration
+kubernetesVersion: v1.20.5
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: 10.96.0.0/12
+</code></pre></div><p>从默认配置中，我们可以看到</p>
+<ul>
+<li>advertiseAddress 改为 master ip 地址</li>
+<li>name 改为 master hostname</li>
+<li>imageRepository 使用的是 k8s.gcr.io，我们建议改成国内的镜像站</li>
+<li>kubernetesVersion 使用的是 v1.20.5，我们可以改成自己想要的版本</li>
+<li>networking 中只有 serviceSubnet，可能我们还关心 pod 的网络，pod 网络可以使用 podSubnet 指定</li>
+</ul>
+<p>使用如下配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">localAPIEndpoint:
+  advertiseAddress: 192.168.10.16
+nodeRegistration:
+  criSocket: /var/run/dockershim.sock
+  imagePullPolicy: IfNotPresent
+  name: kubeadm1
+apiVersion: kubeadm.k8s.io/v1beta2
+imageRepository: registry.aliyuncs.com/google_containers
+kind: ClusterConfiguration
+kubernetesVersion: v1.20.5
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: 10.96.0.0/12
+  podSubnet: 10.244.0.0/16
+</code></pre></div><h4 id="222-命令参数方式">2.2.2 命令参数方式</h4>
+<p>对应到 config 方式，有如下几个参数与之对应：</p>
+<blockquote>
+<p>&ndash;kubernetes-version：指定Kubernetes版本
+&ndash;image-repository：由于kubeadm默认是从官网 k8s.grc.io 下载所需镜像，国内无法访问，所以这里通过 &ndash;image-repository 指定为 163 镜像站
+&ndash;pod-network-cidr：指定pod网络段
+&ndash;service-cidr：指定service网络段
+&ndash;ignore-preflight-errors=Swap 将报错信息设置为Swap。当然，如果你环境配置得当，不需要它</p>
+</blockquote>
+<p>命令行参数的方式，需要在下一步kubeadm init的时候一起执行</p>
+<h4 id="23-拉取镜像">2.3 拉取镜像</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubeadm config images pull --config<span style="color:#ff79c6">=</span>init.yaml
+</code></pre></div><p>结果如下：</p>
+<blockquote>
+<p>[config/images] Pulled registry.aliyuncs.com/google_containers/kube-apiserver:v1.20.5
+[config/images] Pulled registry.aliyuncs.com/google_containers/kube-controller-manager:v1.20.5
+[config/images] Pulled registry.aliyuncs.com/google_containers/kube-scheduler:v1.20.5
+[config/images] Pulled registry.aliyuncs.com/google_containers/kube-proxy:v1.20.5
+[config/images] Pulled registry.aliyuncs.com/google_containers/pause:3.2
+[config/images] Pulled registry.aliyuncs.com/google_containers/etcd:3.4.13-0
+[config/images] Pulled registry.aliyuncs.com/google_containers/coredns:1.7.0</p>
+</blockquote>
+<h4 id="24-初始化-master">2.4 初始化 master</h4>
+<h5 id="241-使用配置文件方式">2.4.1 使用配置文件方式</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubeadm init --config<span style="color:#ff79c6">=</span>init.yaml
+</code></pre></div><h5 id="242-使用命令行参数方式">2.4.2 使用命令行参数方式</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubeadm init --kubernetes-version<span style="color:#ff79c6">=</span>v1.20.5 <span style="color:#f1fa8c">\
+</span><span style="color:#f1fa8c"></span>             --image-repository<span style="color:#ff79c6">=</span>registry.aliyuncs.com/google_containers <span style="color:#f1fa8c">\
+</span><span style="color:#f1fa8c"></span>             --pod-network-cidr<span style="color:#ff79c6">=</span>192.128.0.0/24 <span style="color:#f1fa8c">\
+</span><span style="color:#f1fa8c"></span>             --service-cidr<span style="color:#ff79c6">=</span>10.96.0.0/12 <span style="color:#f1fa8c">\
+</span><span style="color:#f1fa8c"></span>            <span style="color:#6272a4">#--ignore-preflight-errors=Swap</span>
+</code></pre></div><p>结果如下：</p>
+<blockquote>
+<p>init] Using Kubernetes version: v1.20.5
+[preflight] Running pre-flight checks
+[preflight] Pulling images required for setting up a Kubernetes cluster[certs]
+&hellip;&hellip;
+Your Kubernetes control-plane has initialized successfully!</p>
+<p>To start using your cluster, you need to run the following as a regular user:</p>
+<p>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config</p>
+<p>Alternatively, if you are the root user, you can run:</p>
+<p>export KUBECONFIG=/etc/kubernetes/admin.conf</p>
+<p>You should now deploy a pod network to the cluster.
+Run &ldquo;kubectl apply -f [podnetwork].yaml&rdquo; with one of the options listed at:
+<a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">https://kubernetes.io/docs/concepts/cluster-administration/addons/</a></p>
+<p>Then you can join any number of worker nodes by running the following on each as root:</p>
+<p>kubeadm join 172.24.14.91:6443 &ndash;token yvhauq.sxcuhh300d5vpvhy<br>
+&ndash;discovery-token-ca-cert-hash sha256:439f9df853943ead685dc63d8af0d04c32e7b9b8dc4e148e0fb41dab33997c11</p>
+</blockquote>
+<p>出现上述信息，表示初始化完成，从上述提示中我们可以获得一下信息：</p>
+<ul>
+<li>initialize successfully 说明已经初始化完</li>
+<li>集群能被正常用户正常使用，还需要执行提示中所说的内容。</li>
+<li>kubectl apply -f 可以让我们初始化网插件。支持网络插件可以在给出的 url 里查到</li>
+<li>最后一段包含了后面我们需要使用 kubeadm join 命令将来 node 加入到集群所需要 token 等信息</li>
+</ul>
+<p>但我第一次弄的时候没有这么顺利，出现了如下问题：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#ff79c6">[</span>wait-control-plane<span style="color:#ff79c6">]</span> Waiting <span style="color:#ff79c6">for</span> the kubelet to boot up the control plane as static Pods from directory <span style="color:#f1fa8c">&#34;/etc/kubernetes/manifests&#34;</span>. This can take up to 4m0s
+<span style="color:#ff79c6">[</span>kubelet-check<span style="color:#ff79c6">]</span> Initial timeout of 40s passed.
+
+	Unfortunately, an error has occurred:
+		timed out waiting <span style="color:#ff79c6">for</span> the condition
+
+	This error is likely caused by:
+		- The kubelet is not running
+		- The kubelet is unhealthy due to a misconfiguration of the node in some way <span style="color:#ff79c6">(</span>required cgroups disabled<span style="color:#ff79c6">)</span>
+
+	If you are on a systemd-powered system, you can try to troubleshoot the error with the following commands:
+		- <span style="color:#f1fa8c">&#39;systemctl status kubelet&#39;</span>
+		- <span style="color:#f1fa8c">&#39;journalctl -xeu kubelet&#39;</span>
+
+	Additionally, a control plane component may have crashed or exited when started by the container runtime.
+	To troubleshoot, list all containers using your preferred container runtimes CLI.
+
+	Here is one example how you may list all Kubernetes containers running in docker:
+		- <span style="color:#f1fa8c">&#39;docker ps -a | grep kube | grep -v pause&#39;</span>
+		Once you have found the failing container, you can inspect its logs with:
+		- <span style="color:#f1fa8c">&#39;docker logs CONTAINERID&#39;</span>
+
+error execution phase wait-control-plane: couldn&#39;t initialize a Kubernetes cluster
+To see the stack trace of this error execute with --v<span style="color:#ff79c6">=</span><span style="color:#bd93f9">5</span> or higher
+</code></pre></div><p>解决方案参考 <a href="https://blog.csdn.net/weixin_44789466/article/details/119046245">这里</a>，配置文件中，<code>advertiseAddress</code> 一定要设置为 master 节点的 IP，否则可能出现上述问题。</p>
+<h5 id="243-配置用户环境">2.4.3 配置用户环境</h5>
+<p>以root用户为例，我们在/root/目录下执行如下命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4">#root用户的 $HOME 变量为 /root</span>
+mkdir -p <span style="color:#8be9fd;font-style:italic">$HOME</span>/.kube
+cp -i /etc/kubernetes/admin.conf <span style="color:#8be9fd;font-style:italic">$HOME</span>/.kube/config
+chown <span style="color:#ff79c6">$(</span>id -u<span style="color:#ff79c6">)</span>:<span style="color:#ff79c6">$(</span>id -g<span style="color:#ff79c6">)</span> <span style="color:#8be9fd;font-style:italic">$HOME</span>/.kube/config
+</code></pre></div><p>这个时候，我们使用如下命令，查看一下集群节点：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl get nodes
+</code></pre></div><p>结果如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">NAME         STATUS     ROLES                  AGE     VERSION
+kubeadmcli   NotReady   control-plane,master   3m30s   v1.20.5
+</code></pre></div><p>从输出中，我们可以发现，STATUS 还处于 [NotReady] 的状态，这是因为我们还没有初始化网络插件。</p>
+<h4 id="25-初始网络插件">2.5 初始网络插件</h4>
+<p>从安装成功的提示文本中，我们可以看到，支持的网络插件都位于：</p>
+<blockquote>
+<p><a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/">https://kubernetes.io/docs/concepts/cluster-administration/addons/</a></p>
+</blockquote>
+<p>打开以后，我们选择 <code>flannel</code>，会跳转到 <code>flanne</code> 项目的 <code>github</code> 地址。我们选择进入到 <code>flannel</code> 项目的主目录，里面有 <code>flannel</code> 插件的使用方式。从说明中，我们可以看到 <strong>大于1.17</strong> 版本的k8s，使用如下<code>yml</code>文件：</p>
+<blockquote>
+<p>kubectl apply -f <a href="https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml">https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml</a></p>
+</blockquote>
+<blockquote>
+<p>注：如果网络不好，可以使用 wget 或者 curl 先把 yaml 文件下载下来，放到本地执行</p>
+</blockquote>
+<p>将 yml 文件保存到本地，名为 flannel.yaml。执行如下命令初始化flannel：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl apply -f flannel.yaml
+</code></pre></div><p>输出如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">podsecuritypolicy.policy/psp.flannel.unprivileged created
+clusterrole.rbac.authorization.k8s.io/flannel created
+clusterrolebinding.rbac.authorization.k8s.io/flannel created
+serviceaccount/flannel created
+configmap/kube-flannel-cfg created
+daemonset.apps/kube-flannel-ds created
+</code></pre></div><p>完成以后，本地镜像会多出 flannel 的镜像：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#ff79c6">[</span>root@master ~<span style="color:#ff79c6">]</span><span style="color:#6272a4"># docker images</span>
+REPOSITORY                                                        TAG                 IMAGE ID            CREATED             SIZE
+...
+quay.io/coreos/flannel                                            v0.13.1-rc2         dee1cac4dd20        <span style="color:#bd93f9">2</span> months ago        64.3MB
+...
+</code></pre></div><h3 id="3-初始化-node">3. 初始化 node</h3>
+<h4 id="31-安装-kubeletkubectl-和kubeadm">3.1 安装 kubelet、kubectl 和kubeadm</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum -y install kubelet-1.20.5 kubeadm-1.20.5 kubectl-1.20.5
+</code></pre></div><h4 id="32-初始化-node">3.2 初始化 node</h4>
+<h5 id="321-命令行方式">3.2.1 命令行方式</h5>
+<p>初始化master节点的时候，从输出信息中，已经给出了初始化node节点的方式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">kubeadm join 172.24.15.212:6443 --token yvhauq.sxcuhh300d5vpvhy <span style="color:#f1fa8c">\
+</span><span style="color:#f1fa8c"></span>    --discovery-token-ca-cert-hash sha256:439f9df853943ead685dc63d8af0d04c32e7b9b8dc4e148e0fb41dab33997c11
+
+</code></pre></div><h5 id="322-配置文件方式">3.2.2 配置文件方式</h5>
+<p>同样，我们可以通过 <code>kubeadm config print</code> 命令输出 <code>init node</code> 节点的默认配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">kubeadm config print join-defaults
+</code></pre></div><p>输出如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apiVersion: kubeadm.k8s.io/v1beta2
+caCertPath: /etc/kubernetes/pki/ca.crt
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: kube-apiserver:6443
+    token: abcdef.0123456789abcdef
+    unsafeSkipCAVerification: <span style="color:#8be9fd;font-style:italic">true</span>
+  timeout: 5m0s
+  tlsBootstrapToken: abcdef.0123456789abcdef
+kind: JoinConfiguration
+nodeRegistration:
+  criSocket: /var/run/dockershim.sock
+  name: kubeadmclinode02
+  taints: null
+</code></pre></div><p>我们主要关注如下几项，并将apiServerEndpoint、token、tlsBootstrapToken改成master节点信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apiVersion: kubeadm.k8s.io/v1beta2
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: 172.24.14.91:6443
+    token: yvhauq.sxcuhh300d5vpvhy
+    unsafeSkipCAVerification: <span style="color:#8be9fd;font-style:italic">true</span>
+  tlsBootstrapToken: yvhauq.sxcuhh300d5vpvhy
+kind: JoinConfiguration
+</code></pre></div><p>将上述内容保存为init_node.yaml.然后使用如下命令初始化节点：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">kubeadm join --config<span style="color:#ff79c6">=</span>init_node.yaml
+</code></pre></div><p>上面两种方法都出现如下输出的时候，说明正确了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">This node has joined the cluster:
+
+- Certificate signing request was sent to apiserver and a response was received.
+- The Kubelet was informed of the new secure connection details.
+
+Run <span style="color:#f1fa8c">&#39;kubectl get nodes&#39;</span> on the control-plane to see this node join the cluster.
+</code></pre></div><p>此时 node 上的 kubelet 也将正常运行。可能这时候你在 master 上执行 [kubelet get nodes] 的时候，该 node 还处于 NotReady 的状态，别着急，一会就回刷新过来。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/docker-install-centos7/" data-toggle="tooltip" data-placement="top" title="Centos7 安装 Docker">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/mac-install-charles/" data-toggle="tooltip" data-placement="top" title="Mac安装破解版 Charles">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

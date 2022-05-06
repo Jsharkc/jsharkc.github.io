@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Mysql on Jacobc&#39;s blog</title>
+    <title>mysql on Jacobc&#39; Blog</title>
     <link>https://jsharkc.github.io/tags/mysql/</link>
-    <description>Recent content in Mysql on Jacobc&#39;s blog</description>
-    <image>
-      <url>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
-    </image>
+    <description>Recent content in mysql on Jacobc&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 30 Oct 2019 14:50:32 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 10 Nov 2020 14:50:32 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mysql update 结合另一个表更新数据</title>
       <link>https://jsharkc.github.io/post/mysql-update-%E7%BB%93%E5%90%88%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE/</link>
-      <pubDate>Wed, 30 Oct 2019 14:50:32 +0000</pubDate>
+      <pubDate>Tue, 10 Nov 2020 14:50:32 +0000</pubDate>
       
       <guid>https://jsharkc.github.io/post/mysql-update-%E7%BB%93%E5%90%88%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A8%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE/</guid>
-      <description>有时 update 更新语句会需要根据另一个表进行更新，举例如下：
--- 方式一： update tableA a, tableB b set a.Name=b.Name, a.Age=b.Age where a.IDCard=b.IDCard; -- 方式二: update tableA a inner join tableB b on a.IDCard=b.IDCard set a.Name=b.Name, a.Age=b.Age; </description>
+      <description>有时 update 更新语句会需要根据另一个表进行更新，举例如下： -- 方式一： update tableA a, tableB b set a.Name=b.Name, a.Age=b.Age where a.IDCard=b.IDCard; -- 方式二: update tableA a inner join tableB b on a.IDCard=b.IDCard set a.Name=b.Name, a.Age=b.Age;</description>
+    </item>
+    
+    <item>
+      <title>MySQL 四种隔离级别 &amp; 间隙锁</title>
+      <link>https://jsharkc.github.io/post/mysql-isolation/</link>
+      <pubDate>Wed, 19 Aug 2020 21:32:46 +0800</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/mysql-isolation/</guid>
+      <description>一、事务的四个特征（ACID） 事务具有四个特征：原子性（ Atomicity ）、一致性（ Consistency ）、隔离性（ Isolation ）和持续性（ Durability ）。这四个特性简称为 ACID 特性。 1. 原子性 (Atomicity) 事</description>
     </item>
     
   </channel>

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="Golang slice 切片原理" />
+    <meta property="og:title" content="Golang slice 切片原理" />
+    <meta property="twitter:title" content="Golang slice 切片原理" />
+    
+
+    
+    <meta name="description" content="Golang slice 切片原理解析">
+    <meta property="og:description" content="Golang slice 切片原理解析" />
+    <meta property="twitter:description" content="Golang slice 切片原理解析" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Golang slice 切片原理-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/go-slice/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/golang" title="Golang">
+                            Golang
+                        </a>
+                        
+                    </div>
+                    <h1>Golang slice 切片原理</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Tuesday, March 10, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="golang-slice-切片原理">Golang slice 切片原理</h1>
+<p>​	golang 中的 slice 是比较好用的一种结构，能根据需求变长，相对于 array 的死板，slice 更加灵活也更加常用，有道说：知其然，知其所以然。现在，我们就看看 slice 到底是怎样一种结构。</p>
+<h3 id="slice源码">slice源码</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> slice <span style="color:#8be9fd;font-style:italic">struct</span> {
+    array unsafe.Pointer
+    len   <span style="color:#8be9fd">int</span>
+    cap   <span style="color:#8be9fd">int</span>
+}
+</code></pre></div><p>​	根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。</p>
+<p>​	有同学可能不知道 <code>unsafe.Pointer</code>是什么，那么我们一并在这讲解一下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">package</span> unsafe
+
+<span style="color:#8be9fd;font-style:italic">type</span> ArbitraryType <span style="color:#8be9fd">int</span>
+
+<span style="color:#6272a4">//	- A pointer value of any type can be converted to a Pointer.
+</span><span style="color:#6272a4">//	- A Pointer can be converted to a pointer value of any type.
+</span><span style="color:#6272a4">//	- A uintptr can be converted to a Pointer.
+</span><span style="color:#6272a4">//	- A Pointer can be converted to a uintptr.
+</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">type</span> Pointer <span style="color:#ff79c6">*</span>ArbitraryType
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Sizeof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Offsetof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Alignof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
+</code></pre></div><p><code>unsafe.Pointer</code>：一个指向 <code>int</code>类型的指针，通常用于转换不同类型的指针，go 语言中指针不能运算。</p>
+<p><code>uintptr</code>：内置类型，能存储指针的整型，底层类型是<code>int</code>，可以和<code>unsafe.Pointer</code>互相转换，因为就</p>
+<p>​		是 <code>int</code>型，所以可以用来做运算，GC 不会把它当指针，所以不持有对象，会被回收。</p>
+<p>上面的四句注释是什么意思呢，解释一下就是：</p>
+<ol>
+<li>任何类型的指针可转换成一个 Pointer 类型的值。</li>
+<li>Pointer 类型可以转换成任何类型的指针。</li>
+<li>uintptr 类型可转换成 Pointer 类型。</li>
+<li>Pointer 类型可以转换成 uintptr 类型。</li>
+</ol>
+<p>同学们有没有想到一些什么？就是说，go 语言中虽然没有指针运算，但是通过 unsafe 包，可以把指针转换成</p>
+<p>unsafe.Pointer，再转换成 uintptr，之后就能和 C 语言指针运算类似的功能了。举个例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">package</span> main
+
+<span style="color:#ff79c6">import</span> (
+	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
+	<span style="color:#f1fa8c">&#34;unsafe&#34;</span>
+)
+
+<span style="color:#8be9fd;font-style:italic">type</span> Entity <span style="color:#8be9fd;font-style:italic">struct</span> {
+	a	<span style="color:#8be9fd">byte</span>
+	b	<span style="color:#8be9fd">byte</span>
+}
+
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+  	entity <span style="color:#ff79c6">:=</span> Entity{}
+  	fmt.<span style="color:#50fa7b">Println</span>(entity)	
+
+	p <span style="color:#ff79c6">:=</span> unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>entity)	<span style="color:#6272a4">// 转换成通用指针 unsafe.Pointer 类型
+</span><span style="color:#6272a4"></span>	uintpa <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(p)			<span style="color:#6272a4">// 保存结构体 entity 实例地址，偏移量为0
+</span><span style="color:#6272a4"></span>	pb <span style="color:#ff79c6">:=</span> (<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(p)				<span style="color:#6272a4">// 将通用指针转换为 byte 型指针
+</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">*</span>pb = <span style="color:#bd93f9">10</span>						<span style="color:#6272a4">// 给转换后的指针赋值
+</span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(entity)				<span style="color:#6272a4">// 结构体内容跟着改变
+</span><span style="color:#6272a4"></span>
+	uintpb <span style="color:#ff79c6">:=</span> uintpa <span style="color:#ff79c6">+</span> unsafe.<span style="color:#50fa7b">Offsetof</span>(entity.b)	<span style="color:#6272a4">// 偏移到 entity.b 字段开始的位置
+</span><span style="color:#6272a4"></span>	p = unsafe.<span style="color:#50fa7b">Pointer</span>(uintpb)		<span style="color:#6272a4">// 将偏移后的地址转换为通用指针 unsafe.Pointer 类型
+</span><span style="color:#6272a4"></span>	pb = (<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(p)					<span style="color:#6272a4">// 将通用指针转换为 byte 型指针
+</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">*</span>pb = <span style="color:#bd93f9">20</span>						<span style="color:#6272a4">// 给转换后的指针赋值
+</span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(entity)				<span style="color:#6272a4">// 结构体内容跟着改变
+</span><span style="color:#6272a4"></span>}
+
+<span style="color:#6272a4">// 结果：
+</span><span style="color:#6272a4">// {0 0}
+</span><span style="color:#6272a4">// {10 0}
+</span><span style="color:#6272a4">// {10 20}
+</span></code></pre></div><p>好，unsafe.Pointer 就告一段落，继续讲我们的 slice。</p>
+<p>
+  <img src="/img/gallery/slice.png" alt="sliceInstance">
+
+</p>
+<p>​						<strong>[图片取自 the way to go ，侵权请告知，删]</strong></p>
+<h3 id="通过-make-创建切片">通过 make 创建切片</h3>
+<p>make 创建切片的源码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">makeslice</span>(et <span style="color:#ff79c6">*</span>_type, len, cap <span style="color:#8be9fd">int</span>) slice {
+	<span style="color:#6272a4">// 根据类型获取此类型能包含元素的最大长度
+</span><span style="color:#6272a4"></span>	maxElements <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">maxSliceCap</span>(et.size)
+  
+  	<span style="color:#6272a4">// 比较容量和长度 若比零小或比最大值大，越界
+</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">if</span> len &lt; <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(len) &gt; maxElements {
+		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;makeslice: len out of range&#34;</span>))
+	}
+	
+	<span style="color:#ff79c6">if</span> cap &lt; len <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) &gt; maxElements {
+		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;makeslice: cap out of range&#34;</span>))
+	}
+
+	<span style="color:#6272a4">// 向内存申请一块此类型 array 的空间
+</span><span style="color:#6272a4"></span>	p <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">mallocgc</span>(et.size<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">uintptr</span>(cap), et, <span style="color:#ff79c6">true</span>)
+	<span style="color:#6272a4">// 将指针、长度、容量赋值并返回切片结构
+</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">return</span> slice{p, len, cap}
+}
+</code></pre></div><h3 id="切片增长">切片增长</h3>
+<p>通过 append 可以对切片扩容，源码看下面：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">growslice</span>(et <span style="color:#ff79c6">*</span>_type, old slice, cap <span style="color:#8be9fd">int</span>) slice {
+	<span style="color:#ff79c6">if</span> raceenabled {
+		callerpc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">getcallerpc</span>(unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>et))
+		<span style="color:#50fa7b">racereadrangepc</span>(old.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(et.size)), callerpc, <span style="color:#50fa7b">funcPC</span>(growslice))
+	}
+	<span style="color:#ff79c6">if</span> msanenabled {
+		<span style="color:#50fa7b">msanread</span>(old.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(et.size)))
+	}
+
+	<span style="color:#ff79c6">if</span> et.size <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
+		<span style="color:#ff79c6">if</span> cap &lt; old.cap {
+			<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;growslice: cap out of range&#34;</span>))
+		}
+		<span style="color:#6272a4">// 创建一个不为nil的切片
+</span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">return</span> slice{unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>zerobase), old.len, cap}
+	}
+
+	newcap <span style="color:#ff79c6">:=</span> old.cap
+	doublecap <span style="color:#ff79c6">:=</span> newcap <span style="color:#ff79c6">+</span> newcap
+	<span style="color:#ff79c6">if</span> cap &gt; doublecap {
+		newcap = cap
+	} <span style="color:#ff79c6">else</span> {
+		<span style="color:#ff79c6">if</span> old.len &lt; <span style="color:#bd93f9">1024</span> {
+			newcap = doublecap
+		} <span style="color:#ff79c6">else</span> {
+			<span style="color:#ff79c6">for</span> newcap &lt; cap {
+				newcap <span style="color:#ff79c6">+=</span> newcap <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">4</span>
+			}
+		}
+	}
+
+	<span style="color:#8be9fd;font-style:italic">var</span> lenmem, newlenmem, capmem <span style="color:#8be9fd">uintptr</span>
+	<span style="color:#8be9fd;font-style:italic">const</span> ptrSize = unsafe.<span style="color:#50fa7b">Sizeof</span>((<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(<span style="color:#ff79c6">nil</span>))
+	<span style="color:#ff79c6">switch</span> et.size {
+	<span style="color:#ff79c6">case</span> <span style="color:#bd93f9">1</span>:
+		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len)
+		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap)
+		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap))
+		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem)
+	<span style="color:#ff79c6">case</span> ptrSize:
+		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len) <span style="color:#ff79c6">*</span> ptrSize
+		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) <span style="color:#ff79c6">*</span> ptrSize
+		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) <span style="color:#ff79c6">*</span> ptrSize)
+		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem <span style="color:#ff79c6">/</span> ptrSize)
+	<span style="color:#ff79c6">default</span>:
+		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len) <span style="color:#ff79c6">*</span> et.size
+		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) <span style="color:#ff79c6">*</span> et.size
+		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) <span style="color:#ff79c6">*</span> et.size)
+		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem <span style="color:#ff79c6">/</span> et.size)
+	}
+
+	<span style="color:#ff79c6">if</span> cap &lt; old.cap <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) &gt; <span style="color:#50fa7b">maxSliceCap</span>(et.size) {
+		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;growslice: cap out of range&#34;</span>))
+	}
+
+	<span style="color:#8be9fd;font-style:italic">var</span> p unsafe.Pointer
+	<span style="color:#ff79c6">if</span> et.kind<span style="color:#ff79c6">&amp;</span>kindNoPointers <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">0</span> {
+		p = <span style="color:#50fa7b">mallocgc</span>(capmem, <span style="color:#ff79c6">nil</span>, <span style="color:#ff79c6">false</span>)
+		<span style="color:#50fa7b">memmove</span>(p, old.array, lenmem)
+		<span style="color:#50fa7b">memclrNoHeapPointers</span>(<span style="color:#50fa7b">add</span>(p, newlenmem), capmem<span style="color:#ff79c6">-</span>newlenmem)
+	} <span style="color:#ff79c6">else</span> {
+		p = <span style="color:#50fa7b">mallocgc</span>(capmem, et, <span style="color:#ff79c6">true</span>)
+		<span style="color:#ff79c6">if</span> !writeBarrier.enabled {
+			<span style="color:#50fa7b">memmove</span>(p, old.array, lenmem)
+		} <span style="color:#ff79c6">else</span> {
+			<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(<span style="color:#bd93f9">0</span>); i &lt; lenmem; i <span style="color:#ff79c6">+=</span> et.size {
+				<span style="color:#50fa7b">typedmemmove</span>(et, <span style="color:#50fa7b">add</span>(p, i), <span style="color:#50fa7b">add</span>(old.array, i))
+			}
+		}
+	}
+
+	<span style="color:#ff79c6">return</span> slice{p, old.len, newcap}
+}
+</code></pre></div><p>切片在append的时候如果有额外的容量可用，append将可用的元素合并到切片的长度，然后对他进行赋值，如果没有可用的容量，append会创建新的底层数组，将现有的值复制到新的数组里再追加新的值。</p>
+<h3 id="切片复制">切片复制</h3>
+<p>通过 copy 可以复制一个切片，源码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">slicecopy</span>(to, fm slice, width <span style="color:#8be9fd">uintptr</span>) <span style="color:#8be9fd">int</span> {
+	<span style="color:#ff79c6">if</span> fm.len <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">||</span> to.len <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
+		<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>
+	}
+
+	n <span style="color:#ff79c6">:=</span> fm.len
+	<span style="color:#ff79c6">if</span> to.len &lt; n {
+		n = to.len
+	}
+
+	<span style="color:#ff79c6">if</span> width <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
+		<span style="color:#ff79c6">return</span> n
+	}
+
+	<span style="color:#ff79c6">if</span> raceenabled {
+		callerpc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">getcallerpc</span>(unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>to))
+		pc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">funcPC</span>(slicecopy)
+		<span style="color:#50fa7b">racewriterangepc</span>(to.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)), callerpc, pc)
+		<span style="color:#50fa7b">racereadrangepc</span>(fm.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)), callerpc, pc)
+	}
+	<span style="color:#ff79c6">if</span> msanenabled {
+		<span style="color:#50fa7b">msanwrite</span>(to.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)))
+		<span style="color:#50fa7b">msanread</span>(fm.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)))
+	}
+
+	size <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(n) <span style="color:#ff79c6">*</span> width
+	<span style="color:#ff79c6">if</span> size <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span> { 
+		<span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(to.array) = <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(fm.array) <span style="color:#6272a4">// known to be a byte pointer
+</span><span style="color:#6272a4"></span>	} <span style="color:#ff79c6">else</span> {
+		<span style="color:#50fa7b">memmove</span>(to.array, fm.array, size)
+	}
+	<span style="color:#ff79c6">return</span> n
+}
+</code></pre></div><p>copy切片会把源切片值(第二个参数值)中的元素复制到目标切片(第一个参数值)中，并返回被复制的元素个数，copy 的两个类型必须一致，并且实际复制的数量等于实际较短切片长度。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/jobrunner/" data-toggle="tooltip" data-placement="top" title="Jobrunner 源码解析">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/go-interface/" data-toggle="tooltip" data-placement="top" title="Golang Interface 解析">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

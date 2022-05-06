@@ -1,145 +1,236 @@
-<!doctype html><html lang=en dir=auto>
-<head><meta charset=utf-8>
-<meta http-equiv=x-ua-compatible content="IE=edge">
-<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-<meta name=robots content="index, follow">
-<title>Android手机作为linux服务器 | Jacobc's blog</title>
-<meta name=keywords content="Termux,ssh,Android,linux,服务器">
-<meta name=description content="有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。
-下载 Termux Termux 下载地址
-下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
-配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
-apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
-whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
-ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.">
-<meta name=author content="Jsharkc">
-<link rel=canonical href=https://jsharkc.github.io/post/android-phone-as-linux-server/>
-<meta name=google-site-verification content="XYZabc">
-<meta name=yandex-verification content="XYZabc">
-<meta name=msvalidate.01 content="XYZabc">
-<link crossorigin=anonymous href=/assets/css/stylesheet.min.5e2b4101351c21e906f398ae96901791830f58d430f96f2659dab7eaef7b3cb7.css integrity="sha256-XitBATUcIekG85iulpAXkYMPWNQw+W8mWdq36u97PLc=" rel="preload stylesheet" as=style>
-<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
-<link rel=icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=icon type=image/png sizes=16x16 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=icon type=image/png sizes=32x32 href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=apple-touch-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<link rel=mask-icon href=https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E>
-<meta name=theme-color content="#2e2e33">
-<meta name=msapplication-TileColor content="#2e2e33">
-<meta name=generator content="Hugo 0.86.1">
-<noscript>
-<style>#theme-toggle,.top-link{display:none}</style>
-</noscript><meta property="og:title" content="Android手机作为linux服务器">
-<meta property="og:description" content="有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。
-下载 Termux Termux 下载地址
-下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
-配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
-apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
-whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
-ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://jsharkc.github.io/post/android-phone-as-linux-server/"><meta property="og:image" content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="post">
-<meta property="article:published_time" content="2019-11-16T12:59:00+00:00">
-<meta property="article:modified_time" content="2019-11-16T12:59:00+00:00"><meta property="og:site_name" content="Jacobc'S BLOG">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:image content="https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E">
-<meta name=twitter:title content="Android手机作为linux服务器">
-<meta name=twitter:description content="有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。
-下载 Termux Termux 下载地址
-下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。
-配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块
-apt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码
-whoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录
-ssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.">
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://jsharkc.github.io/post/"},{"@type":"ListItem","position":2,"name":"Android手机作为linux服务器","item":"https://jsharkc.github.io/post/android-phone-as-linux-server/"}]}</script>
-<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Android手机作为linux服务器","name":"Android手机作为linux服务器","description":"有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。\n下载 Termux Termux 下载地址\n下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。\n配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块\napt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码\nwhoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录\nssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.","keywords":["Termux","ssh","Android","linux","服务器"],"articleBody":"有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。\n下载 Termux Termux 下载地址\n下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。\n配置 Termux Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块\napt update apt upgrade apt install openssh pkg install termux-auth 查看用户名，ip，设置密码\nwhoami # 结果为：u0_a150，你的可能不一样，用自己的 ifconfig # 找到 inet addr，我的是 192.168.0.104，也是用你自己的 passwd # 这个是设置密码 sshd -p 9999 # 让 ssh 监听 9999 端口 设置好后，用电脑登录\nssh u0_a150@192.168.0.104 -p 9999 # 回车，输入密码就行了 之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 termux-setup-storage 插件把手机目录挂载到 /data/data/com.termux/files/home/storage/shared目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：\ntermux-setup-storage 当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了\n利用 frp 内网穿透 安装 Golang\npkg install golang frp 下载地址\nAndroid 下载以arm结尾的，服务器端根据自己的服务器选。\n写个 Hello world http 服务\npackage main import ( \"fmt\" \"net/http\" ) func main() { http.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) { fmt.Fprintf(w, \"Hello World\") }) http.ListenAndServe(\":8085\", nil) } 配置 frp 服务端 # frps.ini [common] bind_port = 7001 # frp 服务绑定的端口 vhost_http_port = 8082 # 外网可访问的 web 服务端口 配置 frp 客户端 # frpc.ini [common] server_addr = xx.xx.xx.xx # 你的服务器地址 server_port = 7001 # 服务器绑定的端口，与服务端配置 bind_port 一致 [ssh] type = tcp local_ip = 127.0.0.1 local_port = 9999 # 本地 ssh 监听端口 remote_port = 6000 # 远程连接用的端口 [web] type = http local_port = 8085 # 本地 web 服务监听端口 custom_domains = xx.xx.xx # 服务器域名，有域名写域名，没域名写 ip 运行 frp 服务端\n./frps -c ./frps.ini 客户端\n./frpc -c ./frpc.ini 测试\ncurl http://xx.xx.xx:8082 # 可以看到 Hello world ssh 连接 ssh u0_a150@xx.xx.xx.xx -oPort=6000 格式：ssh [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]\n安装发行版 linux 可以再 Termux 上安装发行版 linux，包括 fedora、debian、alpine、aosc、arch、ubuntu、centos。\n安装 atilo echo \"deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras\"  $PREFIX/etc/apt/sources.list pkg in atilo-cn 安装系统 atilo install centos 删除系统 atilo remove centos ","wordCount":"249","inLanguage":"en","datePublished":"2019-11-16T12:59:00Z","dateModified":"2019-11-16T12:59:00Z","author":{"@type":"Person","name":"Jsharkc"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://jsharkc.github.io/post/android-phone-as-linux-server/"},"publisher":{"@type":"Organization","name":"Jacobc's blog","logo":{"@type":"ImageObject","url":"https://jsharkc.github.io/%3Clink%20/%20abs%20url%3E"}}}</script>
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="Android手机作为linux服务器" />
+    <meta property="og:title" content="Android手机作为linux服务器" />
+    <meta property="twitter:title" content="Android手机作为linux服务器" />
+    
+
+    
+    <meta name="description" content="Android手机作为linux服务器简易教程">
+    <meta property="og:description" content="Android手机作为linux服务器简易教程" />
+    <meta property="twitter:description" content="Android手机作为linux服务器简易教程" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Android手机作为linux服务器-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/android-phone-as-linux-server/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
 </head>
-<body class=dark id=top>
-<script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove('dark')</script>
-<header class=header>
-<nav class=nav>
-<div class=logo>
-<a href=https://jsharkc.github.io/ accesskey=h title="Jacobc's blog (Alt + H)">Jacobc's blog</a>
-<span class=logo-switches>
-<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-</button>
-</span>
-</div>
-<ul id=menu>
-<li>
-<a href=https://jsharkc.github.io/archives/ title=Archives>
-<span>Archives</span>
-</a>
-</li>
-<li>
-<a href=https://jsharkc.github.io/tags title=Tags>
-<span>Tags</span>
-</a>
-</li>
-<li>
-<a href=https://jsharkc.github.io/search title="Search (Alt + /)" accesskey=/>
-<span>Search</span>
-</a>
-</li>
-</ul>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
 </nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/termux" title="Termux">
+                            Termux
+                        </a>
+                        
+                        <a class="tag" href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        <a class="tag" href="/tags/android" title="Android">
+                            Android
+                        </a>
+                        
+                        <a class="tag" href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        <a class="tag" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                    </div>
+                    <h1>Android手机作为linux服务器</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                Jacobc
+                             
+                            on 
+                            Friday, July 16, 2021
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </header>
-<main class=main>
-<article class=post-single>
-<header class=post-header>
-<div class=breadcrumbs><a href=https://jsharkc.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://jsharkc.github.io/post/>Posts</a></div>
-<h1 class=post-title>
-Android手机作为linux服务器
-</h1>
-<div class=post-meta>November 16, 2019&nbsp;·&nbsp;2 min&nbsp;·&nbsp;Jsharkc&nbsp;|&nbsp;<a href=https://gitee.com/jsharkc/blog rel="noopener noreferrer" target=_blank>Suggest Changes</a>
-</div>
-</header> <div class=toc>
-<details open>
-<summary accesskey=c title="(Alt + C)">
-<span class=details>Table of Contents</span>
-</summary>
-<div class=inner><ul>
-<li>
-<a href=#%e4%b8%8b%e8%bd%bd-termux aria-label="下载 Termux">下载 Termux</a></li>
-<li>
-<a href=#%e9%85%8d%e7%bd%ae-termux aria-label="配置 Termux">配置 Termux</a></li>
-<li>
-<a href=#%e5%88%a9%e7%94%a8-frp-%e5%86%85%e7%bd%91%e7%a9%bf%e9%80%8f aria-label="利用 frp 内网穿透">利用 frp 内网穿透</a><ul>
-<ul>
-<li>
-<a href=#%e9%85%8d%e7%bd%ae-frp-%e6%9c%8d%e5%8a%a1%e7%ab%af aria-label="配置 frp 服务端">配置 frp 服务端</a></li>
-<li>
-<a href=#%e9%85%8d%e7%bd%ae-frp-%e5%ae%a2%e6%88%b7%e7%ab%af aria-label="配置 frp 客户端">配置 frp 客户端</a></li>
-<li>
-<a href=#%e8%bf%90%e8%a1%8c-frp aria-label="运行 frp">运行 frp</a></li>
-<li>
-<a href=#ssh-%e8%bf%9e%e6%8e%a5 aria-label="ssh 连接">ssh 连接</a></li></ul>
-</ul>
-</li>
-<li>
-<a href=#%e5%ae%89%e8%a3%85%e5%8f%91%e8%a1%8c%e7%89%88-linux aria-label="安装发行版 linux">安装发行版 linux</a><ul>
-<ul>
-<li>
-<a href=#%e5%ae%89%e8%a3%85-atilo aria-label="安装 atilo">安装 atilo</a></li>
-<li>
-<a href=#%e5%ae%89%e8%a3%85%e7%b3%bb%e7%bb%9f aria-label=安装系统>安装系统</a></li>
-<li>
-<a href=#%e5%88%a0%e9%99%a4%e7%b3%bb%e7%bb%9f aria-label=删除系统>删除系统</a>
-</li>
-</ul>
-</ul>
-</li>
-</ul>
-</div>
-</details>
-</div>
-<div class=post-content><p>有个闲置的「红米Note4」，回收也值不了几个钱，就想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。</p>
-<h2 id=下载-termux>下载 Termux<a hidden class=anchor aria-hidden=true href=#下载-termux>#</a></h2>
-<p><a href=https://www.coolapk.com/apk/com.termux>Termux 下载地址</a></p>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>有个闲置的「红米Note4」，想着是否能再利用一下，网上查了查，用 Termux 可以把 Android 手机当成 linux 服务器用，于是就有了接下来的部分了。</p>
+<h2 id="下载-termux">下载 Termux</h2>
+<p><a href="https://www.coolapk.com/apk/com.termux">Termux 下载地址</a></p>
 <p>下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。</p>
-<h2 id=配置-termux>配置 Termux<a hidden class=anchor aria-hidden=true href=#配置-termux>#</a></h2>
+<h2 id="配置-termux">配置 Termux</h2>
 <p>Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>apt update
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">apt update
 apt upgrade
 
 apt install openssh
@@ -159,32 +250,32 @@ sshd -p 9999
 </code></pre><p>之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 <code>termux-setup-storage</code> 插件把手机目录挂载到 <code>/data/data/com.termux/files/home/storage/shared</code>目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：</p>
 <pre><code>termux-setup-storage
 </code></pre><p>当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了</p>
-<h2 id=利用-frp-内网穿透>利用 frp 内网穿透<a hidden class=anchor aria-hidden=true href=#利用-frp-内网穿透>#</a></h2>
+<h2 id="利用-frp-内网穿透">利用 frp 内网穿透</h2>
 <p>安装 <code>Golang</code></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>pkg install golang
-</code></pre></div><p><a href=https://github.com/fatedier/frp/releases>frp 下载地址</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pkg install golang
+</code></pre></div><p><a href="https://github.com/fatedier/frp/releases">frp 下载地址</a></p>
 <p>Android 下载以arm结尾的，服务器端根据自己的服务器选。</p>
 <p>写个 Hello world http 服务</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">package</span> main
 
-<span style=color:#f92672>import</span> (
-        <span style=color:#e6db74>&#34;fmt&#34;</span>
-        <span style=color:#e6db74>&#34;net/http&#34;</span>
+<span style="color:#ff79c6">import</span> (
+        <span style="color:#f1fa8c">&#34;fmt&#34;</span>
+        <span style="color:#f1fa8c">&#34;net/http&#34;</span>
 )
 
-<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
-        <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>HandleFunc</span>(<span style=color:#e6db74>&#34;/&#34;</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>w</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>ResponseWriter</span>, <span style=color:#a6e22e>r</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Request</span>) {
-                <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Fprintf</span>(<span style=color:#a6e22e>w</span>, <span style=color:#e6db74>&#34;Hello World&#34;</span>)
+<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+        http.<span style="color:#50fa7b">HandleFunc</span>(<span style="color:#f1fa8c">&#34;/&#34;</span>, <span style="color:#8be9fd;font-style:italic">func</span>(w http.ResponseWriter, r <span style="color:#ff79c6">*</span>http.Request) {
+                fmt.<span style="color:#50fa7b">Fprintf</span>(w, <span style="color:#f1fa8c">&#34;Hello World&#34;</span>)
         })
 
-        <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>ListenAndServe</span>(<span style=color:#e6db74>&#34;:8085&#34;</span>, <span style=color:#66d9ef>nil</span>)
+        http.<span style="color:#50fa7b">ListenAndServe</span>(<span style="color:#f1fa8c">&#34;:8085&#34;</span>, <span style="color:#ff79c6">nil</span>)
 }
-</code></pre></div><h4 id=配置-frp-服务端>配置 frp 服务端<a hidden class=anchor aria-hidden=true href=#配置-frp-服务端>#</a></h4>
+</code></pre></div><h4 id="配置-frp-服务端">配置 frp 服务端</h4>
 <pre><code># frps.ini
 [common]
 bind_port = 7001       # frp 服务绑定的端口
 vhost_http_port = 8082 # 外网可访问的 web 服务端口
-</code></pre><h4 id=配置-frp-客户端>配置 frp 客户端<a hidden class=anchor aria-hidden=true href=#配置-frp-客户端>#</a></h4>
+</code></pre><h4 id="配置-frp-客户端">配置 frp 客户端</h4>
 <pre><code># frpc.ini
 [common]
 server_addr = xx.xx.xx.xx  # 你的服务器地址
@@ -200,7 +291,7 @@ remote_port = 6000         # 远程连接用的端口
 type = http
 local_port = 8085          # 本地 web 服务监听端口
 custom_domains = xx.xx.xx  # 服务器域名，有域名写域名，没域名写 ip
-</code></pre><h4 id=运行-frp>运行 frp<a hidden class=anchor aria-hidden=true href=#运行-frp>#</a></h4>
+</code></pre><h4 id="运行-frp">运行 frp</h4>
 <p><strong>服务端</strong></p>
 <pre><code>./frps -c ./frps.ini
 </code></pre><p><strong>客户端</strong></p>
@@ -208,56 +299,457 @@ custom_domains = xx.xx.xx  # 服务器域名，有域名写域名，没域名写
 </code></pre><p><strong>测试</strong></p>
 <pre><code>curl http://xx.xx.xx:8082
 # 可以看到 Hello world
-</code></pre><h4 id=ssh-连接>ssh 连接<a hidden class=anchor aria-hidden=true href=#ssh-连接>#</a></h4>
+</code></pre><h4 id="ssh-连接">ssh 连接</h4>
 <pre><code>ssh u0_a150@xx.xx.xx.xx -oPort=6000
-</code></pre><p>格式：ssh [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]</p>
-<h2 id=安装发行版-linux>安装发行版 linux<a hidden class=anchor aria-hidden=true href=#安装发行版-linux>#</a></h2>
+</code></pre><p>格式：ssh  [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]</p>
+<h2 id="安装发行版-linux">安装发行版 linux</h2>
 <p>可以再 Termux 上安装发行版 linux，包括 fedora、debian、alpine、aosc、arch、ubuntu、centos。</p>
-<h4 id=安装-atilo>安装 atilo<a hidden class=anchor aria-hidden=true href=#安装-atilo>#</a></h4>
+<h4 id="安装-atilo">安装 atilo</h4>
 <pre><code>echo &quot;deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras&quot; &gt;&gt; $PREFIX/etc/apt/sources.list
 pkg in atilo-cn
-</code></pre><h4 id=安装系统>安装系统<a hidden class=anchor aria-hidden=true href=#安装系统>#</a></h4>
+</code></pre><h4 id="安装系统">安装系统</h4>
 <pre><code>atilo install centos
-</code></pre><h4 id=删除系统>删除系统<a hidden class=anchor aria-hidden=true href=#删除系统>#</a></h4>
+</code></pre><h4 id="删除系统">删除系统</h4>
 <pre><code>atilo remove centos
 </code></pre>
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
 </div>
-<footer class=post-footer>
-<ul class=post-tags>
-<li><a href=https://jsharkc.github.io/tags/termux/>Termux</a></li>
-<li><a href=https://jsharkc.github.io/tags/ssh/>ssh</a></li>
-<li><a href=https://jsharkc.github.io/tags/android/>Android</a></li>
-<li><a href=https://jsharkc.github.io/tags/linux/>linux</a></li>
-<li><a href=https://jsharkc.github.io/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/>服务器</a></li>
-</ul>
-<nav class=paginav>
-<a class=prev href=https://jsharkc.github.io/post/mac-install-charles/>
-<span class=title>« Prev Page</span>
-<br>
-<span>Mac安装破解版 Charles</span>
-</a>
-<a class=next href=https://jsharkc.github.io/post/linux-file-descriptor/>
-<span class=title>Next Page »</span>
-<br>
-<span>文件描述符 fd</span>
-</a>
-</nav>
-</footer>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/process-and-thread/" data-toggle="tooltip" data-placement="top" title="有进程为什么还创造线程">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/linux-iptables/" data-toggle="tooltip" data-placement="top" title="Linux防火墙-iptables">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
 </article>
-</main>
-<footer class=footer>
-<span>&copy; 2022 <a href=https://jsharkc.github.io/>Jacobc's blog</a></span>
-<span>
-Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
-</span>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
 </footer>
-<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
-</a>
-<script>let menu=document.getElementById('menu');menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)},document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
-<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
-<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
-<script>document.querySelectorAll('pre > code').forEach(b=>{const c=b.parentNode.parentNode,a=document.createElement('button');a.classList.add('copy-code'),a.innerText='copy';function d(){a.innerText='copied!',setTimeout(()=>{a.innerText='copy'},2e3)}a.addEventListener('click',e=>{if('clipboard'in navigator){navigator.clipboard.writeText(b.textContent),d();return}const a=document.createRange();a.selectNodeContents(b);const c=window.getSelection();c.removeAllRanges(),c.addRange(a);try{document.execCommand('copy'),d()}catch(a){}c.removeRange(a)}),c.classList.contains("highlight")?c.appendChild(a):c.parentNode.firstChild==c||(b.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?b.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(a):b.parentNode.appendChild(a))})</script>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
 </body>
 </html>

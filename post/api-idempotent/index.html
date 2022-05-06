@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="接口幂等性设计" />
+    <meta property="og:title" content="接口幂等性设计" />
+    <meta property="twitter:title" content="接口幂等性设计" />
+    
+
+    
+    <meta name="description" content="接口幂等性设计的 N 种方式">
+    <meta property="og:description" content="接口幂等性设计的 N 种方式" />
+    <meta property="twitter:description" content="接口幂等性设计的 N 种方式" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>接口幂等性设计-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/api-idempotent/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                    </div>
+                    <h1>接口幂等性设计</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    Jacobc&#39; Blog
+                             
+                            on 
+                            Thursday, September 24, 2020
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h3 id="一什么是幂等">一、什么是幂等</h3>
+<p>幂等是一个数学与计算机科学概念。</p>
+<ul>
+<li>在数学中，幂等用函数表达式就是：<code>f(x) = f(f(x))</code>。比如求绝对值的函数，就是幂等的，<code>abs(x) = abs(abs(x))</code>。</li>
+<li>计算机科学中，幂等表示一次和多次请求某一个资源应该具有同样的副作用，或者说，多次请求所产生的影响与一次请求执行的影响效果相同。</li>
+</ul>
+<h3 id="二为什么需要幂等">二、为什么需要幂等</h3>
+<p>举个例子：</p>
+<blockquote>
+<p>我们开发一个转账功能，假设我们调用下游接口<strong>超时</strong>了。一般情况下，<strong>超时</strong>可能是<strong>网络传输丢包</strong>的问题，也可能是请求时没送到，还有可能是请求到了，<strong>返回结果却丢</strong>了。这时候我们是否可以重试呢？如果<strong>重试</strong>的话，是否会多转了一笔钱呢？</p>
+</blockquote>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1xftphmy8j20jy05lt90.jpg" alt="">
+
+</p>
+<p>当前互联网的系统几乎都是解耦隔离后，会存在各个不同系统的相互远程调用。调用远程服务会有三个状态：成功，失败，或者超时。前两者都是明确的状态，而超时则是<strong>未知状态</strong>。我们转账<strong>超时</strong>的时候，如果下游转账系统做好<strong>幂等</strong>控制，我们发起<strong>重试</strong>，那即可以<strong>保证转账正常进行，又可以保证不会多转一笔</strong>。</p>
+<p>其实除了转账这个例子，日常开发中，还有<strong>很多很多例子需要考虑幂等</strong>。比如：</p>
+<ul>
+<li>MQ（消息中间件）消费者读取消息时，有可能会读取到重复消息。（<strong>重复消费</strong>）</li>
+<li>比如提交 form 表单时，如果快速点击提交按钮，可能产生了两条一样的数据（<strong>前端重复提交</strong>）</li>
+</ul>
+<h3 id="三接口超时了如何处理">三、接口超时了，如何处理</h3>
+<p>如果调用下游接口，或者三方接口，超时了，应该如何处理？</p>
+<ol>
+<li>如果提供了查询接口，就先查询，之后，成功按成功处理，失败按失败处理</li>
+<li>如果接口有唯一性参数，则使用相同的唯一性参数重试</li>
+</ol>
+<p>下面是详细<strong>两种方案</strong>处理：</p>
+<ul>
+<li>方案一：就是下游系统提供一个对应的查询接口。如果接口超时了，先查下对应的记录，如果查到是成功，就走成功流程，如果是失败，就按失败处理。</li>
+</ul>
+<blockquote>
+<p>拿我们的转账例子来说，转账系统提供一个查询<strong>转账记录</strong>的接口，如果<strong>渠道系统</strong>调用<strong>转账系统</strong>超时时，<strong>渠道系统</strong>先去查询一下这笔记录，看下这笔转账记录成功还是失败，如果成功就走成功流程，失败再重试发起转账。</p>
+</blockquote>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1xfujsf5bj20jt06w74o.jpg" alt="">
+
+</p>
+<ul>
+<li>方案二：下游接口<strong>支持幂等</strong>，上游系统如果<strong>调用超时</strong>，发起重试即可。</li>
+</ul>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1xfx0mkc1j20kb0860t5.jpg" alt="">
+
+</p>
+<h3 id="四如何设计幂等">四、如何设计幂等</h3>
+<p>既然这么多场景需要考虑幂等，那我们如何设计幂等呢？</p>
+<p>幂等意味着一条请求的唯一性。不管是你哪个方案去设计幂等，都需要一个<strong>全局唯一的ID</strong>，去标记这个请求是独一无二的。</p>
+<ul>
+<li>如果你是利用唯一索引控制幂等，那唯一索引是唯一的</li>
+<li>如果你是利用数据库主键控制幂等，那主键是唯一的</li>
+<li>如果你是悲观锁的方式，底层标记还是<strong>全局唯一的ID</strong></li>
+</ul>
+<h4 id="41-全局的唯一性id">4.1 全局的唯一性ID</h4>
+<p>全局唯一性ID，我们怎么去生成呢？你可以回想下，数据库主键Id怎么生成的呢？</p>
+<p>是的，我们可以使用<code>UUID</code>，但是UUID的缺点比较明显，它字符串占用的空间比较大，生成的ID过于随机，可读性差，而且没有递增。</p>
+<p>我们还可以使用<code>雪花算法（Snowflake）</code> 生成唯一性ID。</p>
+<blockquote>
+<p>雪花算法是一种生成分布式全局唯一ID的算法，生成的ID称为<code>Snowflake IDs</code>。这种算法由Twitter创建，并用于推文的ID。</p>
+</blockquote>
+<p>一个Snowflake ID有64位。</p>
+<ul>
+<li>第1位：一般最高位是符号位代表正负，正数是0，负数是1，一般生成ID都为正数，所以默认为0。</li>
+<li>接下来前41位是时间戳，表示了自选定的时期以来的毫秒数。</li>
+<li>接下来的10位代表计算机ID，防止冲突。</li>
+<li>其余12位代表每台机器上生成ID的序列号，这允许在同一毫秒内创建多个Snowflake ID。</li>
+</ul>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1xfzipyxaj20jw06sq3f.jpg" alt="">
+
+</p>
+<p>当然，全局唯一性的ID，还可以使用百度的<code>Uidgenerator</code>，或者美团的<code>Leaf</code>。</p>
+<h4 id="42-幂等设计的基本流程">4.2 幂等设计的基本流程</h4>
+<p>幂等处理的过程，说到底其实就是过滤一下已经收到的请求，当然，请求一定要有一个<code>全局唯一的ID标记</code>哈。然后，怎么判断请求是否之前收到过呢？把请求储存起来，收到请求时，先查下存储记录，记录存在就返回上次的结果，不存在就处理请求。</p>
+<p>一般的幂等处理就是这样，如下：</p>
+<p>
+  <img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h1xg3oyevej20jh0lbabr.jpg" alt="">
+
+</p>
+<h3 id="五几种实现幂等方案">五、几种实现幂等方案</h3>
+<h4 id="51-token-令牌">5.1 token 令牌</h4>
+<p>token 令牌方案一般包括两个请求阶段：</p>
+<ol>
+<li>客户端请求申请获取token，服务端生成token返回</li>
+<li>客户端带着token请求，服务端校验token</li>
+</ol>
+<p>流程如下：</p>
+<ol>
+<li>
+<p>客户端发起请求，申请获取token。</p>
+</li>
+<li>
+<p>服务端生成全局唯一的token，保存到redis中（一般会设置一个过期时间），然后返回给客户端。</p>
+</li>
+<li>
+<p>客户端带着token，发起请求。</p>
+</li>
+<li>
+<p>服务端去 redis 确认 token 是否存在，一般用 <code>redis.del(token) </code>的方式，如果存在会删除成功，即处理业务逻辑，如果删除失败不处理业务逻辑，直接返回结果。</p>
+</li>
+</ol>
+<h4 id="52-状态机幂等">5.2 状态机幂等</h4>
+<p>很多业务表是有状态的，比如转账流水表，就会有<code>0-待处理，1-处理中、2-成功、3-失败</code> 等状态。转账流水更新的时候，都会涉及流水状态更新，即涉及状态机 (即状态变更图)。我们可以利用状态机实现幂等，一起来看下它是怎么实现的。</p>
+<p>假设设计一个转账后的回调接口，把<strong>处理中</strong>的转账流水更新为<strong>成功</strong>状态，SQL这么写：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">update</span> transfr_flow <span style="color:#ff79c6">set</span> status<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span> <span style="color:#ff79c6">where</span> order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;10126&#39;</span> <span style="color:#ff79c6">and</span> status<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>;
+</code></pre></div><p>状态机是怎么<strong>实现幂等</strong>的呢？</p>
+<ul>
+<li>第1次请求来时，order_id 是 <code>10126</code>，该流水的状态是处理中，值是 <code>1 </code>，要更新为<code>2-成功的状态 </code>，所以该 update 语句可以正常更新数据，sql执行结果的影响行数是1，流水状态最后变成了2。</li>
+<li>第2请求也过来了，它的订单号号还是 <code>10126 </code>，因为该流水状态已经<code>2-成功的状态 </code>了，所以更新结果是0，不会再处理业务逻辑，接口直接返回成功。</li>
+</ul>
+<h4 id="53-防重表">5.3 防重表</h4>
+<p>mysql 建立一个以唯一流水号为主键或唯一索引的表，如果插入防重表冲突即直接返回成功，如果插入成功，即去处理请求。</p>
+<p>redis 的话，根据传入参数算 hash 值，用哈希值 setnx ，如果设置失败返回 0，直接返回成功，如果设置成功返回 1，即去处理请求。</p>
+<h4 id="54-乐观锁">5.4 乐观锁</h4>
+<p>什么是<strong>乐观锁</strong>？</p>
+<blockquote>
+<p>乐观锁在操作数据时，认为别人不会同时在修改数据，因此乐观锁不会上锁。只是在执行更新的时候判断一下，在此期间别人是否修改了数据。</p>
+</blockquote>
+<p><strong>怎样实现乐观锁呢？</strong></p>
+<blockquote>
+<p>就是给表的加多一列<code>version</code>版本号，每次更新记录<code>version</code>都升级一下（<code>version=version+1</code>）。具体流程就是先查出当前的版本号<code>version</code>，然后去更新修改数据时，确认下是不是刚刚查出的版本号，如果是才执行更新</p>
+</blockquote>
+<p>比如，我们更新前，先查下数据，查出的版本号是<code>version =1</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ff79c6">select</span> order_id，version <span style="color:#ff79c6">from</span> <span style="color:#ff79c6">order</span> <span style="color:#ff79c6">where</span> order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;666&#39;</span>；
+</code></pre></div><p>然后使用<code>version =1 </code>和<code>订单Id</code>一起作为条件，再去更新</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ff79c6">update</span> <span style="color:#ff79c6">order</span> <span style="color:#8be9fd">set</span> version <span style="color:#ff79c6">=</span> version <span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>，status<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;P&#39;</span> <span style="color:#ff79c6">where</span>  order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;666&#39;</span> <span style="color:#ff79c6">and</span> version <span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>
+</code></pre></div><p>最后更新成功，才可以处理业务逻辑，如果更新失败，默认为重复请求，直接返回。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/mysql-isolation/" data-toggle="tooltip" data-placement="top" title="MySQL 四种隔离级别 &amp; 间隙锁">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/post/flutter-%E8%BF%94%E5%9B%9E%E6%A1%8C%E9%9D%A2/" data-toggle="tooltip" data-placement="top" title="Flutter 返回按钮返回桌面">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

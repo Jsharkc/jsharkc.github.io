@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Flutter on Jacobc&#39;s blog</title>
+    <title>Flutter on Jacobc&#39; Blog</title>
     <link>https://jsharkc.github.io/tags/flutter/</link>
-    <description>Recent content in Flutter on Jacobc&#39;s blog</description>
-    <image>
-      <url>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://jsharkc.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
-    </image>
+    <description>Recent content in Flutter on Jacobc&#39; Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 29 Oct 2019 21:42:23 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/flutter/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 29 Oct 2020 21:42:23 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/flutter/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Flutter 返回按钮返回桌面</title>
       <link>https://jsharkc.github.io/post/flutter-%E8%BF%94%E5%9B%9E%E6%A1%8C%E9%9D%A2/</link>
-      <pubDate>Tue, 29 Oct 2019 21:42:23 +0000</pubDate>
+      <pubDate>Thu, 29 Oct 2020 21:42:23 +0000</pubDate>
       
       <guid>https://jsharkc.github.io/post/flutter-%E8%BF%94%E5%9B%9E%E6%A1%8C%E9%9D%A2/</guid>
-      <description>Flutter 返回按钮返回桌面 想实现点击返回按钮，直接返回桌面，本想 flutter 有方法的话，直接用，然而好像没有，所以采用调用本地方法返回桌面
-Android 端 MainActivity 代码如下 package com.dreamreal.example; import android.os.Bundle; import io.flutter.app.FlutterActivity; import io.flutter.plugin.common.MethodChannel; import io.flutter.plugins.GeneratedPluginRegistrant; public class MainActivity extends FlutterActivity { // 字符串常量，回到手机桌面  private final String chanel = &amp;#34;back/desktop&amp;#34;; // 返回到桌面事件  static final String backDesktopEvent = &amp;#34;backDesktop&amp;#34;; @Override protected void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); GeneratedPluginRegistrant.registerWith(this); MethodChannel(getFlutterView(), chanel).setMethodCallHandler( (methodCall, result) -&amp;gt; { if (methodCall.method.equals(backDesktopEvent)) { moveTaskToBack(false); result.success(true); } } ); } } 如果是 kotlin 的话，如下：</description>
+      <description>Flutter 返回按钮返回桌面 想实现点击返回按钮，直接返回桌面，本想 flutter 有方法的话，直接用，然而好像没有，所以采用调用本地方法返回桌面 Android 端 MainActivity 代码如下 package com.dreamreal.example; import</description>
     </item>
     
   </channel>

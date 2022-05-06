@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>后端 on Jacobc&#39; Blog</title>
+    <link>https://jsharkc.github.io/tags/%E5%90%8E%E7%AB%AF/</link>
+    <description>Recent content in 后端 on Jacobc&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 24 Sep 2020 19:42:23 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/%E5%90%8E%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>接口幂等性设计</title>
+      <link>https://jsharkc.github.io/post/api-idempotent/</link>
+      <pubDate>Thu, 24 Sep 2020 19:42:23 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/api-idempotent/</guid>
+      <description>一、什么是幂等 幂等是一个数学与计算机科学概念。 在数学中，幂等用函数表达式就是：f(x) = f(f(x))。比如求绝对值的函数，就是幂等的，ab</description>
+    </item>
+    
+  </channel>
+</rss>

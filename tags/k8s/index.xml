@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>k8s on Jacobc&#39; Blog</title>
+    <link>https://jsharkc.github.io/tags/k8s/</link>
+    <description>Recent content in k8s on Jacobc&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 16 Nov 2021 11:42:23 +8000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>kubeadm 安装 k8s</title>
+      <link>https://jsharkc.github.io/post/install-k8s-cluster/</link>
+      <pubDate>Tue, 16 Nov 2021 11:42:23 +8000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/install-k8s-cluster/</guid>
+      <description>1. 环境初始化 文章转自 CSDN博主「初码诛仙」 ，按照步骤搭建成功，记录下来，备忘 1.1 安装并配置 Docker 1.1.1 安装 Docker 安装 Docker 参考 Docker安装 1.1.2 配置 cgroup driver 编辑</description>
+    </item>
+    
+  </channel>
+</rss>
