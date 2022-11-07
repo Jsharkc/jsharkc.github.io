@@ -214,61 +214,61 @@
                 
                 <h3 id="一条命令安装">一条命令安装</h3>
 <p>官方脚本：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
-</code></pre></div><p>国内 daocloud 安装命令：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -sSL https://get.daocloud.io/docker | sh
-</code></pre></div><h3 id="手动安装指定版本">手动安装指定版本</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+</span></span></code></pre></div><p>国内 daocloud 安装命令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -sSL https://get.daocloud.io/docker | sh
+</span></span></code></pre></div><h3 id="手动安装指定版本">手动安装指定版本</h3>
 <h4 id="卸载旧版本">卸载旧版本</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo yum remove docker <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-client <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-client-latest <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-common <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-latest <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-latest-logrotate <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-logrotate <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-engine <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  container-selinux <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>                  docker-selinux
-</code></pre></div><h4 id="安装相关依赖">安装相关依赖</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo yum remove docker <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-client <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-client-latest <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-common <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-latest <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-latest-logrotate <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-logrotate <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-engine <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  container-selinux <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>                  docker-selinux
+</span></span></code></pre></div><h4 id="安装相关依赖">安装相关依赖</h4>
 <p>yum-utils 提供 yum-config-manager 工具, devicemapper存储驱动依赖 device-mapper-persistent-data 和 lvm2.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y yum-utils device-mapper-persistent-data lvm2
-</code></pre></div><h4 id="配置版本镜像库">配置版本镜像库</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install -y yum-utils device-mapper-persistent-data lvm2
+</span></span></code></pre></div><h4 id="配置版本镜像库">配置版本镜像库</h4>
 <p>季度更新的稳定 stable 版和 test 版</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">yum-config-manager --add-repo <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>     https://download.docker.com/linux/centos/docker-ce.repo
-yum-config-manager --enable docker-ce-test
-</code></pre></div><p>由于 docker.com 服务器下载很慢,所以改为国内镜像.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">yum-config-manager --add-repo <span style="color:#f1fa8c">\
-</span><span style="color:#f1fa8c"></span>    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-</code></pre></div><p>如需禁止 test 版本, 可以执行下面的命令</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Sh" data-lang="Sh">yum-config-manager --disable docker-ce-test
-</code></pre></div><h4 id="安装-docker">安装 Docker</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>yum-config-manager --add-repo <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>     https://download.docker.com/linux/centos/docker-ce.repo
+</span></span><span style="display:flex;"><span>yum-config-manager --enable docker-ce-test
+</span></span></code></pre></div><p>由于 docker.com 服务器下载很慢,所以改为国内镜像.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>yum-config-manager --add-repo <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span><span style="color:#f1fa8c"></span>    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</span></span></code></pre></div><p>如需禁止 test 版本, 可以执行下面的命令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Sh" data-lang="Sh"><span style="display:flex;"><span>yum-config-manager --disable docker-ce-test
+</span></span></code></pre></div><h4 id="安装-docker">安装 Docker</h4>
 <p>更新缓存</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum clean all
-yum makecache
-</code></pre></div><p>or</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum makecache fast
-</code></pre></div><p>安装</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install docker-ce docker-ce-cli containerd.io
-</code></pre></div><p>安装完后，查看安装的软件</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">rpm -qa | grep docker
-</code></pre></div><p>输出结果为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum clean all
+</span></span><span style="display:flex;"><span>yum makecache
+</span></span></code></pre></div><p>or</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum makecache fast
+</span></span></code></pre></div><p>安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install docker-ce docker-ce-cli containerd.io
+</span></span></code></pre></div><p>安装完后，查看安装的软件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpm -qa | grep docker
+</span></span></code></pre></div><p>输出结果为：</p>
 <blockquote>
 <p>docker-ce-19.03.9-3.el7.x86_64
 docker-ce-cli-19.03.9-3.el7.x86_64</p>
 </blockquote>
 <h4 id="启动-docker">启动 Docker</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl <span style="color:#8be9fd;font-style:italic">enable</span> docker
-systemctl start docker
-</code></pre></div><p>查看 Docker 版本：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker --version
-</code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl <span style="color:#8be9fd;font-style:italic">enable</span> docker
+</span></span><span style="display:flex;"><span>systemctl start docker
+</span></span></code></pre></div><p>查看 Docker 版本：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>docker --version
+</span></span></code></pre></div><p>输出：</p>
 <blockquote>
 <p>Docker version 20.10.9, build 9d988398e7</p>
 </blockquote>
 <p>因为没有指定版本，所以安装的是最新版本，如果想安装指定版本，先查看所有版本列表：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum list docker-ce --showduplicates | sort -r
-</code></pre></div><p><code>sort -r</code> 会按版本倒序排序，第二列是版本号，el7 表示 centos7，第三列是库名。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum list docker-ce --showduplicates | sort -r
+</span></span></code></pre></div><p><code>sort -r</code> 会按版本倒序排序，第二列是版本号，el7 表示 centos7，第三列是库名。</p>
 <blockquote>
 <p>docker-ce.x86_64            3:20.10.9-3.el7                    docker-ce-stable
 docker-ce.x86_64            3:20.10.8-3.el7                    docker-ce-stable
@@ -287,19 +287,19 @@ docker-ce.x86_64            3:19.03.9-3.el7                    docker-ce-stable
 docker-ce.x86_64            3:19.03.8-3.el7                    docker-ce-stable</p>
 </blockquote>
 <p>例如安装 3:19.03.9-3.el7：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install docker-ce-19.03.9-3.el7 docker-ce-cli-19.03.9-3.el7 containerd.io
-</code></pre></div><p>安装完成后，检查版本：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker --version
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install docker-ce-19.03.9-3.el7 docker-ce-cli-19.03.9-3.el7 containerd.io
+</span></span></code></pre></div><p>安装完成后，检查版本：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker --version
+</span></span></code></pre></div><blockquote>
 <p>Docker version 19.03.9, build 9d988398e7</p>
 </blockquote>
 <h2 id="非root用户启动docker">非root用户启动docker</h2>
 <p>默认情况下，<code>docker</code> 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 <code>root</code> 用户和 <code>docker</code> 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 <code>root</code> 用户。因此，更好地做法是将需要使用 <code>docker</code> 的用户加入 <code>docker</code> 用户组。</p>
 <p>建立 <code>docker</code> 组：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Sh" data-lang="Sh">$ sudo groupadd docker
-</code></pre></div><p>将当前用户加入 <code>docker</code> 组：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sudo usermod -aG docker <span style="color:#8be9fd;font-style:italic">$USER</span>
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Sh" data-lang="Sh"><span style="display:flex;"><span>$ sudo groupadd docker
+</span></span></code></pre></div><p>将当前用户加入 <code>docker</code> 组：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ sudo usermod -aG docker <span style="color:#8be9fd;font-style:italic">$USER</span>
+</span></span></code></pre></div>
 
                 
                 
@@ -353,7 +353,7 @@ docker-ce.x86_64            3:19.03.8-3.el7                    docker-ce-stable<
                     
                     
                     <li class="next">
-                        <a href="/post/install-k8s-cluster/" data-toggle="tooltip" data-placement="top" title="kubeadm 安装 k8s">Next
+                        <a href="/post/k8s-install-cluster/" data-toggle="tooltip" data-placement="top" title="kubeadm 安装 k8s">Next
                             Post &rarr;</a>
                     </li>
                     
@@ -441,8 +441,20 @@ docker-ce.x86_64            3:19.03.8-3.el7                    docker-ce-stable<
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

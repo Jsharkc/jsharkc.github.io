@@ -212,51 +212,51 @@
 <h2 id="镜像">镜像</h2>
 <h3 id="虚悬镜像">虚悬镜像</h3>
 <p>​	没有仓库名，也没有标签，均为<code>&lt;none&gt;</code>的为虚悬镜像：</p>
-<pre><code>&lt;none&gt;		&lt;none&gt;			00285df0df87		5 days ago		342 MB
+<pre tabindex="0"><code>&lt;none&gt;		&lt;none&gt;			00285df0df87		5 days ago		342 MB
 </code></pre><p>​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为<code>&lt;none&gt;</code>，可用下面的命令专门显示这类镜像：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Sh" data-lang="Sh">$ docker images -f <span style="color:#8be9fd;font-style:italic">dangling</span><span style="color:#ff79c6">=</span>ture
-REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
-&lt;none&gt;			&lt;none&gt;		00285df0df87		<span style="color:#bd93f9">5</span> days ago 			<span style="color:#bd93f9">342</span> MB
-</code></pre></div><p>​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker rmi <span style="color:#ff79c6">$(</span>docker images -q -f <span style="color:#8be9fd;font-style:italic">dangling</span><span style="color:#ff79c6">=</span>ture<span style="color:#ff79c6">)</span>
-</code></pre></div><h3 id="docker-images">docker images</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Sh" data-lang="Sh"><span style="display:flex;"><span>$ docker images -f <span style="color:#8be9fd;font-style:italic">dangling</span><span style="color:#ff79c6">=</span>ture
+</span></span><span style="display:flex;"><span>REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
+</span></span><span style="display:flex;"><span>&lt;none&gt;			&lt;none&gt;		00285df0df87		<span style="color:#bd93f9">5</span> days ago 			<span style="color:#bd93f9">342</span> MB
+</span></span></code></pre></div><p>​	一般来说，虚悬镜像已经失去了存在价值，可以随意删除，可用下面命令删除。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ docker rmi <span style="color:#ff79c6">$(</span>docker images -q -f <span style="color:#8be9fd;font-style:italic">dangling</span><span style="color:#ff79c6">=</span>ture<span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><h3 id="docker-images">docker images</h3>
 <p>####—filter -f</p>
 <p>​		<code>docker images</code> 还支持强大的过滤器参数 <code>--filter</code>	，或者简写<code>-f</code>。上面我们看到使用过滤器来列出虚悬镜像的方法，它还有更多的用法。比如，我们希望看到在<code>mongo:3.2</code>之后建立的镜像，可以用下面的命令：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker images -f <span style="color:#8be9fd;font-style:italic">since</span><span style="color:#ff79c6">=</span>mongo:3.2
-REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
-redis			latest		5f515359c7f8		<span style="color:#bd93f9">5</span> days ago			<span style="color:#bd93f9">183</span> MB
-nginx			latest		05a60462f8ba		<span style="color:#bd93f9">5</span> days ago			<span style="color:#bd93f9">181</span> MB
-</code></pre></div><p>​	想查看某个位置之前的镜像也可以，只需要吧<code>since</code>换成<code>before</code>即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ docker images -f <span style="color:#8be9fd;font-style:italic">since</span><span style="color:#ff79c6">=</span>mongo:3.2
+</span></span><span style="display:flex;"><span>REPOSITORY		TAG			IMAGE ID 			CREATED				SIZE
+</span></span><span style="display:flex;"><span>redis			latest		5f515359c7f8		<span style="color:#bd93f9">5</span> days ago			<span style="color:#bd93f9">183</span> MB
+</span></span><span style="display:flex;"><span>nginx			latest		05a60462f8ba		<span style="color:#bd93f9">5</span> days ago			<span style="color:#bd93f9">181</span> MB
+</span></span></code></pre></div><p>​	想查看某个位置之前的镜像也可以，只需要吧<code>since</code>换成<code>before</code>即可。</p>
 <p>####以特定格式显示镜像</p>
 <p>​	把所有的虚悬镜像的 ID 列出来</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker images -q
-5f515359c7f8
-05a60462f8ba
-fe9198c04d62
-00285df0df87
-f753707788c5
-f753707788c5
-1e0c3dd64ccd
-</code></pre></div><p>​	以自己想要的格式显示，比如显示镜像 ID 和仓库名：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker images --format <span style="color:#f1fa8c">&#34;{{.ID}}: {{.Repository}}&#34;</span>
-5f515359c7f8: redis
-05a60462f8ba: nginx
-fe9198c04d62: mongo
-00285df0df87: &lt;none&gt;
-f753707788c5: ubuntu
-f753707788c5: ubuntu
-1e0c3dd64ccd: ubuntu
-</code></pre></div><p>​	以表格等距显示，并且有标题行</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ docker images --format <span style="color:#f1fa8c">&#34;table {{.ID}}\t{{.Repository}}\t{{.Tag}}&#34;</span>
-IMAGE ID            REPOSITORY          TAG
-5f515359c7f8        redis               latest
-05a60462f8ba        nginx               latest
-fe9198c04d62        mongo               3.2
-00285df0df87        &lt;none&gt;              &lt;none&gt;
-f753707788c5        ubuntu              16.04
-f753707788c5        ubuntu              latest
-1e0c3dd64ccd        ubuntu              14.04
-</code></pre></div><h3 id="dockerfile-定制镜像">Dockerfile 定制镜像</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ docker images -q
+</span></span><span style="display:flex;"><span>5f515359c7f8
+</span></span><span style="display:flex;"><span>05a60462f8ba
+</span></span><span style="display:flex;"><span>fe9198c04d62
+</span></span><span style="display:flex;"><span>00285df0df87
+</span></span><span style="display:flex;"><span>f753707788c5
+</span></span><span style="display:flex;"><span>f753707788c5
+</span></span><span style="display:flex;"><span>1e0c3dd64ccd
+</span></span></code></pre></div><p>​	以自己想要的格式显示，比如显示镜像 ID 和仓库名：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ docker images --format <span style="color:#f1fa8c">&#34;{{.ID}}: {{.Repository}}&#34;</span>
+</span></span><span style="display:flex;"><span>5f515359c7f8: redis
+</span></span><span style="display:flex;"><span>05a60462f8ba: nginx
+</span></span><span style="display:flex;"><span>fe9198c04d62: mongo
+</span></span><span style="display:flex;"><span>00285df0df87: &lt;none&gt;
+</span></span><span style="display:flex;"><span>f753707788c5: ubuntu
+</span></span><span style="display:flex;"><span>f753707788c5: ubuntu
+</span></span><span style="display:flex;"><span>1e0c3dd64ccd: ubuntu
+</span></span></code></pre></div><p>​	以表格等距显示，并且有标题行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ docker images --format <span style="color:#f1fa8c">&#34;table {{.ID}}\t{{.Repository}}\t{{.Tag}}&#34;</span>
+</span></span><span style="display:flex;"><span>IMAGE ID            REPOSITORY          TAG
+</span></span><span style="display:flex;"><span>5f515359c7f8        redis               latest
+</span></span><span style="display:flex;"><span>05a60462f8ba        nginx               latest
+</span></span><span style="display:flex;"><span>fe9198c04d62        mongo               3.2
+</span></span><span style="display:flex;"><span>00285df0df87        &lt;none&gt;              &lt;none&gt;
+</span></span><span style="display:flex;"><span>f753707788c5        ubuntu              16.04
+</span></span><span style="display:flex;"><span>f753707788c5        ubuntu              latest
+</span></span><span style="display:flex;"><span>1e0c3dd64ccd        ubuntu              14.04
+</span></span></code></pre></div><h3 id="dockerfile-定制镜像">Dockerfile 定制镜像</h3>
 <p>​	Dockerfile 中每一个指令都会建立一层，<code>RUN</code> 也不例外。每一个 <code>RUN</code> 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，<code>commit</code> 这一层的修改，构成新的镜像。</p>
 <h4 id="context-上下文">Context 上下文</h4>
 <p>​	当构建的时候，用户会指定构建镜像上下文的路径，<code>docker build</code> 命令得知这个路径后，会将路径下的所有内容打包，然后上传给 Docker 引擎。这样 Docker 引擎收到这个上下文包后，展开就会获得构建镜像所需的一切文件。</p>
@@ -269,11 +269,11 @@ f753707788c5        ubuntu              latest
 </ul>
 <p>和 <code>RUN</code> 指令一样，也有两种格式，一种类似于命令行，一种类似于函数调用。</p>
 <p><code>COPY</code> 指令将从构建上下文目录中 <code>&lt;源路径&gt;</code> 的文件/目录复制到新的一层的镜像内的 <code>&lt;目标路径&gt;</code> 位置。比如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Sh" data-lang="Sh">COPY package.json /usr/src/app/
-</code></pre></div><p><code>&lt;源路径&gt;</code> 可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 <a href="https://golang.org/pkg/path/filepath/#Match"><code>filepath.Match</code></a> 规则，如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Sh" data-lang="Sh">COPY hom* /mydir/
-COPY hom?.txt /mydir/
-</code></pre></div><p><code>&lt;目标路径&gt;</code> 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 <code>WORKDIR</code>指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Sh" data-lang="Sh"><span style="display:flex;"><span>COPY package.json /usr/src/app/
+</span></span></code></pre></div><p><code>&lt;源路径&gt;</code> 可以是多个，甚至可以是通配符，其通配符规则要满足 Go 的 <a href="https://golang.org/pkg/path/filepath/#Match"><code>filepath.Match</code></a> 规则，如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Sh" data-lang="Sh"><span style="display:flex;"><span>COPY hom* /mydir/
+</span></span><span style="display:flex;"><span>COPY hom?.txt /mydir/
+</span></span></code></pre></div><p><code>&lt;目标路径&gt;</code> 可以是容器内的绝对路径，也可以是相对于工作目录的相对路径（工作目录可以用 <code>WORKDIR</code>指令来指定）。目标路径不需要事先创建，如果目录不存在会在复制文件前先行创建缺失目录。</p>
 <p>此外，还需要注意一点，使用 <code>COPY</code> 指令，源文件的各种元数据都会保留。比如读、写、执行权限、文件变更时间等。这个特性对于镜像定制很有用。特别是构建相关文件都在使用 Git 进行管理的时候。</p>
 <p>####CMD 容器启动命令</p>
 <p><code>CMD</code> 指令的格式和 <code>RUN</code> 相似，也是两种格式：</p>
@@ -285,15 +285,14 @@ COPY hom?.txt /mydir/
 <p>之前介绍容器的时候曾经说过，Docker 不是虚拟机，<strong>容器就是进程</strong>。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。<code>CMD</code> 指令就是用于指定__默认__的__容器主进程__的__启动命令__的。</p>
 <p>在指令格式上，一般推荐使用 <code>exec</code> 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 <code>&quot;</code>，而不要使用单引号。</p>
 <p>如果使用 <code>shell</code> 格式的话，实际的命令会被包装为 <code>sh -c</code> 的参数的形式进行执行。比如：</p>
-<pre><code>CMD echo $HOME
-
+<pre tabindex="0"><code>CMD echo $HOME
 </code></pre><p>在实际执行中，会将其变更为：</p>
-<pre><code>CMD [ &quot;sh&quot;, &quot;-c&quot;, &quot;echo $HOME&quot; ]
+<pre tabindex="0"><code>CMD [ &#34;sh&#34;, &#34;-c&#34;, &#34;echo $HOME&#34; ]
 </code></pre><h4 id="entrypoint-入口点">ENTRYPOINT 入口点</h4>
 <p><code>ENTRYPOINT</code> 的格式和 <code>RUN</code> 指令格式一样，分为 <code>exec</code> 格式和 <code>shell</code> 格式。</p>
 <p><code>ENTRYPOINT</code> 的目的和 <code>CMD</code> 一样，都是在指定容器启动程序及参数。<code>ENTRYPOINT</code> 在运行时也可以替代，不过比 <code>CMD</code> 要略显繁琐，需要通过 <code>docker run</code> 的参数 <code>--entrypoint</code> 来指定。</p>
 <p>当指定了 <code>ENTRYPOINT</code> 后，<code>CMD</code> 的含义就发生了改变，不再是直接的运行其命令，而是将 <code>CMD</code> 的内容作为参数传给 <code>ENTRYPOINT</code> 指令，换句话说实际执行时，将变为：</p>
-<pre><code>&lt;ENTRYPOINT&gt; &quot;&lt;CMD&gt;&quot;
+<pre tabindex="0"><code>&lt;ENTRYPOINT&gt; &#34;&lt;CMD&gt;&#34;
 </code></pre><h4 id="env-设置环境变量">ENV 设置环境变量</h4>
 <p>格式有两种：</p>
 <ul>
@@ -301,9 +300,8 @@ COPY hom?.txt /mydir/
 <li><code>ENV &lt;key1&gt;=&lt;value1&gt; &lt;key2&gt;=&lt;value2&gt;...</code></li>
 </ul>
 <p>这个指令很简单，就是设置环境变量而已，无论是后面的其它指令，如 <code>RUN</code>，还是运行时的应用，都可以直接使用这里定义的环境变量。</p>
-<pre><code>ENV VERSION=1.0 DEBUG=on \
-    NAME=&quot;Happy Feet&quot;
-
+<pre tabindex="0"><code>ENV VERSION=1.0 DEBUG=on \
+    NAME=&#34;Happy Feet&#34;
 </code></pre><h4 id="arg-构建参数">ARG 构建参数</h4>
 <p>格式：<code>ARG &lt;参数名&gt;[=&lt;默认值&gt;]</code></p>
 <p>构建参数和 <code>ENV</code> 的效果一样，都是设置环境变量。所不同的是，<code>ARG</code> 所设置的构建环境的环境变量，在将来__容器运行时__是__不会存在这些环境变量__的。但是不要因此就使用 <code>ARG</code> 保存密码之类的信息，因为 <code>docker history</code> 还是可以看到所有值的。</p>
@@ -316,11 +314,9 @@ COPY hom?.txt /mydir/
 <li><code>VOLUME &lt;路径&gt;</code></li>
 </ul>
 <p>之前我们说过，容器运行时应该尽量保持容器存储层不发生写操作，对于数据库类需要保存动态数据的应用，其数据库文件应该保存于卷(volume)中，后面的章节我们会进一步介绍 Docker 卷的概念。为了防止运行时用户忘记将动态文件所保存目录挂载为卷，在 <code>Dockerfile</code> 中，我们可以事先指定某些目录挂载为匿名卷，这样在运行时如果用户不指定挂载，其应用也可以正常运行，不会向容器存储层写入大量数据。</p>
-<pre><code>VOLUME /data
-
+<pre tabindex="0"><code>VOLUME /data
 </code></pre><p>这里的 <code>/data</code> 目录就会在运行时自动挂载为匿名卷，任何向 <code>/data</code> 中写入的信息都不会记录进容器存储层，从而保证了容器存储层的无状态化。当然，运行时可以覆盖这个挂载设置。比如：</p>
-<pre><code>docker run -d -v mydata:/data xxxx
-
+<pre tabindex="0"><code>docker run -d -v mydata:/data xxxx
 </code></pre><p>在这行命令中，就使用了 <code>mydata</code> 这个命名卷挂载到了 <code>/data</code> 这个位置，替代了 <code>Dockerfile</code> 中定义的匿名卷的挂载配置。</p>
 <h4 id="expose-声明端口">EXPOSE 声明端口</h4>
 <p>格式为 <code>EXPOSE &lt;端口1&gt; [&lt;端口2&gt;...]</code>。</p>
@@ -335,16 +331,15 @@ COPY hom?.txt /mydir/
 <h3 id="docker-hub">Docker Hub</h3>
 <h4 id="docker-search">docker search</h4>
 <p>查找的时候通过 <code>-s N</code> 参数可以指定仅显示评价为 <code>N</code> 星以上的镜像（新版本Docker推荐使用<code>--filter=stars=N</code>参数）。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker search centos --filter<span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">stars</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">20</span>
-NAME                       DESCRIPTION                  STARS     OFFICIAL   AUTOMATED
-centos                    The official build of CentOS.  <span style="color:#bd93f9">3631</span>      <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>       
-ansible/centos7-ansible   Ansible on Centos7             <span style="color:#bd93f9">101</span>                  <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
-jdeathe/centos-ssh        CentOS-6 6.9 ...               <span style="color:#bd93f9">83</span>                   <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
-tutum/centos              Simple CentOS docker           <span style="color:#bd93f9">33</span>                   
-imagine10255/centos6-lnmp-php56 centos6-lnmp-php56       <span style="color:#bd93f9">30</span>                   <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
-gluster/gluster-centos    Official GlusterFS Image <span style="color:#ff79c6">[</span> CentOS-7 +  Glu... <span style="color:#bd93f9">20</span>    <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
-
-</code></pre></div><h3 id="网络">网络</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>docker search centos --filter<span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">stars</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">20</span>
+</span></span><span style="display:flex;"><span>NAME                       DESCRIPTION                  STARS     OFFICIAL   AUTOMATED
+</span></span><span style="display:flex;"><span>centos                    The official build of CentOS.  <span style="color:#bd93f9">3631</span>      <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>       
+</span></span><span style="display:flex;"><span>ansible/centos7-ansible   Ansible on Centos7             <span style="color:#bd93f9">101</span>                  <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>jdeathe/centos-ssh        CentOS-6 6.9 ...               <span style="color:#bd93f9">83</span>                   <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>tutum/centos              Simple CentOS docker           <span style="color:#bd93f9">33</span>                   
+</span></span><span style="display:flex;"><span>imagine10255/centos6-lnmp-php56 centos6-lnmp-php56       <span style="color:#bd93f9">30</span>                   <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
+</span></span><span style="display:flex;"><span>gluster/gluster-centos    Official GlusterFS Image <span style="color:#ff79c6">[</span> CentOS-7 +  Glu... <span style="color:#bd93f9">20</span>    <span style="color:#ff79c6">[</span>OK<span style="color:#ff79c6">]</span>
+</span></span></code></pre></div><h3 id="网络">网络</h3>
 <h4 id="容器互联">容器互联</h4>
 <p><code>--link</code>参数可以让容器之间安全的进行交互</p>
 <p><code>--link</code> 参数的格式为 <code>--link name:alias</code>，其中 <code>name</code> 是要链接的容器的名称，<code>alias</code> 是这个连接的别名。</p>
@@ -490,8 +485,20 @@ gluster/gluster-centos    Official GlusterFS Image <span style="color:#ff79c6">[
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

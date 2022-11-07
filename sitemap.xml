@@ -2,16 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://jsharkc.github.io/</loc>
-    <lastmod>2022-04-02T17:29:23+80:00</lastmod>
+    <loc>https://jsharkc.github.io/post/centos-install-gitea/</loc>
+    <lastmod>2022-11-07T10:34:00+00:00</lastmod>
   </url><url>
-    <loc>https://jsharkc.github.io/tags/mongo/</loc>
-    <lastmod>2022-04-02T17:29:23+80:00</lastmod>
+    <loc>https://jsharkc.github.io/tags/gitea/</loc>
+    <lastmod>2022-11-07T10:34:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jsharkc.github.io/</loc>
+    <lastmod>2022-11-07T10:34:00+00:00</lastmod>
   </url><url>
     <loc>https://jsharkc.github.io/post/</loc>
-    <lastmod>2022-04-02T17:29:23+80:00</lastmod>
+    <lastmod>2022-11-07T10:34:00+00:00</lastmod>
   </url><url>
     <loc>https://jsharkc.github.io/tags/</loc>
+    <lastmod>2022-11-07T10:34:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jsharkc.github.io/post/centos-install-jenkins/</loc>
+    <lastmod>2022-11-02T16:33:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jsharkc.github.io/tags/jenkins/</loc>
+    <lastmod>2022-11-02T16:33:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jsharkc.github.io/tags/mongo/</loc>
     <lastmod>2022-04-02T17:29:23+80:00</lastmod>
   </url><url>
     <loc>https://jsharkc.github.io/post/mongo-docker-deploy/</loc>
@@ -41,7 +53,7 @@
     <loc>https://jsharkc.github.io/tags/k8s/</loc>
     <lastmod>2021-11-16T11:42:23+80:00</lastmod>
   </url><url>
-    <loc>https://jsharkc.github.io/post/install-k8s-cluster/</loc>
+    <loc>https://jsharkc.github.io/post/k8s-install-cluster/</loc>
     <lastmod>2021-11-16T11:42:23+80:00</lastmod>
   </url><url>
     <loc>https://jsharkc.github.io/post/docker-install-centos7/</loc>

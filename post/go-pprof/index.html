@@ -215,21 +215,21 @@
 <p>对于 <strong>pprof</strong> 的使用要分成下面两部分来说。</p>
 <h2 id="web-程序使用-pprof">Web 程序使用 pprof</h2>
 <p>先写一个简单的 Web 服务程序。程序在 9876 端口上接收请求。</p>
-<pre><code>package main
+<pre tabindex="0"><code>package main
 
 import (
-    &quot;bytes&quot;
-    &quot;io/ioutil&quot;
-    &quot;log&quot;
-    &quot;math/rand&quot;
-    &quot;net/http&quot;
+    &#34;bytes&#34;
+    &#34;io/ioutil&#34;
+    &#34;log&#34;
+    &#34;math/rand&#34;
+    &#34;net/http&#34;
 
-    _ &quot;net/http/pprof&quot;
+    _ &#34;net/http/pprof&#34;
 )
 
 func main() {
-    http.HandleFunc(&quot;/test&quot;, handler)
-    log.Fatal(http.ListenAndServe(&quot;:9876&quot;, nil))
+    http.HandleFunc(&#34;/test&#34;, handler)
+    log.Fatal(http.ListenAndServe(&#34;:9876&#34;, nil))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -259,7 +259,7 @@ func doSomeThingOne(times int) {
 func genSomeBytes() *bytes.Buffer {
     var buff bytes.Buffer
     for i := 1; i &lt; 20000; i++ {
-        buff.Write([]byte{'0' + byte(rand.Intn(10))})
+        buff.Write([]byte{&#39;0&#39; + byte(rand.Intn(10))})
     }
     return &amp;buff
 }
@@ -308,25 +308,25 @@ func genSomeBytes() *bytes.Buffer {
 <p>我们写的 Go 程序并非都是 Web 程序，这时候再使用上面的方法就不行了。</p>
 <p>我们仍然可以使用 <strong>pprof</strong> 工具，但引入的位置为 <code>runtime/pprof</code> 。</p>
 <p>这里贴出两个函数，作为示例：</p>
-<pre><code>// 生成 CPU 报告
+<pre tabindex="0"><code>// 生成 CPU 报告
 func cpuProfile() {
-    f, err := os.OpenFile(&quot;cpu.prof&quot;, os.O_RDWR|os.O_CREATE, 0644)
+    f, err := os.OpenFile(&#34;cpu.prof&#34;, os.O_RDWR|os.O_CREATE, 0644)
     if err != nil {
         log.Fatal(err)
     }
     defer f.Close()
 
-    log.Println(&quot;CPU Profile started&quot;)
+    log.Println(&#34;CPU Profile started&#34;)
     pprof.StartCPUProfile(f)
     defer pprof.StopCPUProfile()
 
     time.Sleep(60 * time.Second)
-    fmt.Println(&quot;CPU Profile stopped&quot;)
+    fmt.Println(&#34;CPU Profile stopped&#34;)
 }
 
 // 生成堆内存报告
 func heapProfile() {
-    f, err := os.OpenFile(&quot;heap.prof&quot;, os.O_RDWR|os.O_CREATE, 0644)
+    f, err := os.OpenFile(&#34;heap.prof&#34;, os.O_RDWR|os.O_CREATE, 0644)
     if err != nil {
         log.Fatal(err)
     }
@@ -335,25 +335,25 @@ func heapProfile() {
     time.Sleep(30 * time.Second)
 
     pprof.WriteHeapProfile(f)
-    fmt.Println(&quot;Heap Profile generated&quot;)
+    fmt.Println(&#34;Heap Profile generated&#34;)
 }
 </code></pre><p>两个函数分别会生成 <code>cpu.prof</code> 和 <code>heap.prof</code> 文件。仍然可以使用 <code>go tool pprof</code> 工具进行分析，在此就不赘述。</p>
 <h2 id="trace-报告">Trace 报告</h2>
 <p>直接贴代码:</p>
-<pre><code>// 生成追踪报告
+<pre tabindex="0"><code>// 生成追踪报告
 func traceProfile() {
-    f, err := os.OpenFile(&quot;trace.out&quot;, os.O_RDWR|os.O_CREATE, 0644)
+    f, err := os.OpenFile(&#34;trace.out&#34;, os.O_RDWR|os.O_CREATE, 0644)
     if err != nil {
         log.Fatal(err)
     }
     defer f.Close()
 
-    log.Println(&quot;Trace started&quot;)
+    log.Println(&#34;Trace started&#34;)
     trace.Start(f)
     defer trace.Stop()
 
     time.Sleep(60 * time.Second)
-    fmt.Println(&quot;Trace stopped&quot;)
+    fmt.Println(&#34;Trace stopped&#34;)
 }
 </code></pre><p>使用工具 <code>go tool trace</code> 进行分析，会得到非常详细的追踪报告，供更深入的程序分析优化。由于报告内容比较复杂，且使用方法类似，就不继续了。读者可自行尝试。</p>
 
@@ -498,8 +498,20 @@ func traceProfile() {
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

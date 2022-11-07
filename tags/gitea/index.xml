@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gitea on Jacobc&#39; Blog</title>
+    <link>https://jsharkc.github.io/tags/gitea/</link>
+    <description>Recent content in Gitea on Jacobc&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 07 Nov 2022 10:34:00 +0000</lastBuildDate><atom:link href="https://jsharkc.github.io/tags/gitea/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CentOS 以 Docker 方式部署 Gitea</title>
+      <link>https://jsharkc.github.io/post/centos-install-gitea/</link>
+      <pubDate>Mon, 07 Nov 2022 10:34:00 +0000</pubDate>
+      
+      <guid>https://jsharkc.github.io/post/centos-install-gitea/</guid>
+      <description>CentOS 以 Docker 方式部署 Gitea 一、下载 Jenkins 镜像 Gitea 提供了标准的容器镜像（gitea/gitea），统一支持 SQLite、MySQL、PostgreSQL 和 SQL Server</description>
+    </item>
+    
+  </channel>
+</rss>

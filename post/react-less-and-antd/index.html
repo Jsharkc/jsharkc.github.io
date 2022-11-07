@@ -210,94 +210,94 @@
                 
                 <h1 id="create-react-app-脚手架添加-less-支持和-antd-样式按需加载">create-react-app 脚手架添加 less 支持和 antd 样式按需加载</h1>
 <h2 id="1-创建项目">1. 创建项目</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install -g create-react-app       /* 安装create-react-app，建议使用cnpm */
-
-create-react-app react-test           /* 使用命令创建应用，myapp为项目名称 */
-
-<span style="color:#8be9fd;font-style:italic">cd</span> react-test                         /* 进入目录，然后启动 */
-
-npm start
-</code></pre></div><h2 id="2create-react-app-把-webpack-配置文件暴露出来">2.create-react-app 把 webpack 配置文件暴露出来</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm install -g create-react-app       /* 安装create-react-app，建议使用cnpm */
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>create-react-app react-test           /* 使用命令创建应用，myapp为项目名称 */
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">cd</span> react-test                         /* 进入目录，然后启动 */
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>npm start
+</span></span></code></pre></div><h2 id="2create-react-app-把-webpack-配置文件暴露出来">2.create-react-app 把 webpack 配置文件暴露出来</h2>
 <p><code>create-react-app</code> 生成的项目文，看不到webpack相关的配置文件，需要先暴露出来，使用如下命令即可：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Shell" data-lang="Shell">npm run eject
-</code></pre></div><h2 id="3-添加-babel-plugin-import">3. 添加 babel-plugin-import</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Shell" data-lang="Shell"><span style="display:flex;"><span>npm run eject
+</span></span></code></pre></div><h2 id="3-添加-babel-plugin-import">3. 添加 babel-plugin-import</h2>
 <p><strong>babel-plugin-import</strong> 是一个用于 <strong>按需加载</strong> <strong>组件代码和样式</strong> 的 <strong>babel</strong> 插件（原理）。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">npm install babel-plugin-import --save-dev
-</code></pre></div><h2 id="4添加-less-less-loader">4.添加 less 、less-loader</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Shell" data-lang="Shell">npm install less less-loader --save-dev
-</code></pre></div><h2 id="5修改-webpack-配置文件">5.修改 webpack 配置文件</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npm install babel-plugin-import --save-dev
+</span></span></code></pre></div><h2 id="4添加-less-less-loader">4.添加 less 、less-loader</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Shell" data-lang="Shell"><span style="display:flex;"><span>npm install less less-loader --save-dev
+</span></span></code></pre></div><h2 id="5修改-webpack-配置文件">5.修改 webpack 配置文件</h2>
 <p>修改 <code>webpack.config.dev.js</code> 和 <code>webpack.config-prod.js</code> 配置文件</p>
 <ul>
 <li><code>test: /\.css$/</code> 改为 <code>/\.(css|less)$/</code></li>
 <li><code>test: /\.css$/</code> 的 <code>use</code> 数组配置增加 <code>less-loader</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js">{
-  test<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">/\.(css|less)$/</span>,
-  use<span style="color:#ff79c6">:</span> [
-    require.resolve(<span style="color:#f1fa8c">&#39;style-loader&#39;</span>),
-    {
-      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;css-loader&#39;</span>),
-      options<span style="color:#ff79c6">:</span> {
-        importLoaders<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">1</span>,
-      },
-    },
-    {
-      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;postcss-loader&#39;</span>),
-      options<span style="color:#ff79c6">:</span> {
-        <span style="color:#6272a4">// Necessary for external CSS imports to work
-</span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// https://github.com/facebookincubator/create-react-app/issues/2677
-</span><span style="color:#6272a4"></span>        ident<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;postcss&#39;</span>,
-        plugins<span style="color:#ff79c6">:</span> () =&gt; [
-          require(<span style="color:#f1fa8c">&#39;postcss-flexbugs-fixes&#39;</span>),
-          autoprefixer({
-            browsers<span style="color:#ff79c6">:</span> [
-              <span style="color:#f1fa8c">&#39;&gt;1%&#39;</span>,
-              <span style="color:#f1fa8c">&#39;last 4 versions&#39;</span>,
-              <span style="color:#f1fa8c">&#39;Firefox ESR&#39;</span>,
-              <span style="color:#f1fa8c">&#39;not ie &lt; 9&#39;</span>, <span style="color:#6272a4">// React doesn&#39;t support IE8 anyway
-</span><span style="color:#6272a4"></span>            ],
-            flexbox<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;no-2009&#39;</span>,
-          }),
-        ],
-      },
-    },
-    {
-      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;less-loader&#39;</span>) <span style="color:#6272a4">// compiles Less to CSS
-</span><span style="color:#6272a4"></span>    }
-  ],
-},
-</code></pre></div><h2 id="6修改-packagejson-文件添加-babelrc-文件">6.修改 package.json 文件，添加 .babelrc 文件</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  test<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">/\.(css|less)$/</span>,
+</span></span><span style="display:flex;"><span>  use<span style="color:#ff79c6">:</span> [
+</span></span><span style="display:flex;"><span>    require.resolve(<span style="color:#f1fa8c">&#39;style-loader&#39;</span>),
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;css-loader&#39;</span>),
+</span></span><span style="display:flex;"><span>      options<span style="color:#ff79c6">:</span> {
+</span></span><span style="display:flex;"><span>        importLoaders<span style="color:#ff79c6">:</span> <span style="color:#bd93f9">1</span>,
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;postcss-loader&#39;</span>),
+</span></span><span style="display:flex;"><span>      options<span style="color:#ff79c6">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// Necessary for external CSS imports to work
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        <span style="color:#6272a4">// https://github.com/facebookincubator/create-react-app/issues/2677
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>        ident<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;postcss&#39;</span>,
+</span></span><span style="display:flex;"><span>        plugins<span style="color:#ff79c6">:</span> () =&gt; [
+</span></span><span style="display:flex;"><span>          require(<span style="color:#f1fa8c">&#39;postcss-flexbugs-fixes&#39;</span>),
+</span></span><span style="display:flex;"><span>          autoprefixer({
+</span></span><span style="display:flex;"><span>            browsers<span style="color:#ff79c6">:</span> [
+</span></span><span style="display:flex;"><span>              <span style="color:#f1fa8c">&#39;&gt;1%&#39;</span>,
+</span></span><span style="display:flex;"><span>              <span style="color:#f1fa8c">&#39;last 4 versions&#39;</span>,
+</span></span><span style="display:flex;"><span>              <span style="color:#f1fa8c">&#39;Firefox ESR&#39;</span>,
+</span></span><span style="display:flex;"><span>              <span style="color:#f1fa8c">&#39;not ie &lt; 9&#39;</span>, <span style="color:#6272a4">// React doesn&#39;t support IE8 anyway
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>            ],
+</span></span><span style="display:flex;"><span>            flexbox<span style="color:#ff79c6">:</span> <span style="color:#f1fa8c">&#39;no-2009&#39;</span>,
+</span></span><span style="display:flex;"><span>          }),
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      loader<span style="color:#ff79c6">:</span> require.resolve(<span style="color:#f1fa8c">&#39;less-loader&#39;</span>) <span style="color:#6272a4">// compiles Less to CSS
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>},
+</span></span></code></pre></div><h2 id="6修改-packagejson-文件添加-babelrc-文件">6.修改 package.json 文件，添加 .babelrc 文件</h2>
 <p>package.json</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Json" data-lang="Json"><span style="color:#f1fa8c">&#34;babel&#34;</span>: {
-    <span style="color:#ff79c6">&#34;presets&#34;</span>: [
-      <span style="color:#f1fa8c">&#34;react-app&#34;</span>
-    ],
-    <span style="color:#ff79c6">&#34;plugins&#34;</span>: [
-      [
-        <span style="color:#f1fa8c">&#34;import&#34;</span>,
-        {
-          <span style="color:#ff79c6">&#34;libraryName&#34;</span>: <span style="color:#f1fa8c">&#34;antd&#34;</span>,
-          <span style="color:#ff79c6">&#34;style&#34;</span>: <span style="color:#ff79c6">true</span>
-        }
-      ]
-    ]
-  },
-</code></pre></div><p>.babelrc</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-   <span style="color:#ff79c6">&#34;presets&#34;</span>: [
-      <span style="color:#f1fa8c">&#34;react-app&#34;</span>
-    ],
-    <span style="color:#ff79c6">&#34;plugins&#34;</span>: [
-      [
-        <span style="color:#f1fa8c">&#34;import&#34;</span>,
-        {
-          <span style="color:#ff79c6">&#34;libraryName&#34;</span>: <span style="color:#f1fa8c">&#34;antd&#34;</span>,
-          <span style="color:#ff79c6">&#34;style&#34;</span>: <span style="color:#ff79c6">true</span>
-        }
-      ]
-    ]
-}
-</code></pre></div><p>然后就可以了，哈哈哈！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Json" data-lang="Json"><span style="display:flex;"><span><span style="color:#f1fa8c">&#34;babel&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;presets&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;react-app&#34;</span>
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;plugins&#34;</span>: [
+</span></span><span style="display:flex;"><span>      [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;import&#34;</span>,
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">&#34;libraryName&#34;</span>: <span style="color:#f1fa8c">&#34;antd&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">&#34;style&#34;</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  },
+</span></span></code></pre></div><p>.babelrc</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#ff79c6">&#34;presets&#34;</span>: [
+</span></span><span style="display:flex;"><span>      <span style="color:#f1fa8c">&#34;react-app&#34;</span>
+</span></span><span style="display:flex;"><span>    ],
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;plugins&#34;</span>: [
+</span></span><span style="display:flex;"><span>      [
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;import&#34;</span>,
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">&#34;libraryName&#34;</span>: <span style="color:#f1fa8c">&#34;antd&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">&#34;style&#34;</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然后就可以了，哈哈哈！</p>
 
 
                 
@@ -435,8 +435,20 @@ npm start
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Jacobc&#39; Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg">
+    <meta property="twitter:image" content="https://jsharkc.github.io//img/home-bg-swide.jpg" />
+    
+
+    
+    <meta name="title" content="CentOS 以 Docker 方式部署 Gitea" />
+    <meta property="og:title" content="CentOS 以 Docker 方式部署 Gitea" />
+    <meta property="twitter:title" content="CentOS 以 Docker 方式部署 Gitea" />
+    
+
+    
+    <meta name="description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。">
+    <meta property="og:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    <meta property="twitter:description" content="刘佳昌，程序员, 开源爱好者，生活探险家 | 这里是 刘佳昌 的博客，与你一起发现更好玩的世界。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="刘佳昌, liujiachang, LiuJiaChang, 刘佳昌的网络日志, 刘佳昌的博客, LiuJiaChang Blog, 博客, 个人网站, 互联网, Web, 云原生, PaaS, Istio, Kubernetes, 微服务, Microservice">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>CentOS 以 Docker 方式部署 Gitea-刘佳昌的博客 | LiuJiaChang&#39; Blog</title>
+
+    <link rel="canonical" href="/post/centos-install-gitea/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jacobc&#39; Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/golang">golang</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/archives/">ARCHIVE</a></li>
+                    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-swide.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/gitea" title="Gitea">
+                            Gitea
+                        </a>
+                        
+                    </div>
+                    <h1>CentOS 以 Docker 方式部署 Gitea</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                jacobc
+                             
+                            on 
+                            Monday, November 7, 2022
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h1 id="centos-以-docker-方式部署-gitea">CentOS 以 Docker 方式部署 Gitea</h1>
+<h2 id="一下载-jenkins-镜像">一、下载 Jenkins 镜像</h2>
+<p><a href="https://gitea.io/">Gitea</a> 提供了标准的容器镜像（<a href="https://hub.docker.com/r/gitea/gitea"><code>gitea/gitea</code></a>），统一支持 SQLite、MySQL、PostgreSQL 和 SQL Server 作为数据库后端。每个版本的镜像同时支持两种主流的处理器体系结构 <code>amd64</code> 和 <code>arm64/v8</code>。</p>
+<h3 id="镜像标签">镜像标签</h3>
+<ul>
+<li>
+<p><strong>最新的稳定版</strong></p>
+<p><code>latest</code></p>
+</li>
+<li>
+<p><strong>固定在某个稳定版</strong></p>
+<p><code>1.17.2</code>, <code>1.17</code>, <code>1</code></p>
+</li>
+<li>
+<p><strong>最新的开发版</strong>，随 Gitea 代码合并同步更新</p>
+<p><code>dev</code></p>
+</li>
+</ul>
+<h3 id="rootless-镜像">Rootless 镜像</h3>
+<p><a href="https://docs.gitea.io/en-us/install-with-docker-rootless/">Rootless 镜像</a>使用 Gitea 内建的 Go SSH 提供 Git 服务，代替了 OpenSSH。</p>
+<p>在选用 rootless 镜像时，加上镜像标签 <code>-rootless</code>。支持的镜像标签如下：</p>
+<ul>
+<li><code>latest-rootless</code>, <code>1-rootless</code></li>
+<li><code>1.17.2-rootless</code></li>
+<li><code>dev-rootless</code></li>
+</ul>
+<h2 id="二使用-docker-compose-启动-gitea">二、使用 Docker-compose 启动 Gitea</h2>
+<p>yaml 文件内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">gitea</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">external</span>: <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">server</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: gitea/gitea:1.17.3
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: gitea
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
+</span></span><span style="display:flex;"><span>      - USER_UID=1000
+</span></span><span style="display:flex;"><span>      - USER_GID=1000
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">restart</span>: always
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>      - gitea
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
+</span></span><span style="display:flex;"><span>      - ./gitea:/data
+</span></span><span style="display:flex;"><span>      - /etc/timezone:/etc/timezone:ro
+</span></span><span style="display:flex;"><span>      - /etc/localtime:/etc/localtime:ro
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;3000:3000&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;222:22&#34;</span>
+</span></span></code></pre></div><p>gitea 需要数据库进行存储数据，支持的存储包括 <code>SQLite</code>、<code>MySQL</code>、<code>PostgreSQL</code> 和 <code>SQL Server</code>。这里以 MySQL 为例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">gitea</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">external</span>: <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">server</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: gitea/gitea:1.17.3
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: gitea
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
+</span></span><span style="display:flex;"><span>      - USER_UID=1000
+</span></span><span style="display:flex;"><span>      - USER_GID=1000
+</span></span><span style="display:flex;"><span>+     - GITEA__database__DB_TYPE=mysql
+</span></span><span style="display:flex;"><span>+     - GITEA__database__HOST=db:3306
+</span></span><span style="display:flex;"><span>+     - GITEA__database__NAME=gitea
+</span></span><span style="display:flex;"><span>+     - GITEA__database__USER=gitea
+</span></span><span style="display:flex;"><span>+     - GITEA__database__PASSWD=gitea
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">restart</span>: always
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">networks</span>:
+</span></span><span style="display:flex;"><span>      - gitea
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
+</span></span><span style="display:flex;"><span>      - ./gitea:/data
+</span></span><span style="display:flex;"><span>      - /etc/timezone:/etc/timezone:ro
+</span></span><span style="display:flex;"><span>      - /etc/localtime:/etc/localtime:ro
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;8083:3000&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f1fa8c">&#34;8082:22&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+    depends_on</span>:
+</span></span><span style="display:flex;"><span>+      - db
+</span></span><span style="display:flex;"><span>+
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+  db</span>:
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+    image</span>: mysql:8
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+    restart</span>: always
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+    environment</span>:
+</span></span><span style="display:flex;"><span>+      - MYSQL_ROOT_PASSWORD=gitea
+</span></span><span style="display:flex;"><span>+      - MYSQL_USER=gitea
+</span></span><span style="display:flex;"><span>+      - MYSQL_PASSWORD=gitea
+</span></span><span style="display:flex;"><span>+      - MYSQL_DATABASE=gitea
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+    networks</span>:
+</span></span><span style="display:flex;"><span>+      - gitea
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">+    volumes</span>:
+</span></span><span style="display:flex;"><span>+      - ./mysql:/var/lib/mysql
+</span></span></code></pre></div><h3 id="启动">启动</h3>
+<p>要基于 <code>docker-compose</code> 启动此设置，请执行 <code>docker-compose up -d</code>，以在后台启动 Gitea。使用 <code>docker-compose ps</code> 将显示 Gitea 是否正确启动。可以使用 <code>docker-compose logs</code> 查看日志。</p>
+<p>要关闭设置，请执行 <code>docker-compose down</code>。这将停止并杀死容器。这些卷将仍然存在。</p>
+<p><strong>注意</strong>：如果在 http 上使用非 3000 端口，请更改 app.ini 以匹配 <code>ROOT_URL = http://localhost:3000/</code>。比如我这里为 <code>8083:3000</code> 即宿主机 <code>8083</code> 端口映射容器内 <code>3000</code> 端口，那么修改 app.ini 中的 <code>ROOT_URL</code> 为 <code>http://localhost:8083</code>，切记不要修改 <code>HTTP_PORT</code> ，因为实际上容器内部服务还是监听的 <code>3000</code> 端口。</p>
+<h2 id="三安装-gitea">三、安装 gitea</h2>
+<p>通过 <code>docker-compose</code> 启动 Docker 安装后，应该可以使用喜欢的浏览器访问 Gitea，以完成安装。访问 http://server-ip:3000 并遵循安装向导。如果数据库是通过上述 <code>docker-compose</code> 设置启动的，请注意，必须将 <code>db</code> 用作数据库主机名。</p>
+<h2 id="环境变量">环境变量</h2>
+<p>您可以通过环境变量配置 Gitea 的一些设置：</p>
+<p>（默认值以<strong>粗体</strong>显示）</p>
+<ul>
+<li><code>APP_NAME</code>：<strong>“Gitea: Git with a cup of tea”</strong>：应用程序名称，在页面标题中使用。</li>
+<li><code>RUN_MODE</code>：<strong>prod</strong>：应用程序运行模式，会影响性能和调试。“dev”，“prod&quot;或&quot;test”。</li>
+<li><code>DOMAIN</code>：<strong>localhost</strong>：此服务器的域名，用于 Gitea UI 中显示的 http 克隆 URL。</li>
+<li><code>SSH_DOMAIN</code>：<strong>localhost</strong>：该服务器的域名，用于 Gitea UI 中显示的 ssh 克隆 URL。如果启用了安装页面，则 SSH 域服务器将采用以下形式的 DOMAIN 值（保存时将覆盖此设置）。</li>
+<li><code>SSH_PORT</code>：<strong>22</strong>：克隆 URL 中显示的 SSH 端口。</li>
+<li><code>SSH_LISTEN_PORT</code>：<strong>%(SSH_PORT)s</strong>：内置 SSH 服务器的端口。</li>
+<li><code>DISABLE_SSH</code>：<strong>false</strong>：如果不可用，请禁用 SSH 功能。如果要禁用 SSH 功能，则在安装 Gitea 时应将 SSH 端口设置为 <code>0</code>。</li>
+<li><code>HTTP_PORT</code>：<strong>3000</strong>：容器内 HTTP 服务监听端口。</li>
+<li><code>ROOT_URL</code>：<strong>&quot;&quot;</strong>：覆盖自动生成的公共 URL。如果内部 URL 和外部 URL 不匹配（例如在 Docker 中），这很有用。</li>
+<li><code>LFS_START_SERVER</code>：<strong>false</strong>：启用 git-lfs 支持。</li>
+<li><code>DB_TYPE</code>：<strong>sqlite3</strong>：正在使用的数据库类型[mysql，postgres，mssql，sqlite3]。</li>
+<li><code>DB_HOST</code>：<strong>localhost:3306</strong>：数据库主机地址和端口。</li>
+<li><code>DB_NAME</code>：<strong>gitea</strong>：数据库名称。</li>
+<li><code>DB_USER</code>：<strong>root</strong>：数据库用户名。</li>
+<li><code>DB_PASSWD</code>：<strong>&quot;<!-- raw HTML omitted -->”</strong> ：数据库用户密码。如果您在密码中使用特殊字符，请使用“您的密码”进行引用。</li>
+<li><code>INSTALL_LOCK</code>：<strong>false</strong>：禁止访问安装页面。</li>
+<li><code>SECRET_KEY</code>：<strong>&quot;&quot;</strong> ：全局密钥。这应该更改。如果它具有一个值并且 <code>INSTALL_LOCK</code> 为空，则 <code>INSTALL_LOCK</code> 将自动设置为 <code>true</code>。</li>
+<li><code>DISABLE_REGISTRATION</code>：<strong>false</strong>：禁用注册，之后只有管理员才能为用户创建帐户。</li>
+<li><code>REQUIRE_SIGNIN_VIEW</code>：<strong>false</strong>：启用此选项可强制用户登录以查看任何页面。</li>
+<li><code>USER_UID</code>：<strong>1000</strong>：在容器内运行 Gitea 的用户的 UID（Unix 用户 ID）。如果使用主机卷，则将其与 <code>/data</code> 卷的所有者的 UID 匹配（对于命名卷，则不需要这样做）。</li>
+<li><code>USER_GID</code>：<strong>1000</strong>：在容器内运行 Gitea 的用户的 GID（Unix 组 ID）。如果使用主机卷，则将其与 <code>/data</code> 卷的所有者的 GID 匹配（对于命名卷，则不需要这样做）。</li>
+</ul>
+<h2 id="自定义">自定义</h2>
+<p><a href="https://docs.gitea.io/zh-cn/customizing-gitea/">此处</a>描述的定制文件应放在 <code>/data/gitea</code> 目录中。如果使用主机卷，则访问这些文件非常容易；对于命名卷，可以通过另一个容器或通过直接访问 <code>/var/lib/docker/volumes/gitea_gitea/_data</code> 来完成。安装后，配置文件将保存在 <code>/data/gitea/conf/app.ini</code> 中。</p>
+<h2 id="升级">升级</h2>
+<p>❗❗ <strong>确保已将数据卷到 Docker 容器外部的某个位置</strong> ❗❗</p>
+<p>要将安装升级到最新版本：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># Edit `docker-compose.yml` to update the version, if you have one specified</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Pull new images</span>
+</span></span><span style="display:flex;"><span>docker-compose pull
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Start a new container, automatically removes old one</span>
+</span></span><span style="display:flex;"><span>docker-compose up -d
+</span></span></code></pre></div><h2 id="使用环境变量管理部署">使用环境变量管理部署</h2>
+<p>除了上面的环境变量之外，<code>app.ini</code> 中的任何设置都可以使用以下形式的环境变量进行设置或覆盖：<code>GITEA__SECTION_NAME__KEY_NAME</code>。 每次 docker 容器启动时都会应用这些设置。 完整信息在<a href="https://github.com/go-gitea/gitea/tree/master/contrib/environment-to-ini">这里</a>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>services:
+</span></span><span style="display:flex;"><span>  server:
+</span></span><span style="display:flex;"><span>    environment:
+</span></span><span style="display:flex;"><span>    - <span style="color:#8be9fd;font-style:italic">GITEA__mailer__ENABLED</span><span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">true</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#8be9fd;font-style:italic">GITEA__mailer__FROM</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">GITEA__mailer__FROM</span>:?GITEA__mailer__FROM not set<span style="color:#f1fa8c">}</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#8be9fd;font-style:italic">GITEA__mailer__MAILER_TYPE</span><span style="color:#ff79c6">=</span>smtp
+</span></span><span style="display:flex;"><span>    - <span style="color:#8be9fd;font-style:italic">GITEA__mailer__HOST</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">GITEA__mailer__HOST</span>:?GITEA__mailer__HOST not set<span style="color:#f1fa8c">}</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#8be9fd;font-style:italic">GITEA__mailer__IS_TLS_ENABLED</span><span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">true</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#8be9fd;font-style:italic">GITEA__mailer__USER</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">GITEA__mailer__USER</span><span style="color:#ff79c6">:-</span><span style="color:#8be9fd;font-style:italic">apikey</span><span style="color:#f1fa8c">}</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#8be9fd;font-style:italic">GITEA__mailer__PASSWD</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;&#34;&#34;</span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">GITEA__mailer__PASSWD</span>:?GITEA__mailer__PASSWD not set<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">&#34;&#34;&#34;</span>
+</span></span></code></pre></div><p>Gitea 将为每次新安装自动生成新的 <code>SECRET_KEY</code> 并将它们写入 <code>app.ini</code>。 如果您想手动设置 <code>SECRET_KEY</code>，您可以使用以下 docker 命令来使用 Gitea 内置的<a href="https://docs.gitea.io/en-us/command-line/#generate">方法</a>生成 <code>SECRET_KEY</code>。 安装后请妥善保管您的 <code>SECRET_KEY</code>，如若丢失则无法解密已加密的数据。</p>
+<p>以下命令将向 <code>stdout</code> 输出一个新的 <code>SECRET_KEY</code> 和 <code>INTERNAL_TOKEN</code>，然后您可以将其放入环境变量中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -it --rm gitea/gitea:1 gitea generate secret SECRET_KEY
+</span></span><span style="display:flex;"><span>docker run -it --rm  gitea/gitea:1 gitea generate secret INTERNAL_TOKEN
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">server</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
+</span></span><span style="display:flex;"><span>      - GITEA__security__SECRET_KEY=[value returned by generate secret SECRET_KEY]
+</span></span><span style="display:flex;"><span>      - GITEA__security__INTERNAL_TOKEN=[value returned by generate secret INTERNAL_TOKEN]
+</span></span></code></pre></div><h2 id="ssh-容器直通">SSH 容器直通</h2>
+<p>由于 SSH 在容器内运行，因此，如果需要 SSH 支持，则需要将 SSH 从主机传递到容器。一种选择是在非标准端口上运行容器 SSH（或将主机端口移至非标准端口）。另一个可能更直接的选择是将 SSH 连接从主机转发到容器。下面将说明此设置。</p>
+<p>本指南假定您已经在名为 <code>git</code> 的主机上创建了一个用户，该用户与容器值 <code>USER_UID</code>/<code>USER_GID</code> 共享相同的 <code>UID</code>/<code>GID</code>。这些值可以在 <code>docker-compose.yml</code> 中设置为环境变量：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>environment:
+</span></span><span style="display:flex;"><span>  - <span style="color:#8be9fd;font-style:italic">USER_UID</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1000</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#8be9fd;font-style:italic">USER_GID</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">1000</span>
+</span></span></code></pre></div><p>接下来将主机的 <code>/home/git/.ssh</code> 装入容器。否则，SSH 身份验证将无法在容器内运行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>volumes:
+</span></span><span style="display:flex;"><span>  - /home/git/.ssh/:/data/git/.ssh
+</span></span></code></pre></div><p>现在，需要在主机上创建 SSH 密钥对。该密钥对将用于向主机验证主机上的 <code>git</code> 用户。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -u git ssh-keygen -t rsa -b <span style="color:#bd93f9">4096</span> -C <span style="color:#f1fa8c">&#34;Gitea Host Key&#34;</span>
+</span></span></code></pre></div><p>在下一步中，需要在主机上创建一个名为 <code>/usr/local/bin/gitea</code> 的文件（具有可执行权限）。该文件将发出从主机到容器的 SSH 转发。将以下内容添加到 <code>/usr/local/bin/gitea</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh -p <span style="color:#bd93f9">2222</span> -o <span style="color:#8be9fd;font-style:italic">StrictHostKeyChecking</span><span style="color:#ff79c6">=</span>no git@127.0.0.1 <span style="color:#f1fa8c">&#34;SSH_ORIGINAL_COMMAND=\&#34;</span><span style="color:#8be9fd;font-style:italic">$SSH_ORIGINAL_COMMAND</span><span style="color:#f1fa8c">\&#34; </span><span style="color:#8be9fd;font-style:italic">$0</span><span style="color:#f1fa8c"> </span><span style="color:#8be9fd;font-style:italic">$@</span><span style="color:#f1fa8c">&#34;</span>
+</span></span></code></pre></div><p>为了使转发正常工作，需要将容器（22）的 SSH 端口映射到 <code>docker-compose.yml</code> 中的主机端口 2222。由于此端口不需要暴露给外界，因此可以将其映射到主机的 <code>localhost</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ports:
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># [...]</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f1fa8c">&#34;127.0.0.1:2222:22&#34;</span>
+</span></span></code></pre></div><p>另外，主机上的 <code>/home/git/.ssh/authorized_keys</code> 需要修改。它需要以与 Gitea 容器内的 <code>authorized_keys</code> 相同的方式进行操作。因此，将您在上面创建的密钥（“Gitea 主机密钥”）的公共密钥添加到 <code>~/git/.ssh/authorized_keys</code>。这可以通过 <code>echo &quot;$(cat /home/git/.ssh/id_rsa.pub)&quot; &gt;&gt; /home/git/.ssh/authorized_keys</code> 完成。重要提示：来自 <code>git</code> 用户的公钥需要“按原样”添加，而通过 Gitea 网络界面添加的所有其他公钥将以 <code>command=&quot;/app [...]</code> 作为前缀。</p>
+<p>该文件应该看起来像：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#6272a4"># SSH pubkey from git user</span>
+</span></span><span style="display:flex;"><span>ssh-rsa &lt;Gitea Host Key&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># other keys from users</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">command</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/usr/local/bin/gitea --config=/data/gitea/conf/app.ini serv key-1&#34;</span>,no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty &lt;user pubkey&gt;
+</span></span></code></pre></div><p>这是详细的说明，当发出 SSH 请求时会发生什么：</p>
+<ol>
+<li>使用 <code>git</code> 用户向主机发出 SSH 请求，例如 <code>git clone git@domain:user/repo.git</code>。</li>
+<li>在 <code>/home/git/.ssh/authorized_keys</code> 中，该命令执行 <code>/usr/local/bin/gitea</code> 脚本。</li>
+<li><code>/usr/local/bin/gitea</code> 将 SSH 请求转发到端口 2222，该端口已映射到容器的 SSH 端口（22）。</li>
+<li>由于 <code>/home/git/.ssh/authorized_keys</code> 中存在 <code>git</code> 用户的公钥，因此身份验证主机 → 容器成功，并且 SSH 请求转发到在 docker 容器中运行的 Gitea。</li>
+</ol>
+<p>如果在 Gitea Web 界面中添加了新的 SSH 密钥，它将以与现有密钥相同的方式附加到 <code>.ssh/authorized_keys</code> 中。</p>
+<p><strong>注意</strong></p>
+<p>SSH 容器直通仅在以下情况下有效</p>
+<ul>
+<li>在容器中使用 <code>opensshd</code></li>
+<li>如果未将 <code>AuthorizedKeysCommand</code> 与 <code>SSH_CREATE_AUTHORIZED_KEYS_FILE = false</code> 结合使用以禁用授权文件密钥生成</li>
+<li><code>LOCAL_ROOT_URL</code> 不变</li>
+</ul>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://jsharkc.github.io/"><img src="/img/favicon.png" />Jacobc&#39; Blog</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/centos-install-jenkins/" data-toggle="tooltip" data-placement="top" title="CentOS 以 Docker 方式部署 Jenkins">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/android" title="android">
+                            android
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/centos" title="centos">
+                            centos
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/charles" title="charles">
+                            charles
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cobra" title="cobra">
+                            cobra
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/cockroach" title="cockroach">
+                            cockroach
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/docker" title="docker">
+                            docker
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/flutter" title="flutter">
+                            flutter
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/git" title="git">
+                            git
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/golang" title="golang">
+                            golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/k8s" title="k8s">
+                            k8s
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/linux" title="linux">
+                            linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mac" title="mac">
+                            mac
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mongo" title="mongo">
+                            mongo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/mysql" title="mysql">
+                            mysql
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/oh-my-zsh" title="oh-my-zsh">
+                            oh-my-zsh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/react" title="react">
+                            react
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/termux" title="termux">
+                            termux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%90%8E%E7%AB%AF" title="后端">
+                            后端
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8" title="服务器">
+                            服务器
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E7%BA%BF%E7%A8%8B" title="线程">
+                            线程
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BD%AF%E4%BB%B6" title="软件">
+                            软件
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E8%BF%9B%E7%A8%8B" title="进程">
+                            进程
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="https://hugo-pages.vercel.app">cengchengjie的博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:liu666888@111.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    
+                    
+
+		            
+                    
+                    <li>
+                        <a target="_blank" href="/liu1773867204">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-weixin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Jsharkc">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Jacobc&#39; Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Jacobc&#39; Blog 2022
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+</body>
+</html>

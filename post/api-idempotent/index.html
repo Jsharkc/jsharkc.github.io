@@ -312,8 +312,8 @@
 <h4 id="52-状态机幂等">5.2 状态机幂等</h4>
 <p>很多业务表是有状态的，比如转账流水表，就会有<code>0-待处理，1-处理中、2-成功、3-失败</code> 等状态。转账流水更新的时候，都会涉及流水状态更新，即涉及状态机 (即状态变更图)。我们可以利用状态机实现幂等，一起来看下它是怎么实现的。</p>
 <p>假设设计一个转账后的回调接口，把<strong>处理中</strong>的转账流水更新为<strong>成功</strong>状态，SQL这么写：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">update</span> transfr_flow <span style="color:#ff79c6">set</span> status<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span> <span style="color:#ff79c6">where</span> order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;10126&#39;</span> <span style="color:#ff79c6">and</span> status<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>;
-</code></pre></div><p>状态机是怎么<strong>实现幂等</strong>的呢？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#ff79c6">update</span> transfr_flow <span style="color:#ff79c6">set</span> status<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span> <span style="color:#ff79c6">where</span> order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;10126&#39;</span> <span style="color:#ff79c6">and</span> status<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>;
+</span></span></code></pre></div><p>状态机是怎么<strong>实现幂等</strong>的呢？</p>
 <ul>
 <li>第1次请求来时，order_id 是 <code>10126</code>，该流水的状态是处理中，值是 <code>1 </code>，要更新为<code>2-成功的状态 </code>，所以该 update 语句可以正常更新数据，sql执行结果的影响行数是1，流水状态最后变成了2。</li>
 <li>第2请求也过来了，它的订单号号还是 <code>10126 </code>，因为该流水状态已经<code>2-成功的状态 </code>了，所以更新结果是0，不会再处理业务逻辑，接口直接返回成功。</li>
@@ -331,10 +331,10 @@
 <p>就是给表的加多一列<code>version</code>版本号，每次更新记录<code>version</code>都升级一下（<code>version=version+1</code>）。具体流程就是先查出当前的版本号<code>version</code>，然后去更新修改数据时，确认下是不是刚刚查出的版本号，如果是才执行更新</p>
 </blockquote>
 <p>比如，我们更新前，先查下数据，查出的版本号是<code>version =1</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ff79c6">select</span> order_id，version <span style="color:#ff79c6">from</span> <span style="color:#ff79c6">order</span> <span style="color:#ff79c6">where</span> order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;666&#39;</span>；
-</code></pre></div><p>然后使用<code>version =1 </code>和<code>订单Id</code>一起作为条件，再去更新</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ff79c6">update</span> <span style="color:#ff79c6">order</span> <span style="color:#8be9fd">set</span> version <span style="color:#ff79c6">=</span> version <span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>，status<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;P&#39;</span> <span style="color:#ff79c6">where</span>  order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;666&#39;</span> <span style="color:#ff79c6">and</span> version <span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>
-</code></pre></div><p>最后更新成功，才可以处理业务逻辑，如果更新失败，默认为重复请求，直接返回。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#ff79c6">select</span> order_id，version <span style="color:#ff79c6">from</span> <span style="color:#ff79c6">order</span> <span style="color:#ff79c6">where</span> order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;666&#39;</span>；
+</span></span></code></pre></div><p>然后使用<code>version =1 </code>和<code>订单Id</code>一起作为条件，再去更新</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#ff79c6">update</span> <span style="color:#ff79c6">order</span> <span style="color:#8be9fd">set</span> version <span style="color:#ff79c6">=</span> version <span style="color:#ff79c6">+</span><span style="color:#bd93f9">1</span>，status<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;P&#39;</span> <span style="color:#ff79c6">where</span>  order_id<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;666&#39;</span> <span style="color:#ff79c6">and</span> version <span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>
+</span></span></code></pre></div><p>最后更新成功，才可以处理业务逻辑，如果更新失败，默认为重复请求，直接返回。</p>
 
 
                 
@@ -477,8 +477,20 @@
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

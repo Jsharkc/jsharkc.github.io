@@ -214,7 +214,7 @@
                 
                 <h2 id="查看安装-zsh">查看、安装 zsh</h2>
 <p>查看是否安装了 zsh</p>
-<pre><code># 方法一：
+<pre tabindex="0"><code># 方法一：
 chsh -l
 # 方法二：
 cat /etc/shells
@@ -228,43 +228,43 @@ cat /etc/shells
 /bin/zsh
 # 如果有 /bin/zsh 代表已经安装，反之则没有
 </code></pre><p>安装 zsh</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y zsh
-</code></pre></div><p>切换 shell 为 zsh</p>
-<pre><code>chsh -s /bin/zsh
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install -y zsh
+</span></span></code></pre></div><p>切换 shell 为 zsh</p>
+<pre tabindex="0"><code>chsh -s /bin/zsh
 </code></pre><h2 id="安装-oh-my-zsh">安装 oh-my-zsh</h2>
 <p>安装需要 <code>git</code>，没有安装需要先安装：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y git
-</code></pre></div><p>1、可以通过别人已经写好的脚本安装，用 <code>curl</code> 或者 <code>wget</code> 下载脚本来安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install -y git
+</span></span></code></pre></div><p>1、可以通过别人已经写好的脚本安装，用 <code>curl</code> 或者 <code>wget</code> 下载脚本来安装：</p>
 <ul>
 <li>通过 <code>curl</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span>
+</span></span></code></pre></div><ul>
 <li>通过 <code>wget</code></li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span>
-</code></pre></div><p>2、也可以自己用 <code>git</code> 安装</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span>
+</span></span></code></pre></div><p>2、也可以自己用 <code>git</code> 安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+</span></span><span style="display:flex;"><span>cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+</span></span></code></pre></div><blockquote>
 <p>国内用户可通过以下命令:</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh
-cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc;
-</code></pre></div><h2 id="查看修改主题">查看、修改主题</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh
+</span></span><span style="display:flex;"><span>cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc;
+</span></span></code></pre></div><h2 id="查看修改主题">查看、修改主题</h2>
 <p>可以选择自己喜欢的主题，查看主题命令如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ls ~/.oh-my-zsh/themes
-</code></pre></div><p>修改主题</p>
-<pre><code>vim ~/.zshrc
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ls ~/.oh-my-zsh/themes
+</span></span></code></pre></div><p>修改主题</p>
+<pre tabindex="0"><code>vim ~/.zshrc
 # 找到 ZSH_THEME 行，修改为自己想用的主题名称即可
 </code></pre><p>默认的主题是 <code>ZSH_THEME=&quot;robbyrussell&quot;</code> ，改成自己喜欢的即可，也可以用我自定义的一个主题，安装方法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>curl -fsSL https://raw.githubusercontent.com/Jsharkc/jacobin-zsh-theme/master/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span> 
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>curl -fsSL https://raw.githubusercontent.com/Jsharkc/jacobin-zsh-theme/master/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span> 
+</span></span></code></pre></div><blockquote>
 <p>国内用户:</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>curl -fsSL https://gitee.com/jsharkc/jacobin-zsh-theme/raw/master/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span>
-<span style="color:#8be9fd;font-style:italic">source</span> ~/.zshrc
-</code></pre></div><p><strong>截图</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sh -c <span style="color:#f1fa8c">&#34;</span><span style="color:#ff79c6">$(</span>curl -fsSL https://gitee.com/jsharkc/jacobin-zsh-theme/raw/master/install.sh<span style="color:#ff79c6">)</span><span style="color:#f1fa8c">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">source</span> ~/.zshrc
+</span></span></code></pre></div><p><strong>截图</strong></p>
 <p>
   <img src="https://user-images.githubusercontent.com/17465198/69112005-2938bb00-0aba-11ea-8c16-12fb9181b93f.png" alt="image">
 
@@ -275,37 +275,37 @@ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc;
 <ol>
 <li>下载该插件到<code>.oh-my-zsh</code>的插件目录</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">git clone https://github.com/zsh-users/zsh-autosuggestions.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-autosuggestions
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone https://github.com/zsh-users/zsh-autosuggestions.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-autosuggestions
+</span></span></code></pre></div><blockquote>
 <p>国内用户:</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://gitee.com/jsharkc/zsh-autosuggestions.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-autosuggestions
-</code></pre></div><ol start="2">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://gitee.com/jsharkc/zsh-autosuggestions.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-autosuggestions
+</span></span></code></pre></div><ol start="2">
 <li>编辑<code>.zshrc</code>文件</li>
 </ol>
 <p>找到 <code>plugins=</code> 这一行，添加 <code>zsh-autosuggestions</code>，例如：</p>
-<pre><code>plugins=(
+<pre tabindex="0"><code>plugins=(
   git
   zsh-autosuggestions
 )
 </code></pre><ol start="3">
 <li>使插件生效</li>
 </ol>
-<pre><code>source ~/.zshrc
+<pre tabindex="0"><code>source ~/.zshrc
 </code></pre><h3 id="语法高亮插件-zsh-syntax-highlighting">语法高亮插件 <code>zsh-syntax-highlighting</code></h3>
 <ol>
 <li>下载该插件到<code>.oh-my-zsh</code>的插件目录</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-syntax-highlighting
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-syntax-highlighting
+</span></span></code></pre></div><blockquote>
 <p>国内用户:</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://gitee.com/jsharkc/zsh-syntax-highlighting.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-syntax-highlighting
-</code></pre></div><ol start="2">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://gitee.com/jsharkc/zsh-syntax-highlighting.git <span style="color:#8be9fd;font-style:italic">$ZSH_CUSTOM</span>/plugins/zsh-syntax-highlighting
+</span></span></code></pre></div><ol start="2">
 <li>编辑<code>.zshrc</code>文件</li>
 </ol>
 <p>找到 <code>plugins=</code> 这一行，添加 <code>zsh-syntax-highlighting</code>，例如：</p>
-<pre><code>plugins=(
+<pre tabindex="0"><code>plugins=(
   git
   zsh-autosuggestions
   zsh-syntax-highlighting
@@ -313,7 +313,7 @@ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc;
 </code></pre><ol start="3">
 <li>使插件生效</li>
 </ol>
-<pre><code>source ~/.zshrc
+<pre tabindex="0"><code>source ~/.zshrc
 </code></pre><p>想了解更多 <code>oh-my-zsh</code> 内容请前往 <a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a></p>
 
 
@@ -457,8 +457,20 @@ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc;
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

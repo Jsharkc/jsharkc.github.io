@@ -211,91 +211,90 @@
                 <h1 id="flutter-返回按钮返回桌面">Flutter 返回按钮返回桌面</h1>
 <p>想实现点击返回按钮，直接返回桌面，本想 flutter 有方法的话，直接用，然而好像没有，所以采用调用本地方法返回桌面</p>
 <h2 id="android-端-mainactivity-代码如下">Android 端 MainActivity 代码如下</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#ff79c6">package</span> com.dreamreal.example<span style="color:#ff79c6">;</span>
-
-<span style="color:#ff79c6">import</span> android.os.Bundle<span style="color:#ff79c6">;</span>
-<span style="color:#ff79c6">import</span> io.flutter.app.FlutterActivity<span style="color:#ff79c6">;</span>
-<span style="color:#ff79c6">import</span> io.flutter.plugin.common.MethodChannel<span style="color:#ff79c6">;</span>
-<span style="color:#ff79c6">import</span> io.flutter.plugins.GeneratedPluginRegistrant<span style="color:#ff79c6">;</span>
-
-<span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MainActivity</span> <span style="color:#8be9fd;font-style:italic">extends</span> FlutterActivity <span style="color:#ff79c6">{</span>
-    <span style="color:#6272a4">// 字符串常量，回到手机桌面
-</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> String chanel <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;back/desktop&#34;</span><span style="color:#ff79c6">;</span>
-    <span style="color:#6272a4">// 返回到桌面事件
-</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String backDesktopEvent <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;backDesktop&#34;</span><span style="color:#ff79c6">;</span>
-
-    @Override
-    <span style="color:#8be9fd;font-style:italic">protected</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onCreate</span><span style="color:#ff79c6">(</span>Bundle savedInstanceState<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-        <span style="color:#8be9fd;font-style:italic">super</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">onCreate</span><span style="color:#ff79c6">(</span>savedInstanceState<span style="color:#ff79c6">);</span>
-        GeneratedPluginRegistrant<span style="color:#ff79c6">.</span><span style="color:#50fa7b">registerWith</span><span style="color:#ff79c6">(</span><span style="color:#ff79c6">this</span><span style="color:#ff79c6">);</span>
-
-        MethodChannel<span style="color:#ff79c6">(</span>getFlutterView<span style="color:#ff79c6">(),</span> chanel<span style="color:#ff79c6">).</span><span style="color:#50fa7b">setMethodCallHandler</span><span style="color:#ff79c6">(</span>
-          <span style="color:#ff79c6">(</span>methodCall<span style="color:#ff79c6">,</span> result<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">-&gt;</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>methodCall<span style="color:#ff79c6">.</span><span style="color:#50fa7b">method</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span>backDesktopEvent<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
-              moveTaskToBack<span style="color:#ff79c6">(</span><span style="color:#ff79c6">false</span><span style="color:#ff79c6">);</span>
-              result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">success</span><span style="color:#ff79c6">(</span><span style="color:#ff79c6">true</span><span style="color:#ff79c6">);</span>
-            <span style="color:#ff79c6">}</span>
-          <span style="color:#ff79c6">}</span>
-        <span style="color:#ff79c6">);</span>
-    <span style="color:#ff79c6">}</span>
-  
-<span style="color:#ff79c6">}</span>
-</code></pre></div><p>如果是 kotlin 的话，如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-kotlin" data-lang="kotlin"><span style="color:#ff79c6">package</span> com.dreamreal.example
-
-<span style="color:#ff79c6">import</span> android.os.Bundle
-
-<span style="color:#ff79c6">import</span> io.flutter.app.FlutterActivity
-<span style="color:#ff79c6">import</span> io.flutter.plugins.GeneratedPluginRegistrant
-<span style="color:#ff79c6">import</span> io.flutter.plugin.common.MethodChannel
-
-<span style="color:#ff79c6">class</span> <span style="color:#50fa7b">MainActivity</span>: FlutterActivity() {
-  <span style="color:#6272a4">// 字符串常量，回到手机桌面
-</span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">private</span> <span style="color:#ff79c6">final</span> <span style="color:#ff79c6">val</span> channel = <span style="color:#f1fa8c">&#34;back/desktop&#34;</span>;
-  <span style="color:#6272a4">// 返回到桌面事件
-</span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">private</span> <span style="color:#ff79c6">final</span> <span style="color:#ff79c6">val</span> backDesktopEvent = <span style="color:#f1fa8c">&#34;backDesktop&#34;</span>;
-
-  <span style="color:#ff79c6">override</span> <span style="color:#ff79c6">fun</span> <span style="color:#50fa7b">onCreate</span>(savedInstanceState: Bundle?) {
-    <span style="color:#ff79c6">super</span>.onCreate(savedInstanceState)
-    GeneratedPluginRegistrant.registerWith(<span style="color:#ff79c6">this</span>)
-
-    MethodChannel(flutterView, channel).setMethodCallHandler { methodCall, result <span style="color:#ff79c6">-&gt;</span>
-      <span style="color:#ff79c6">if</span> (methodCall.method.equals(backDesktopEvent)) {
-        moveTaskToBack(<span style="color:#ff79c6">false</span>);
-        result.success(<span style="color:#ff79c6">true</span>);
-      }
-    }
-  }
-}
-
-</code></pre></div><h2 id="flutter-端代码如下">Flutter 端代码如下</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dart" data-lang="dart"><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#39;package:flutter/services.dart&#39;</span>;
-<span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#39;package:flutter/material.dart&#39;</span>;
-
-<span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">BackDesktop</span> {
-  <span style="color:#6272a4">// 字符串常量，回到手机桌面
-</span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">const</span> <span style="color:#8be9fd">String</span> chanel <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;back/desktop&#34;</span>;
-
-  <span style="color:#6272a4">// 返回到桌面事件
-</span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">const</span> <span style="color:#8be9fd">String</span> backDesktopEvent <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;backDesktop&#34;</span>;
-
-  <span style="color:#6272a4">// 返回到桌面方法
-</span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">static</span> Future<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">bool</span><span style="color:#ff79c6">&gt;</span> backDesktop() <span style="color:#8be9fd;font-style:italic">async</span> {
-    <span style="color:#8be9fd;font-style:italic">final</span> platform <span style="color:#ff79c6">=</span> MethodChannel(chanel);
-    <span style="color:#ff79c6">try</span> {
-      <span style="color:#8be9fd;font-style:italic">await</span> platform.invokeMethod(backDesktopEvent);
-    } on PlatformException <span style="color:#ff79c6">catch</span> (e) {
-      debugPrint(e.toString());
-    }
-    <span style="color:#ff79c6">return</span> Future.value(<span style="color:#ff79c6">false</span>);
-  }
-}
-</code></pre></div><h2 id="调用时如下">调用时如下</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dart" data-lang="dart">WillPopScope(
-  <span style="color:#8be9fd;font-style:italic">onWillPop:</span> BackDesktop.backDesktop, 
-  <span style="color:#8be9fd;font-style:italic">child:</span> 「这里是你需要拦截返回按钮的页面」
-);
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> com.dreamreal.example<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> android.os.Bundle<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> io.flutter.app.FlutterActivity<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> io.flutter.plugin.common.MethodChannel<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> io.flutter.plugins.GeneratedPluginRegistrant<span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MainActivity</span> <span style="color:#8be9fd;font-style:italic">extends</span> FlutterActivity <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 字符串常量，回到手机桌面
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> String chanel <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;back/desktop&#34;</span><span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 返回到桌面事件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">final</span> String backDesktopEvent <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;backDesktop&#34;</span><span style="color:#ff79c6">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    @Override
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">protected</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">onCreate</span><span style="color:#ff79c6">(</span>Bundle savedInstanceState<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8be9fd;font-style:italic">super</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">onCreate</span><span style="color:#ff79c6">(</span>savedInstanceState<span style="color:#ff79c6">);</span>
+</span></span><span style="display:flex;"><span>        GeneratedPluginRegistrant<span style="color:#ff79c6">.</span><span style="color:#50fa7b">registerWith</span><span style="color:#ff79c6">(</span><span style="color:#ff79c6">this</span><span style="color:#ff79c6">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        MethodChannel<span style="color:#ff79c6">(</span>getFlutterView<span style="color:#ff79c6">(),</span> chanel<span style="color:#ff79c6">).</span><span style="color:#50fa7b">setMethodCallHandler</span><span style="color:#ff79c6">(</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">(</span>methodCall<span style="color:#ff79c6">,</span> result<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">-&gt;</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>methodCall<span style="color:#ff79c6">.</span><span style="color:#50fa7b">method</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span>backDesktopEvent<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+</span></span><span style="display:flex;"><span>              moveTaskToBack<span style="color:#ff79c6">(</span><span style="color:#ff79c6">false</span><span style="color:#ff79c6">);</span>
+</span></span><span style="display:flex;"><span>              result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">success</span><span style="color:#ff79c6">(</span><span style="color:#ff79c6">true</span><span style="color:#ff79c6">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">}</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">}</span>
+</span></span></code></pre></div><p>如果是 kotlin 的话，如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> com.dreamreal.example
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> android.os.Bundle
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> io.flutter.app.FlutterActivity
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> io.flutter.plugins.GeneratedPluginRegistrant
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> io.flutter.plugin.common.MethodChannel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">class</span> <span style="color:#50fa7b">MainActivity</span>: FlutterActivity() {
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 字符串常量，回到手机桌面
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">private</span> <span style="color:#ff79c6">final</span> <span style="color:#ff79c6">val</span> channel = <span style="color:#f1fa8c">&#34;back/desktop&#34;</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 返回到桌面事件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#ff79c6">private</span> <span style="color:#ff79c6">final</span> <span style="color:#ff79c6">val</span> backDesktopEvent = <span style="color:#f1fa8c">&#34;backDesktop&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">override</span> <span style="color:#ff79c6">fun</span> <span style="color:#50fa7b">onCreate</span>(savedInstanceState: Bundle?) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">super</span>.onCreate(savedInstanceState)
+</span></span><span style="display:flex;"><span>    GeneratedPluginRegistrant.registerWith(<span style="color:#ff79c6">this</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    MethodChannel(flutterView, channel).setMethodCallHandler { methodCall, result <span style="color:#ff79c6">-&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">if</span> (methodCall.method.equals(backDesktopEvent)) {
+</span></span><span style="display:flex;"><span>        moveTaskToBack(<span style="color:#ff79c6">false</span>);
+</span></span><span style="display:flex;"><span>        result.success(<span style="color:#ff79c6">true</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="flutter-端代码如下">Flutter 端代码如下</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dart" data-lang="dart"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#39;package:flutter/services.dart&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#39;package:flutter/material.dart&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">BackDesktop</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 字符串常量，回到手机桌面
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">const</span> <span style="color:#8be9fd">String</span> chanel <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;back/desktop&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 返回到桌面事件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd;font-style:italic">const</span> <span style="color:#8be9fd">String</span> backDesktopEvent <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;backDesktop&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 返回到桌面方法
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">static</span> Future<span style="color:#ff79c6">&lt;</span><span style="color:#8be9fd">bool</span><span style="color:#ff79c6">&gt;</span> backDesktop() <span style="color:#8be9fd;font-style:italic">async</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">final</span> platform <span style="color:#ff79c6">=</span> MethodChannel(chanel);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">try</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#8be9fd;font-style:italic">await</span> platform.invokeMethod(backDesktopEvent);
+</span></span><span style="display:flex;"><span>    } on PlatformException <span style="color:#ff79c6">catch</span> (e) {
+</span></span><span style="display:flex;"><span>      debugPrint(e.toString());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> Future.value(<span style="color:#ff79c6">false</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="调用时如下">调用时如下</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dart" data-lang="dart"><span style="display:flex;"><span>WillPopScope(
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">onWillPop:</span> BackDesktop.backDesktop, 
+</span></span><span style="display:flex;"><span>  <span style="color:#8be9fd;font-style:italic">child:</span> 「这里是你需要拦截返回按钮的页面」
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div>
 
                 
                 
@@ -437,8 +436,20 @@
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

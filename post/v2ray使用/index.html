@@ -210,36 +210,36 @@
                 
                 <h2 id="install-v2ray-core">Install v2ray-core</h2>
 <p>step 1: Add official tap</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Shell" data-lang="Shell">brew tap v2ray/v2ray
-</code></pre></div><p>step 2: Install v2ray-core:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">brew install v2ray-core
-</code></pre></div><h2 id="update-v2ray-core">Update v2ray-core</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Shell" data-lang="Shell"><span style="display:flex;"><span>brew tap v2ray/v2ray
+</span></span></code></pre></div><p>step 2: Install v2ray-core:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>brew install v2ray-core
+</span></span></code></pre></div><h2 id="update-v2ray-core">Update v2ray-core</h2>
 <p>step 1: update tap</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">brew update
-</code></pre></div><p>step 2: update v2ray-core</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Shell" data-lang="Shell">brew upgrade v2ray-core
-</code></pre></div><h2 id="使用">使用</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>brew update
+</span></span></code></pre></div><p>step 2: update v2ray-core</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Shell" data-lang="Shell"><span style="display:flex;"><span>brew upgrade v2ray-core
+</span></span></code></pre></div><h2 id="使用">使用</h2>
 <p>直接在命令行上输入 <code>v2ray</code> 就可以运行 v2ray-core。（配置文件在当前目录则不用写参数，直接 v2ray）</p>
 <p>默认配置文件位于：/usr/local/etc/config.json</p>
 <p>编辑默认配置文件：</p>
-<pre><code>vim /usr/local/etc/config.json
+<pre tabindex="0"><code>vim /usr/local/etc/config.json
 </code></pre><p>配置文件也可以从 <code>http://free-ss.tk/</code>或者<code>http://free-ss.tk/</code> 下载：</p>
 <p>
   <img src="/img/src/free-ss.png" alt="">
 
 </p>
 <p>config.json 添加 http 代理：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Json" data-lang="Json">  <span style="color:#f1fa8c">&#34;inboundDetour&#34;</span>: [{
-    <span style="color:#ff79c6">&#34;protocol&#34;</span>: <span style="color:#f1fa8c">&#34;http&#34;</span>,
-    <span style="color:#ff79c6">&#34;port&#34;</span>: <span style="color:#bd93f9">1081</span>,
-    <span style="color:#ff79c6">&#34;settings&#34;</span>: {
-      <span style="color:#ff79c6">&#34;udp&#34;</span>: <span style="color:#ff79c6">true</span>
-    }
-  }],
-</code></pre></div><p>.zshrc 添加</p>
-<pre><code># proxy
-alias proxy='export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080'
-alias unproxy='unset https_proxy http_proxy socks5_proxy'
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Json" data-lang="Json"><span style="display:flex;"><span>  <span style="color:#f1fa8c">&#34;inboundDetour&#34;</span>: [{
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;protocol&#34;</span>: <span style="color:#f1fa8c">&#34;http&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;port&#34;</span>: <span style="color:#bd93f9">1081</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&#34;settings&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">&#34;udp&#34;</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }],
+</span></span></code></pre></div><p>.zshrc 添加</p>
+<pre tabindex="0"><code># proxy
+alias proxy=&#39;export https_proxy=http://127.0.0.1:1081;export http_proxy=https://127.0.0.1:1081;export socks5_proxy=socks5://127.0.0.1:1080&#39;
+alias unproxy=&#39;unset https_proxy http_proxy socks5_proxy&#39;
 </code></pre><p>然后配置一下 chrome 插件 Proxy SwitchyOmega</p>
 <p>
   <img src="/img/src/switchOmega.png" alt="">
@@ -388,8 +388,20 @@ alias unproxy='unset https_proxy http_proxy socks5_proxy'
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

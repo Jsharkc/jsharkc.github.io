@@ -211,27 +211,27 @@
                 <h1 id="golang-slice-切片原理">Golang slice 切片原理</h1>
 <p>​	golang 中的 slice 是比较好用的一种结构，能根据需求变长，相对于 array 的死板，slice 更加灵活也更加常用，有道说：知其然，知其所以然。现在，我们就看看 slice 到底是怎样一种结构。</p>
 <h3 id="slice源码">slice源码</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> slice <span style="color:#8be9fd;font-style:italic">struct</span> {
-    array unsafe.Pointer
-    len   <span style="color:#8be9fd">int</span>
-    cap   <span style="color:#8be9fd">int</span>
-}
-</code></pre></div><p>​	根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> slice <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    array unsafe.Pointer
+</span></span><span style="display:flex;"><span>    len   <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>    cap   <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>​	根据平常使用情况，我们推测 len 是 slice 长度，cap 是 slice 的容量，而 array 则是指向底层数组的指针。</p>
 <p>​	有同学可能不知道 <code>unsafe.Pointer</code>是什么，那么我们一并在这讲解一下。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">package</span> unsafe
-
-<span style="color:#8be9fd;font-style:italic">type</span> ArbitraryType <span style="color:#8be9fd">int</span>
-
-<span style="color:#6272a4">//	- A pointer value of any type can be converted to a Pointer.
-</span><span style="color:#6272a4">//	- A Pointer can be converted to a pointer value of any type.
-</span><span style="color:#6272a4">//	- A uintptr can be converted to a Pointer.
-</span><span style="color:#6272a4">//	- A Pointer can be converted to a uintptr.
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">type</span> Pointer <span style="color:#ff79c6">*</span>ArbitraryType
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Sizeof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Offsetof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Alignof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
-</code></pre></div><p><code>unsafe.Pointer</code>：一个指向 <code>int</code>类型的指针，通常用于转换不同类型的指针，go 语言中指针不能运算。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> unsafe
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> ArbitraryType <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">//	- A pointer value of any type can be converted to a Pointer.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">//	- A Pointer can be converted to a pointer value of any type.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">//	- A uintptr can be converted to a Pointer.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">//	- A Pointer can be converted to a uintptr.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">type</span> Pointer <span style="color:#ff79c6">*</span>ArbitraryType
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Sizeof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Offsetof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Alignof</span>(x ArbitraryType) <span style="color:#8be9fd">uintptr</span>
+</span></span></code></pre></div><p><code>unsafe.Pointer</code>：一个指向 <code>int</code>类型的指针，通常用于转换不同类型的指针，go 语言中指针不能运算。</p>
 <p><code>uintptr</code>：内置类型，能存储指针的整型，底层类型是<code>int</code>，可以和<code>unsafe.Pointer</code>互相转换，因为就</p>
 <p>​		是 <code>int</code>型，所以可以用来做运算，GC 不会把它当指针，所以不持有对象，会被回收。</p>
 <p>上面的四句注释是什么意思呢，解释一下就是：</p>
@@ -243,40 +243,40 @@
 </ol>
 <p>同学们有没有想到一些什么？就是说，go 语言中虽然没有指针运算，但是通过 unsafe 包，可以把指针转换成</p>
 <p>unsafe.Pointer，再转换成 uintptr，之后就能和 C 语言指针运算类似的功能了。举个例子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">package</span> main
-
-<span style="color:#ff79c6">import</span> (
-	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
-	<span style="color:#f1fa8c">&#34;unsafe&#34;</span>
-)
-
-<span style="color:#8be9fd;font-style:italic">type</span> Entity <span style="color:#8be9fd;font-style:italic">struct</span> {
-	a	<span style="color:#8be9fd">byte</span>
-	b	<span style="color:#8be9fd">byte</span>
-}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-  	entity <span style="color:#ff79c6">:=</span> Entity{}
-  	fmt.<span style="color:#50fa7b">Println</span>(entity)	
-
-	p <span style="color:#ff79c6">:=</span> unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>entity)	<span style="color:#6272a4">// 转换成通用指针 unsafe.Pointer 类型
-</span><span style="color:#6272a4"></span>	uintpa <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(p)			<span style="color:#6272a4">// 保存结构体 entity 实例地址，偏移量为0
-</span><span style="color:#6272a4"></span>	pb <span style="color:#ff79c6">:=</span> (<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(p)				<span style="color:#6272a4">// 将通用指针转换为 byte 型指针
-</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">*</span>pb = <span style="color:#bd93f9">10</span>						<span style="color:#6272a4">// 给转换后的指针赋值
-</span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(entity)				<span style="color:#6272a4">// 结构体内容跟着改变
-</span><span style="color:#6272a4"></span>
-	uintpb <span style="color:#ff79c6">:=</span> uintpa <span style="color:#ff79c6">+</span> unsafe.<span style="color:#50fa7b">Offsetof</span>(entity.b)	<span style="color:#6272a4">// 偏移到 entity.b 字段开始的位置
-</span><span style="color:#6272a4"></span>	p = unsafe.<span style="color:#50fa7b">Pointer</span>(uintpb)		<span style="color:#6272a4">// 将偏移后的地址转换为通用指针 unsafe.Pointer 类型
-</span><span style="color:#6272a4"></span>	pb = (<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(p)					<span style="color:#6272a4">// 将通用指针转换为 byte 型指针
-</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">*</span>pb = <span style="color:#bd93f9">20</span>						<span style="color:#6272a4">// 给转换后的指针赋值
-</span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(entity)				<span style="color:#6272a4">// 结构体内容跟着改变
-</span><span style="color:#6272a4"></span>}
-
-<span style="color:#6272a4">// 结果：
-</span><span style="color:#6272a4">// {0 0}
-</span><span style="color:#6272a4">// {10 0}
-</span><span style="color:#6272a4">// {10 20}
-</span></code></pre></div><p>好，unsafe.Pointer 就告一段落，继续讲我们的 slice。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;unsafe&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Entity <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>	a	<span style="color:#8be9fd">byte</span>
+</span></span><span style="display:flex;"><span>	b	<span style="color:#8be9fd">byte</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>  	entity <span style="color:#ff79c6">:=</span> Entity{}
+</span></span><span style="display:flex;"><span>  	fmt.<span style="color:#50fa7b">Println</span>(entity)	
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	p <span style="color:#ff79c6">:=</span> unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>entity)	<span style="color:#6272a4">// 转换成通用指针 unsafe.Pointer 类型
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	uintpa <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(p)			<span style="color:#6272a4">// 保存结构体 entity 实例地址，偏移量为0
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	pb <span style="color:#ff79c6">:=</span> (<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(p)				<span style="color:#6272a4">// 将通用指针转换为 byte 型指针
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">*</span>pb = <span style="color:#bd93f9">10</span>						<span style="color:#6272a4">// 给转换后的指针赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(entity)				<span style="color:#6272a4">// 结构体内容跟着改变
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span>	uintpb <span style="color:#ff79c6">:=</span> uintpa <span style="color:#ff79c6">+</span> unsafe.<span style="color:#50fa7b">Offsetof</span>(entity.b)	<span style="color:#6272a4">// 偏移到 entity.b 字段开始的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	p = unsafe.<span style="color:#50fa7b">Pointer</span>(uintpb)		<span style="color:#6272a4">// 将偏移后的地址转换为通用指针 unsafe.Pointer 类型
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	pb = (<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(p)					<span style="color:#6272a4">// 将通用指针转换为 byte 型指针
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">*</span>pb = <span style="color:#bd93f9">20</span>						<span style="color:#6272a4">// 给转换后的指针赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	fmt.<span style="color:#50fa7b">Println</span>(entity)				<span style="color:#6272a4">// 结构体内容跟着改变
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// 结果：
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// {0 0}
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// {10 0}
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// {10 20}
+</span></span></span></code></pre></div><p>好，unsafe.Pointer 就告一段落，继续讲我们的 slice。</p>
 <p>
   <img src="/img/gallery/slice.png" alt="sliceInstance">
 
@@ -284,136 +284,136 @@
 <p>​						<strong>[图片取自 the way to go ，侵权请告知，删]</strong></p>
 <h3 id="通过-make-创建切片">通过 make 创建切片</h3>
 <p>make 创建切片的源码：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">makeslice</span>(et <span style="color:#ff79c6">*</span>_type, len, cap <span style="color:#8be9fd">int</span>) slice {
-	<span style="color:#6272a4">// 根据类型获取此类型能包含元素的最大长度
-</span><span style="color:#6272a4"></span>	maxElements <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">maxSliceCap</span>(et.size)
-  
-  	<span style="color:#6272a4">// 比较容量和长度 若比零小或比最大值大，越界
-</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">if</span> len &lt; <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(len) &gt; maxElements {
-		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;makeslice: len out of range&#34;</span>))
-	}
-	
-	<span style="color:#ff79c6">if</span> cap &lt; len <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) &gt; maxElements {
-		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;makeslice: cap out of range&#34;</span>))
-	}
-
-	<span style="color:#6272a4">// 向内存申请一块此类型 array 的空间
-</span><span style="color:#6272a4"></span>	p <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">mallocgc</span>(et.size<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">uintptr</span>(cap), et, <span style="color:#ff79c6">true</span>)
-	<span style="color:#6272a4">// 将指针、长度、容量赋值并返回切片结构
-</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">return</span> slice{p, len, cap}
-}
-</code></pre></div><h3 id="切片增长">切片增长</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">makeslice</span>(et <span style="color:#ff79c6">*</span>_type, len, cap <span style="color:#8be9fd">int</span>) slice {
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 根据类型获取此类型能包含元素的最大长度
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	maxElements <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">maxSliceCap</span>(et.size)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  	<span style="color:#6272a4">// 比较容量和长度 若比零小或比最大值大，越界
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">if</span> len &lt; <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(len) &gt; maxElements {
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;makeslice: len out of range&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> cap &lt; len <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) &gt; maxElements {
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;makeslice: cap out of range&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 向内存申请一块此类型 array 的空间
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	p <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">mallocgc</span>(et.size<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">uintptr</span>(cap), et, <span style="color:#ff79c6">true</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 将指针、长度、容量赋值并返回切片结构
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">return</span> slice{p, len, cap}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="切片增长">切片增长</h3>
 <p>通过 append 可以对切片扩容，源码看下面：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">growslice</span>(et <span style="color:#ff79c6">*</span>_type, old slice, cap <span style="color:#8be9fd">int</span>) slice {
-	<span style="color:#ff79c6">if</span> raceenabled {
-		callerpc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">getcallerpc</span>(unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>et))
-		<span style="color:#50fa7b">racereadrangepc</span>(old.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(et.size)), callerpc, <span style="color:#50fa7b">funcPC</span>(growslice))
-	}
-	<span style="color:#ff79c6">if</span> msanenabled {
-		<span style="color:#50fa7b">msanread</span>(old.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(et.size)))
-	}
-
-	<span style="color:#ff79c6">if</span> et.size <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
-		<span style="color:#ff79c6">if</span> cap &lt; old.cap {
-			<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;growslice: cap out of range&#34;</span>))
-		}
-		<span style="color:#6272a4">// 创建一个不为nil的切片
-</span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">return</span> slice{unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>zerobase), old.len, cap}
-	}
-
-	newcap <span style="color:#ff79c6">:=</span> old.cap
-	doublecap <span style="color:#ff79c6">:=</span> newcap <span style="color:#ff79c6">+</span> newcap
-	<span style="color:#ff79c6">if</span> cap &gt; doublecap {
-		newcap = cap
-	} <span style="color:#ff79c6">else</span> {
-		<span style="color:#ff79c6">if</span> old.len &lt; <span style="color:#bd93f9">1024</span> {
-			newcap = doublecap
-		} <span style="color:#ff79c6">else</span> {
-			<span style="color:#ff79c6">for</span> newcap &lt; cap {
-				newcap <span style="color:#ff79c6">+=</span> newcap <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">4</span>
-			}
-		}
-	}
-
-	<span style="color:#8be9fd;font-style:italic">var</span> lenmem, newlenmem, capmem <span style="color:#8be9fd">uintptr</span>
-	<span style="color:#8be9fd;font-style:italic">const</span> ptrSize = unsafe.<span style="color:#50fa7b">Sizeof</span>((<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(<span style="color:#ff79c6">nil</span>))
-	<span style="color:#ff79c6">switch</span> et.size {
-	<span style="color:#ff79c6">case</span> <span style="color:#bd93f9">1</span>:
-		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len)
-		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap)
-		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap))
-		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem)
-	<span style="color:#ff79c6">case</span> ptrSize:
-		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len) <span style="color:#ff79c6">*</span> ptrSize
-		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) <span style="color:#ff79c6">*</span> ptrSize
-		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) <span style="color:#ff79c6">*</span> ptrSize)
-		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem <span style="color:#ff79c6">/</span> ptrSize)
-	<span style="color:#ff79c6">default</span>:
-		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len) <span style="color:#ff79c6">*</span> et.size
-		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) <span style="color:#ff79c6">*</span> et.size
-		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) <span style="color:#ff79c6">*</span> et.size)
-		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem <span style="color:#ff79c6">/</span> et.size)
-	}
-
-	<span style="color:#ff79c6">if</span> cap &lt; old.cap <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) &gt; <span style="color:#50fa7b">maxSliceCap</span>(et.size) {
-		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;growslice: cap out of range&#34;</span>))
-	}
-
-	<span style="color:#8be9fd;font-style:italic">var</span> p unsafe.Pointer
-	<span style="color:#ff79c6">if</span> et.kind<span style="color:#ff79c6">&amp;</span>kindNoPointers <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">0</span> {
-		p = <span style="color:#50fa7b">mallocgc</span>(capmem, <span style="color:#ff79c6">nil</span>, <span style="color:#ff79c6">false</span>)
-		<span style="color:#50fa7b">memmove</span>(p, old.array, lenmem)
-		<span style="color:#50fa7b">memclrNoHeapPointers</span>(<span style="color:#50fa7b">add</span>(p, newlenmem), capmem<span style="color:#ff79c6">-</span>newlenmem)
-	} <span style="color:#ff79c6">else</span> {
-		p = <span style="color:#50fa7b">mallocgc</span>(capmem, et, <span style="color:#ff79c6">true</span>)
-		<span style="color:#ff79c6">if</span> !writeBarrier.enabled {
-			<span style="color:#50fa7b">memmove</span>(p, old.array, lenmem)
-		} <span style="color:#ff79c6">else</span> {
-			<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(<span style="color:#bd93f9">0</span>); i &lt; lenmem; i <span style="color:#ff79c6">+=</span> et.size {
-				<span style="color:#50fa7b">typedmemmove</span>(et, <span style="color:#50fa7b">add</span>(p, i), <span style="color:#50fa7b">add</span>(old.array, i))
-			}
-		}
-	}
-
-	<span style="color:#ff79c6">return</span> slice{p, old.len, newcap}
-}
-</code></pre></div><p>切片在append的时候如果有额外的容量可用，append将可用的元素合并到切片的长度，然后对他进行赋值，如果没有可用的容量，append会创建新的底层数组，将现有的值复制到新的数组里再追加新的值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">growslice</span>(et <span style="color:#ff79c6">*</span>_type, old slice, cap <span style="color:#8be9fd">int</span>) slice {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> raceenabled {
+</span></span><span style="display:flex;"><span>		callerpc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">getcallerpc</span>(unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>et))
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">racereadrangepc</span>(old.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(et.size)), callerpc, <span style="color:#50fa7b">funcPC</span>(growslice))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> msanenabled {
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">msanread</span>(old.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(et.size)))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> et.size <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> cap &lt; old.cap {
+</span></span><span style="display:flex;"><span>			<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;growslice: cap out of range&#34;</span>))
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#6272a4">// 创建一个不为nil的切片
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">return</span> slice{unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>zerobase), old.len, cap}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	newcap <span style="color:#ff79c6">:=</span> old.cap
+</span></span><span style="display:flex;"><span>	doublecap <span style="color:#ff79c6">:=</span> newcap <span style="color:#ff79c6">+</span> newcap
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> cap &gt; doublecap {
+</span></span><span style="display:flex;"><span>		newcap = cap
+</span></span><span style="display:flex;"><span>	} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> old.len &lt; <span style="color:#bd93f9">1024</span> {
+</span></span><span style="display:flex;"><span>			newcap = doublecap
+</span></span><span style="display:flex;"><span>		} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">for</span> newcap &lt; cap {
+</span></span><span style="display:flex;"><span>				newcap <span style="color:#ff79c6">+=</span> newcap <span style="color:#ff79c6">/</span> <span style="color:#bd93f9">4</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> lenmem, newlenmem, capmem <span style="color:#8be9fd">uintptr</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">const</span> ptrSize = unsafe.<span style="color:#50fa7b">Sizeof</span>((<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(<span style="color:#ff79c6">nil</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">switch</span> et.size {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> <span style="color:#bd93f9">1</span>:
+</span></span><span style="display:flex;"><span>		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len)
+</span></span><span style="display:flex;"><span>		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap)
+</span></span><span style="display:flex;"><span>		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap))
+</span></span><span style="display:flex;"><span>		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">case</span> ptrSize:
+</span></span><span style="display:flex;"><span>		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len) <span style="color:#ff79c6">*</span> ptrSize
+</span></span><span style="display:flex;"><span>		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) <span style="color:#ff79c6">*</span> ptrSize
+</span></span><span style="display:flex;"><span>		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) <span style="color:#ff79c6">*</span> ptrSize)
+</span></span><span style="display:flex;"><span>		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem <span style="color:#ff79c6">/</span> ptrSize)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>		lenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(old.len) <span style="color:#ff79c6">*</span> et.size
+</span></span><span style="display:flex;"><span>		newlenmem = <span style="color:#8be9fd;font-style:italic">uintptr</span>(cap) <span style="color:#ff79c6">*</span> et.size
+</span></span><span style="display:flex;"><span>		capmem = <span style="color:#50fa7b">roundupsize</span>(<span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) <span style="color:#ff79c6">*</span> et.size)
+</span></span><span style="display:flex;"><span>		newcap = <span style="color:#8be9fd;font-style:italic">int</span>(capmem <span style="color:#ff79c6">/</span> et.size)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> cap &lt; old.cap <span style="color:#ff79c6">||</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(newcap) &gt; <span style="color:#50fa7b">maxSliceCap</span>(et.size) {
+</span></span><span style="display:flex;"><span>		<span style="color:#8be9fd;font-style:italic">panic</span>(<span style="color:#50fa7b">errorString</span>(<span style="color:#f1fa8c">&#34;growslice: cap out of range&#34;</span>))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">var</span> p unsafe.Pointer
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> et.kind<span style="color:#ff79c6">&amp;</span>kindNoPointers <span style="color:#ff79c6">!=</span> <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		p = <span style="color:#50fa7b">mallocgc</span>(capmem, <span style="color:#ff79c6">nil</span>, <span style="color:#ff79c6">false</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">memmove</span>(p, old.array, lenmem)
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">memclrNoHeapPointers</span>(<span style="color:#50fa7b">add</span>(p, newlenmem), capmem<span style="color:#ff79c6">-</span>newlenmem)
+</span></span><span style="display:flex;"><span>	} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>		p = <span style="color:#50fa7b">mallocgc</span>(capmem, et, <span style="color:#ff79c6">true</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> !writeBarrier.enabled {
+</span></span><span style="display:flex;"><span>			<span style="color:#50fa7b">memmove</span>(p, old.array, lenmem)
+</span></span><span style="display:flex;"><span>		} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(<span style="color:#bd93f9">0</span>); i &lt; lenmem; i <span style="color:#ff79c6">+=</span> et.size {
+</span></span><span style="display:flex;"><span>				<span style="color:#50fa7b">typedmemmove</span>(et, <span style="color:#50fa7b">add</span>(p, i), <span style="color:#50fa7b">add</span>(old.array, i))
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> slice{p, old.len, newcap}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>切片在append的时候如果有额外的容量可用，append将可用的元素合并到切片的长度，然后对他进行赋值，如果没有可用的容量，append会创建新的底层数组，将现有的值复制到新的数组里再追加新的值。</p>
 <h3 id="切片复制">切片复制</h3>
 <p>通过 copy 可以复制一个切片，源码如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">slicecopy</span>(to, fm slice, width <span style="color:#8be9fd">uintptr</span>) <span style="color:#8be9fd">int</span> {
-	<span style="color:#ff79c6">if</span> fm.len <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">||</span> to.len <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
-		<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>
-	}
-
-	n <span style="color:#ff79c6">:=</span> fm.len
-	<span style="color:#ff79c6">if</span> to.len &lt; n {
-		n = to.len
-	}
-
-	<span style="color:#ff79c6">if</span> width <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
-		<span style="color:#ff79c6">return</span> n
-	}
-
-	<span style="color:#ff79c6">if</span> raceenabled {
-		callerpc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">getcallerpc</span>(unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>to))
-		pc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">funcPC</span>(slicecopy)
-		<span style="color:#50fa7b">racewriterangepc</span>(to.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)), callerpc, pc)
-		<span style="color:#50fa7b">racereadrangepc</span>(fm.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)), callerpc, pc)
-	}
-	<span style="color:#ff79c6">if</span> msanenabled {
-		<span style="color:#50fa7b">msanwrite</span>(to.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)))
-		<span style="color:#50fa7b">msanread</span>(fm.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)))
-	}
-
-	size <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(n) <span style="color:#ff79c6">*</span> width
-	<span style="color:#ff79c6">if</span> size <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span> { 
-		<span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(to.array) = <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(fm.array) <span style="color:#6272a4">// known to be a byte pointer
-</span><span style="color:#6272a4"></span>	} <span style="color:#ff79c6">else</span> {
-		<span style="color:#50fa7b">memmove</span>(to.array, fm.array, size)
-	}
-	<span style="color:#ff79c6">return</span> n
-}
-</code></pre></div><p>copy切片会把源切片值(第二个参数值)中的元素复制到目标切片(第一个参数值)中，并返回被复制的元素个数，copy 的两个类型必须一致，并且实际复制的数量等于实际较短切片长度。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">slicecopy</span>(to, fm slice, width <span style="color:#8be9fd">uintptr</span>) <span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> fm.len <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> <span style="color:#ff79c6">||</span> to.len <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	n <span style="color:#ff79c6">:=</span> fm.len
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> to.len &lt; n {
+</span></span><span style="display:flex;"><span>		n = to.len
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> width <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> n
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> raceenabled {
+</span></span><span style="display:flex;"><span>		callerpc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">getcallerpc</span>(unsafe.<span style="color:#50fa7b">Pointer</span>(<span style="color:#ff79c6">&amp;</span>to))
+</span></span><span style="display:flex;"><span>		pc <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">funcPC</span>(slicecopy)
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">racewriterangepc</span>(to.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)), callerpc, pc)
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">racereadrangepc</span>(fm.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)), callerpc, pc)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> msanenabled {
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">msanwrite</span>(to.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)))
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">msanread</span>(fm.array, <span style="color:#8be9fd;font-style:italic">uintptr</span>(n<span style="color:#ff79c6">*</span><span style="color:#8be9fd;font-style:italic">int</span>(width)))
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	size <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uintptr</span>(n) <span style="color:#ff79c6">*</span> width
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> size <span style="color:#ff79c6">==</span> <span style="color:#bd93f9">1</span> { 
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(to.array) = <span style="color:#ff79c6">*</span>(<span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>)(fm.array) <span style="color:#6272a4">// known to be a byte pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">memmove</span>(to.array, fm.array, size)
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> n
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>copy切片会把源切片值(第二个参数值)中的元素复制到目标切片(第一个参数值)中，并返回被复制的元素个数，copy 的两个类型必须一致，并且实际复制的数量等于实际较短切片长度。</p>
 
 
                 
@@ -556,8 +556,20 @@
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

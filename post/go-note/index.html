@@ -211,18 +211,18 @@
                 <h1 id="go-注意点-总结">Go &gt;注意点&lt; 总结</h1>
 <h4 id="1-__布尔类型__">1. <strong>布尔类型</strong></h4>
 <p>​     布尔类型 <em>不能</em> 接受其他类型的赋值，<em>不支持</em> 自动或者强制的类型转换</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">     <span style="color:#8be9fd;font-style:italic">var</span> b <span style="color:#8be9fd">bool</span>
-     b = <span style="color:#bd93f9">1</span>  <span style="color:#6272a4">// 编译错误
-</span><span style="color:#6272a4"></span>     b = <span style="color:#8be9fd;font-style:italic">bool</span>(<span style="color:#bd93f9">1</span>) <span style="color:#6272a4">// 编译错误
-</span></code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>     <span style="color:#8be9fd;font-style:italic">var</span> b <span style="color:#8be9fd">bool</span>
+</span></span><span style="display:flex;"><span>     b = <span style="color:#bd93f9">1</span>  <span style="color:#6272a4">// 编译错误
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>     b = <span style="color:#8be9fd;font-style:italic">bool</span>(<span style="color:#bd93f9">1</span>) <span style="color:#6272a4">// 编译错误
+</span></span></span></code></pre></div><hr>
 <h4 id="2-int与int32">2. int与int32</h4>
 <p>​     **注意：**int和int32在Go语言里被认为是两种不同的类型，编译器也不会帮你自动做类型转换</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   <span style="color:#8be9fd;font-style:italic">var</span> value2 <span style="color:#8be9fd">int32</span>
-   value1<span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">64</span>   <span style="color:#6272a4">// value1将会被自动推导为int类型
-</span><span style="color:#6272a4"></span>   value2 = value1   <span style="color:#6272a4">// 编译错误
-</span><span style="color:#6272a4"></span>   <span style="color:#6272a4">// 可用强制转换解决这个编译错误：
-</span><span style="color:#6272a4"></span>   value2 = <span style="color:#8be9fd;font-style:italic">int32</span>(value1)   <span style="color:#6272a4">// 编译通过
-</span></code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>   <span style="color:#8be9fd;font-style:italic">var</span> value2 <span style="color:#8be9fd">int32</span>
+</span></span><span style="display:flex;"><span>   value1<span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">64</span>   <span style="color:#6272a4">// value1将会被自动推导为int类型
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   value2 = value1   <span style="color:#6272a4">// 编译错误
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   <span style="color:#6272a4">// 可用强制转换解决这个编译错误：
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   value2 = <span style="color:#8be9fd;font-style:italic">int32</span>(value1)   <span style="color:#6272a4">// 编译通过
+</span></span></span></code></pre></div><hr>
 <h4 id="3-整数值比较">3. 整数值比较</h4>
 <p>​     两种 <strong>不同</strong> 类型的整型数 <strong>不能</strong> 直接比较，比如 int8 类型的数和 int 类型的数不能直接比较，但各种类型的整型变量都可以直接与<em>字面常量</em> ( literal ) 进行比较</p>
 <hr>
@@ -230,61 +230,61 @@
 <hr>
 <h4 id="5-字符串">5. 字符串</h4>
 <p>​    字符串的内容可以用类似 <em>数组下标</em> 的方式获取，但不能在初始化后被修改</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   eg.
-   	str <span style="color:#ff79c6">:=</span> “Hello world”  
-   	str[<span style="color:#bd93f9">0</span>] = ‘X’    <span style="color:#6272a4">//编译错误
-</span></code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>   eg.
+</span></span><span style="display:flex;"><span>   	str <span style="color:#ff79c6">:=</span> “Hello world”  
+</span></span><span style="display:flex;"><span>   	str[<span style="color:#bd93f9">0</span>] = ‘X’    <span style="color:#6272a4">//编译错误
+</span></span></span></code></pre></div><hr>
 <h4 id="6-一种特殊的switch">6. 一种特殊的switch</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   <span style="color:#ff79c6">for</span> k,v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> m{
-        <span style="color:#ff79c6">switch</span> vv <span style="color:#ff79c6">:=</span> v.(<span style="color:#8be9fd;font-style:italic">type</span>) {
-         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">string</span>:
-             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is string&#34;</span>, vv)
-         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">int</span>:
-             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is int&#34;</span>, vv)
-         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">float64</span>:
-             fmt.<span style="color:#50fa7b">Println</span>(k,<span style="color:#f1fa8c">&#34;is float64&#34;</span>,vv)
-         <span style="color:#ff79c6">case</span> []<span style="color:#8be9fd;font-style:italic">interface</span>{}:
-             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is an array:&#34;</span>)
-             <span style="color:#ff79c6">for</span> i, u <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> vv {
-                 fmt.<span style="color:#50fa7b">Println</span>(i, u)
-             }
-         <span style="color:#ff79c6">default</span>:
-             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is of a type I don&#39;t know how to handle&#34;</span>)
-         }
-   }
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>   <span style="color:#ff79c6">for</span> k,v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> m{
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">switch</span> vv <span style="color:#ff79c6">:=</span> v.(<span style="color:#8be9fd;font-style:italic">type</span>) {
+</span></span><span style="display:flex;"><span>         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">string</span>:
+</span></span><span style="display:flex;"><span>             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is string&#34;</span>, vv)
+</span></span><span style="display:flex;"><span>         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">int</span>:
+</span></span><span style="display:flex;"><span>             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is int&#34;</span>, vv)
+</span></span><span style="display:flex;"><span>         <span style="color:#ff79c6">case</span> <span style="color:#8be9fd">float64</span>:
+</span></span><span style="display:flex;"><span>             fmt.<span style="color:#50fa7b">Println</span>(k,<span style="color:#f1fa8c">&#34;is float64&#34;</span>,vv)
+</span></span><span style="display:flex;"><span>         <span style="color:#ff79c6">case</span> []<span style="color:#8be9fd;font-style:italic">interface</span>{}:
+</span></span><span style="display:flex;"><span>             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is an array:&#34;</span>)
+</span></span><span style="display:flex;"><span>             <span style="color:#ff79c6">for</span> i, u <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> vv {
+</span></span><span style="display:flex;"><span>                 fmt.<span style="color:#50fa7b">Println</span>(i, u)
+</span></span><span style="display:flex;"><span>             }
+</span></span><span style="display:flex;"><span>         <span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>             fmt.<span style="color:#50fa7b">Println</span>(k, <span style="color:#f1fa8c">&#34;is of a type I don&#39;t know how to handle&#34;</span>)
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>   }
+</span></span></code></pre></div><hr>
 <h4 id="7-make-函数创建数组切片">7. make() 函数创建数组切片</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   <span style="color:#6272a4">// 创建一个初始元素个数为5的数组切片，元素初始值为0:
-</span><span style="color:#6272a4"></span>   mySlice1 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">5</span>) <span style="color:#6272a4">// 创建一个初始元素个数为5的数组切片，
-</span><span style="color:#6272a4"></span>   <span style="color:#6272a4">// 元素初始值为0，并预留10个元素的存储空间:
-</span><span style="color:#6272a4"></span>   mySlice2 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">10</span>) 
-   <span style="color:#6272a4">// 直接创建并初始化包含5个元素的数组切片:
-</span><span style="color:#6272a4"></span>   mySlice3 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>} 
-   <span style="color:#6272a4">// 直接创建并初始化包含5个元素的数组切片 :
-</span><span style="color:#6272a4"></span>   mySlice3 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">3</span>:<span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>}  <span style="color:#6272a4">// [0 0 0 4 5]
-</span></code></pre></div><p>当然，事实上还会有一个匿名数组被创建出来，只是不需要我们来操心而已。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>   <span style="color:#6272a4">// 创建一个初始元素个数为5的数组切片，元素初始值为0:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   mySlice1 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">5</span>) <span style="color:#6272a4">// 创建一个初始元素个数为5的数组切片，
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   <span style="color:#6272a4">// 元素初始值为0，并预留10个元素的存储空间:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   mySlice2 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">int</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">10</span>) 
+</span></span><span style="display:flex;"><span>   <span style="color:#6272a4">// 直接创建并初始化包含5个元素的数组切片:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   mySlice3 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>} 
+</span></span><span style="display:flex;"><span>   <span style="color:#6272a4">// 直接创建并初始化包含5个元素的数组切片 :
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   mySlice3 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">3</span>:<span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>}  <span style="color:#6272a4">// [0 0 0 4 5]
+</span></span></span></code></pre></div><p>当然，事实上还会有一个匿名数组被创建出来，只是不需要我们来操心而已。</p>
 <hr>
 <h4 id="8-数组切片追加">8. 数组切片追加</h4>
 <p>​    将一个数组切片 <strong>追加</strong> 到另一个数组切片的末尾：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">   mySlice2 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">8</span>,<span style="color:#bd93f9">9</span>,<span style="color:#bd93f9">10</span>}
-   mySlice = <span style="color:#8be9fd;font-style:italic">append</span>(mySlice,mySlice2<span style="color:#ff79c6">...</span>)
-</code></pre></div><p>**注意：**在第二个参数后面加三个点，不加会有编译错误，加省略号表示把mySlice2包含的元素打散后传入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>   mySlice2 <span style="color:#ff79c6">:=</span> []<span style="color:#8be9fd">int</span>{<span style="color:#bd93f9">8</span>,<span style="color:#bd93f9">9</span>,<span style="color:#bd93f9">10</span>}
+</span></span><span style="display:flex;"><span>   mySlice = <span style="color:#8be9fd;font-style:italic">append</span>(mySlice,mySlice2<span style="color:#ff79c6">...</span>)
+</span></span></code></pre></div><p>**注意：**在第二个参数后面加三个点，不加会有编译错误，加省略号表示把mySlice2包含的元素打散后传入</p>
 <hr>
 <h4 id="9-判断能否从-map-中获取一个值的做法">9. 判断能否从 map 中获取一个值的做法</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">    value, ok <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">map</span>[key]
-    <span style="color:#ff79c6">if</span> ok{  <span style="color:#6272a4">//找到了
-</span><span style="color:#6272a4"></span>       <span style="color:#6272a4">//处理找到的value
-</span><span style="color:#6272a4"></span>    }
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>    value, ok <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">map</span>[key]
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> ok{  <span style="color:#6272a4">//找到了
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>       <span style="color:#6272a4">//处理找到的value
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    }
+</span></span></code></pre></div><hr>
 <h4 id="10--创建并初始化类型的对象实例">10.  创建并初始化类型的对象实例</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">rect1 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">new</span>(Rect)
-
-rect2 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{}
-
-rect3 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">100</span>,<span style="color:#bd93f9">200</span>}
-
-rect4 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{width:<span style="color:#bd93f9">100</span>,height:<span style="color:#bd93f9">200</span>}
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>rect1 <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">new</span>(Rect)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rect2 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rect3 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">0</span>,<span style="color:#bd93f9">100</span>,<span style="color:#bd93f9">200</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rect4 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</span>Rect{width:<span style="color:#bd93f9">100</span>,height:<span style="color:#bd93f9">200</span>}
+</span></span></code></pre></div><hr>
 <h4 id="11未显示初始化">11.未显示初始化</h4>
 <p>​     Go语言中，未 <strong>显式初始化</strong> 的变量都会被初始化为该类型的 <strong>零值</strong> ，<strong>bool</strong> 类型零值为 <strong>false</strong> , <strong>Int</strong> 类型的零值为 <strong>0</strong>，<strong>string</strong> 类型的零值为 <strong>空字符串</strong>, <strong>接口</strong>或<strong>引用类型</strong>（包括 <strong>slice</strong>、<strong>map</strong>、<strong>chan</strong> 和函数）变量对应的零值是<strong>nil</strong></p>
 <hr>
@@ -293,51 +293,51 @@ rect4 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</s
 <hr>
 <h4 id="13--go中最好用的超时机制-select-case">13.  go中最好用的超时机制——&gt; select-case</h4>
 <p>​    <code>select</code>默认是阻塞的，只有当监听的 channel 中有发送或接收可以进行时才会运行，当多个 channel 都准备好的时候，select 是随机的选择一个执行的。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">timeout <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">bool</span>, <span style="color:#bd93f9">1</span>)
-<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
-    time.<span style="color:#50fa7b">Sleep</span>(<span style="color:#bd93f9">1e9</span>) <span style="color:#6272a4">// 等待1秒钟
-</span><span style="color:#6272a4"></span>    timeout <span style="color:#ff79c6">&lt;-</span> <span style="color:#ff79c6">true</span> 
-}()
-
-   <span style="color:#6272a4">// 然后我们把timeout这个channel利用起来 
-</span><span style="color:#6272a4"></span>   
-<span style="color:#ff79c6">select</span> {
-    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ch:
-    <span style="color:#6272a4">// 从ch中读取到数据
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>timeout:
-    <span style="color:#6272a4">// 一直没有从ch中读取到数据，但从timeout中读取到了数据
-</span><span style="color:#6272a4"></span>    }
-</code></pre></div><p><strong>另一种实现方法</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
-    o <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">bool</span>)
-    <span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
-        <span style="color:#ff79c6">for</span> {
-            <span style="color:#ff79c6">select</span> {
-                <span style="color:#ff79c6">case</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span> c:
-                    <span style="color:#8be9fd;font-style:italic">println</span>(v)
-                <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span> time.<span style="color:#50fa7b">After</span>(<span style="color:#bd93f9">5</span> <span style="color:#ff79c6">*</span> time.Second):
-                    <span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#34;timeout&#34;</span>)
-                    o <span style="color:#ff79c6">&lt;-</span> <span style="color:#ff79c6">true</span>
-                    <span style="color:#ff79c6">break</span>
-            }
-        }
-    }()
-    <span style="color:#ff79c6">&lt;-</span> o
-}
-</code></pre></div><p>​    在 select 里面还有 default 语法，select 其实就是类似switch 的功能，default 就是当监听的 channel 都没有准备好的时候，默认执行的（ select 不再阻塞等待 channel ）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>timeout <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">bool</span>, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>    time.<span style="color:#50fa7b">Sleep</span>(<span style="color:#bd93f9">1e9</span>) <span style="color:#6272a4">// 等待1秒钟
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    timeout <span style="color:#ff79c6">&lt;-</span> <span style="color:#ff79c6">true</span> 
+</span></span><span style="display:flex;"><span>}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#6272a4">// 然后我们把timeout这个channel利用起来 
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>   
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>ch:
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 从ch中读取到数据
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>timeout:
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 一直没有从ch中读取到数据，但从timeout中读取到了数据
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    }
+</span></span></code></pre></div><p><strong>另一种实现方法</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    c <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>)
+</span></span><span style="display:flex;"><span>    o <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">bool</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">case</span> v <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span> c:
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">println</span>(v)
+</span></span><span style="display:flex;"><span>                <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span> time.<span style="color:#50fa7b">After</span>(<span style="color:#bd93f9">5</span> <span style="color:#ff79c6">*</span> time.Second):
+</span></span><span style="display:flex;"><span>                    <span style="color:#8be9fd;font-style:italic">println</span>(<span style="color:#f1fa8c">&#34;timeout&#34;</span>)
+</span></span><span style="display:flex;"><span>                    o <span style="color:#ff79c6">&lt;-</span> <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;-</span> o
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>​    在 select 里面还有 default 语法，select 其实就是类似switch 的功能，default 就是当监听的 channel 都没有准备好的时候，默认执行的（ select 不再阻塞等待 channel ）。</p>
 <hr>
 <h4 id="14--单向channel变量的声明">14.  单向channel变量的声明</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">var</span> ch1 <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>        <span style="color:#6272a4">//ch1是一个正常的channel，不是单向的
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">var</span> ch2 <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">float64</span>  <span style="color:#6272a4">//ch2是单向channel，只用于写float64数据
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">var</span> ch3 <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>      <span style="color:#6272a4">//ch3是单向channel，只用于读取int了数据
-</span></code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> ch1 <span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>        <span style="color:#6272a4">//ch1是一个正常的channel，不是单向的
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">var</span> ch2 <span style="color:#8be9fd;font-style:italic">chan</span><span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd">float64</span>  <span style="color:#6272a4">//ch2是单向channel，只用于写float64数据
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">var</span> ch3 <span style="color:#ff79c6">&lt;-</span><span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd">int</span>      <span style="color:#6272a4">//ch3是单向channel，只用于读取int了数据
+</span></span></span></code></pre></div><hr>
 <h4 id="15-关闭和判断channel">15. 关闭和判断channel</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">  <span style="color:#6272a4">// 关闭 ch channel
-</span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">close</span>(ch)
-  <span style="color:#6272a4">// 判断一个channel是否关闭
-</span><span style="color:#6272a4"></span>  x,ok <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>ch
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>  <span style="color:#6272a4">// 关闭 ch channel
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  <span style="color:#8be9fd;font-style:italic">close</span>(ch)
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4">// 判断一个channel是否关闭
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  x,ok <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&lt;-</span>ch
+</span></span></code></pre></div><hr>
 <p>####16. runtime goroutine</p>
 <p>Runtime 包中有几个处理 goroutine 的函数</p>
 <ul>
@@ -369,58 +369,58 @@ rect4 <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">&amp;</s
 <hr>
 <h4 id="18-函数中局部变量">18. 函数中局部变量</h4>
 <p>​        在Go语言中，返回 <strong>函数中局部变量</strong> 的地址也是 <strong>安全</strong> 的。例如下面的代码，调用f函数时创建局部变量v，在局部变量地址被返回之后依然有效，因为指针p依然引用这个变量。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">var</span> p = <span style="color:#50fa7b">f</span>()
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">f</span>() <span style="color:#ff79c6">*</span><span style="color:#8be9fd">int</span> {
-    v <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">1</span>
-    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>v
-}
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> p = <span style="color:#50fa7b">f</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">f</span>() <span style="color:#ff79c6">*</span><span style="color:#8be9fd">int</span> {
+</span></span><span style="display:flex;"><span>    v <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>v
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
 <h4 id="19-flag-包小例子">19. flag 包小例子</h4>
 <p>​	早些的echo版本中，就包含了两个可选的命令行参数：<code>-n</code>用于忽略行尾的换行符，<code>-s sep</code>用于指定分隔字符（默认是空格）。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">gopl.io<span style="color:#ff79c6">/</span>ch2<span style="color:#ff79c6">/</span>echo4
-<span style="color:#6272a4">// Echo4 prints its command-line arguments.
-</span><span style="color:#6272a4"></span><span style="color:#ff79c6">package</span> main
-
-<span style="color:#ff79c6">import</span> (
-    <span style="color:#f1fa8c">&#34;flag&#34;</span>
-    <span style="color:#f1fa8c">&#34;fmt&#34;</span>
-    <span style="color:#f1fa8c">&#34;strings&#34;</span>
-)
-
-<span style="color:#8be9fd;font-style:italic">var</span> n = flag.<span style="color:#50fa7b">Bool</span>(<span style="color:#f1fa8c">&#34;n&#34;</span>, <span style="color:#ff79c6">false</span>, <span style="color:#f1fa8c">&#34;omit trailing newline&#34;</span>)
-<span style="color:#8be9fd;font-style:italic">var</span> sep = flag.<span style="color:#50fa7b">String</span>(<span style="color:#f1fa8c">&#34;s&#34;</span>, <span style="color:#f1fa8c">&#34; &#34;</span>, <span style="color:#f1fa8c">&#34;separator&#34;</span>)
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    flag.<span style="color:#50fa7b">Parse</span>()
-    fmt.<span style="color:#50fa7b">Print</span>(strings.<span style="color:#50fa7b">Join</span>(flag.<span style="color:#50fa7b">Args</span>(), <span style="color:#ff79c6">*</span>sep))
-    <span style="color:#ff79c6">if</span> !<span style="color:#ff79c6">*</span>n {
-        fmt.<span style="color:#50fa7b">Println</span>()
-    }
-}
-</code></pre></div><p>​	调用 <strong>flag.Bool</strong> 函数会创建一个新的对应布尔型标志参数的变量。它有三个属性：第一个是的命令行标志参数的名字“n”，然后是该标志参数的默认值（这里是false），最后是该标志参数对应的描述信息。如果用户在命令行输入了一个无效的标志参数，或者输入<code>-h</code>或<code>-help</code>参数，那么将打印所有标志参数的名字、默认值和描述信息。类似的，调用flag.String函数将于创建一个对应字符串类型的标志参数变量，同样包含命令行标志参数对应的参数名、默认值、和描述信息。程序中的<code>sep</code>和<code>n</code>变量分别是指向对应命令行标志参数变量的指针，因此必须用<code>*sep</code>和<code>*n</code>形式的指针语法间接引用它们。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>gopl.io<span style="color:#ff79c6">/</span>ch2<span style="color:#ff79c6">/</span>echo4
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// Echo4 prints its command-line arguments.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;flag&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;strings&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> n = flag.<span style="color:#50fa7b">Bool</span>(<span style="color:#f1fa8c">&#34;n&#34;</span>, <span style="color:#ff79c6">false</span>, <span style="color:#f1fa8c">&#34;omit trailing newline&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> sep = flag.<span style="color:#50fa7b">String</span>(<span style="color:#f1fa8c">&#34;s&#34;</span>, <span style="color:#f1fa8c">&#34; &#34;</span>, <span style="color:#f1fa8c">&#34;separator&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    flag.<span style="color:#50fa7b">Parse</span>()
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Print</span>(strings.<span style="color:#50fa7b">Join</span>(flag.<span style="color:#50fa7b">Args</span>(), <span style="color:#ff79c6">*</span>sep))
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> !<span style="color:#ff79c6">*</span>n {
+</span></span><span style="display:flex;"><span>        fmt.<span style="color:#50fa7b">Println</span>()
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>​	调用 <strong>flag.Bool</strong> 函数会创建一个新的对应布尔型标志参数的变量。它有三个属性：第一个是的命令行标志参数的名字“n”，然后是该标志参数的默认值（这里是false），最后是该标志参数对应的描述信息。如果用户在命令行输入了一个无效的标志参数，或者输入<code>-h</code>或<code>-help</code>参数，那么将打印所有标志参数的名字、默认值和描述信息。类似的，调用flag.String函数将于创建一个对应字符串类型的标志参数变量，同样包含命令行标志参数对应的参数名、默认值、和描述信息。程序中的<code>sep</code>和<code>n</code>变量分别是指向对应命令行标志参数变量的指针，因此必须用<code>*sep</code>和<code>*n</code>形式的指针语法间接引用它们。</p>
 <p>​	当程序运行时，必须在使用标志参数对应的变量之前调用先flag.Parse函数，用于更新每个标志参数对应变量的值（之前是默认值）。对于非标志参数的普通命令行参数可以通过调用flag.Args()函数来访问，返回值对应对应一个字符串类型的slice。如果在flag.Parse函数解析命令行参数时遇到错误，默认将打印相关的提示信息，然后调用os.Exit(2)终止程序。</p>
 <p>​	运行一些echo测试用例：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">$ <span style="color:#ff79c6">go</span> build gopl.io<span style="color:#ff79c6">/</span>ch2<span style="color:#ff79c6">/</span>echo4
-$ .<span style="color:#ff79c6">/</span>echo4 a bc def
-a bc def
-$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>s <span style="color:#ff79c6">/</span> a bc def
-a<span style="color:#ff79c6">/</span>bc<span style="color:#ff79c6">/</span>def
-$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>n a bc def
-a bc def$
-$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>help
-Usage of .<span style="color:#ff79c6">/</span>echo4:
-  <span style="color:#ff79c6">-</span>n    omit trailing newline
-  <span style="color:#ff79c6">-</span>s <span style="color:#8be9fd">string</span>
-        <span style="color:#50fa7b">separator</span> (<span style="color:#ff79c6">default</span> <span style="color:#f1fa8c">&#34; &#34;</span>)
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>$ <span style="color:#ff79c6">go</span> build gopl.io<span style="color:#ff79c6">/</span>ch2<span style="color:#ff79c6">/</span>echo4
+</span></span><span style="display:flex;"><span>$ .<span style="color:#ff79c6">/</span>echo4 a bc def
+</span></span><span style="display:flex;"><span>a bc def
+</span></span><span style="display:flex;"><span>$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>s <span style="color:#ff79c6">/</span> a bc def
+</span></span><span style="display:flex;"><span>a<span style="color:#ff79c6">/</span>bc<span style="color:#ff79c6">/</span>def
+</span></span><span style="display:flex;"><span>$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>n a bc def
+</span></span><span style="display:flex;"><span>a bc def$
+</span></span><span style="display:flex;"><span>$ .<span style="color:#ff79c6">/</span>echo4 <span style="color:#ff79c6">-</span>help
+</span></span><span style="display:flex;"><span>Usage of .<span style="color:#ff79c6">/</span>echo4:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span>n    omit trailing newline
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">-</span>s <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#50fa7b">separator</span> (<span style="color:#ff79c6">default</span> <span style="color:#f1fa8c">&#34; &#34;</span>)
+</span></span></code></pre></div><hr>
 <h4 id="20-rune">20. Rune</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;unicode/utf8&#34;</span>
-
-s <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;Hello, 世界&#34;</span>
-fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#8be9fd;font-style:italic">len</span>(s))                    <span style="color:#6272a4">// &#34;13&#34;
-</span><span style="color:#6272a4"></span>fmt.<span style="color:#50fa7b">Println</span>(utf8.<span style="color:#50fa7b">RuneCountInString</span>(s)) <span style="color:#6272a4">// &#34;9&#34;
-</span></code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;unicode/utf8&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s <span style="color:#ff79c6">:=</span> <span style="color:#f1fa8c">&#34;Hello, 世界&#34;</span>
+</span></span><span style="display:flex;"><span>fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#8be9fd;font-style:italic">len</span>(s))                    <span style="color:#6272a4">// &#34;13&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>fmt.<span style="color:#50fa7b">Println</span>(utf8.<span style="color:#50fa7b">RuneCountInString</span>(s)) <span style="color:#6272a4">// &#34;9&#34;
+</span></span></span></code></pre></div><hr>
 <h4 id="21内置函数">21.内置函数</h4>
 <table>
 <thead>
@@ -464,7 +464,7 @@ fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#8be9fd;font-s
 <h4 id="22-for-range-结构">22. for-range 结构</h4>
 <p>一般形式为：<code>for ix, val := range coll { }</code></p>
 <p>要注意的是，<code>val</code> 始终为集合中对应索引的值拷贝，因此它一般只具有只读性质，对它所做的任何修改都不会影响到集合中原有的值（<strong>译者注：如果 val 为指针，则会产生指针的拷贝，依旧可以修改集合中的原值</strong>）。一个字符串是 Unicode 编码的字符（或称之为 <code>rune</code>）集合，因此您也可以用它迭代字符串：</p>
-<pre><code>for pos, char := range str {
+<pre tabindex="0"><code>for pos, char := range str {
 ...
 }
 </code></pre><p>每个 rune 字符和索引在 for-range 循环中是一一对应的。它能够自动根据 UTF-8 规则识别 Unicode 编码的字符。</p>
@@ -473,14 +473,14 @@ fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#8be9fd;font-s
 <p>​	假设 s 是一个字符串（本质上是一个字节数组），那么就可以直接通过 <code>c := []byte(s)</code> 来获取一个字节的切片 c。另外，还可以通过 copy 函数来达到相同的目的：<code>copy(dst []byte, src string)</code>。</p>
 <p>​	可以通过代码 <code>len([]int32(s))</code> 来获得字符串中字符的数量，但使用 <code>utf8.RuneCountInString(s)</code> 效率会更高一点。</p>
 <p>​	还可以将一个字符串追加到某一个字符数组的尾部：</p>
-<pre><code>var b []byte
+<pre tabindex="0"><code>var b []byte
 var s string
 b = append(b, s...)
 </code></pre><hr>
 <h4 id="24-常量">24. 常量</h4>
 <p><strong>常量</strong> 中的 <strong>数据类型</strong> 只可以是 <strong>布尔型</strong>、<strong>数字型</strong>（<strong>整数型</strong>、<strong>浮点型</strong>和<strong>复数</strong>）和<strong>字符串型</strong>。</p>
 <p>常量的定义格式：<code>const identifier [type] = value</code>，例如：</p>
-<pre><code>const Pi = 3.14159
+<pre tabindex="0"><code>const Pi = 3.14159
 </code></pre><p>在 Go 语言中，你可以省略类型说明符 <code>[type]</code>，因为编译器可以根据变量的值来推断其类型。</p>
 <ul>
 <li>显式类型定义： <code>const b string = &quot;abc&quot;</code></li>
@@ -498,7 +498,7 @@ b = append(b, s...)
 <li>Value 有一个 Type 方法返回 reflect.Value 的 Type。</li>
 </ul>
 <p>​        Type 和 Value 都有 Kind 方法返回一个常量来表示类型：Uint、Float64、Slice 等等 。</p>
-<pre><code>const (
+<pre tabindex="0"><code>const (
 	Invalid Kind = iota
 	Bool
 	Int
@@ -533,16 +533,16 @@ b = append(b, s...)
 <hr>
 <h4 id="27-一种限制速率的方法">27. 一种限制速率的方法</h4>
 <p><code>time.Tick()</code> 函数声明为 <code>Tick(d Duration) &lt;-chan Time</code>，当你想返回一个通道而不必关闭它的时候这个函数非常有用：它以 d 为周期给返回的通道发送时间，d是纳秒数。如果需要像下边的代码一样，限制处理频率</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;time&#34;</span>
-
-rate_per_sec <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">10</span>
-<span style="color:#8be9fd;font-style:italic">var</span> dur Duration = <span style="color:#bd93f9">1e9</span> <span style="color:#ff79c6">/</span> rate_per_sec
-chRate <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Tick</span>(dur) <span style="color:#6272a4">// a tick every 1/10th of a second
-</span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> req <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> requests {
-    <span style="color:#ff79c6">&lt;-</span> chRate <span style="color:#6272a4">// rate limit our Service.Method RPC calls
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">go</span> client.<span style="color:#50fa7b">Call</span>(<span style="color:#f1fa8c">&#34;Service.Method&#34;</span>, req, <span style="color:#ff79c6">...</span>)
-}
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rate_per_sec <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> dur Duration = <span style="color:#bd93f9">1e9</span> <span style="color:#ff79c6">/</span> rate_per_sec
+</span></span><span style="display:flex;"><span>chRate <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Tick</span>(dur) <span style="color:#6272a4">// a tick every 1/10th of a second
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">for</span> req <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> requests {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">&lt;-</span> chRate <span style="color:#6272a4">// rate limit our Service.Method RPC calls
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">go</span> client.<span style="color:#50fa7b">Call</span>(<span style="color:#f1fa8c">&#34;Service.Method&#34;</span>, req, <span style="color:#ff79c6">...</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
 
                 
                 
@@ -684,8 +684,20 @@ chRate <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Ti
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

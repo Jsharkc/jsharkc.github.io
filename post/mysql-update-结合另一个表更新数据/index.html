@@ -209,12 +209,12 @@
 
                 
                 <p>有时 update 更新语句会需要根据另一个表进行更新，举例如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#6272a4">-- 方式一：
-</span><span style="color:#6272a4"></span><span style="color:#ff79c6">update</span> tableA a, tableB b <span style="color:#8be9fd">set</span> a.Name<span style="color:#ff79c6">=</span>b.Name, a.Age<span style="color:#ff79c6">=</span>b.Age <span style="color:#ff79c6">where</span> a.IDCard<span style="color:#ff79c6">=</span>b.IDCard;
-
-<span style="color:#6272a4">-- 方式二:
-</span><span style="color:#6272a4"></span><span style="color:#ff79c6">update</span> tableA a <span style="color:#ff79c6">inner</span> <span style="color:#ff79c6">join</span> tableB b <span style="color:#ff79c6">on</span> a.IDCard<span style="color:#ff79c6">=</span>b.IDCard <span style="color:#8be9fd">set</span> a.Name<span style="color:#ff79c6">=</span>b.Name, a.Age<span style="color:#ff79c6">=</span>b.Age;
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#6272a4">-- 方式一：
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">update</span> tableA a, tableB b <span style="color:#8be9fd">set</span> a.Name<span style="color:#ff79c6">=</span>b.Name, a.Age<span style="color:#ff79c6">=</span>b.Age <span style="color:#ff79c6">where</span> a.IDCard<span style="color:#ff79c6">=</span>b.IDCard;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">-- 方式二:
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">update</span> tableA a <span style="color:#ff79c6">inner</span> <span style="color:#ff79c6">join</span> tableB b <span style="color:#ff79c6">on</span> a.IDCard<span style="color:#ff79c6">=</span>b.IDCard <span style="color:#8be9fd">set</span> a.Name<span style="color:#ff79c6">=</span>b.Name, a.Age<span style="color:#ff79c6">=</span>b.Age;
+</span></span></code></pre></div>
 
                 
                 
@@ -356,8 +356,20 @@
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

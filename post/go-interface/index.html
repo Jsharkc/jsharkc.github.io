@@ -211,84 +211,84 @@
                 <h1 id="interface-解析">Interface 解析</h1>
 <p><a href="https://zhuanlan.zhihu.com/p/27652856">原文链接</a></p>
 <p>先看一段代码：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Foo</span>(x <span style="color:#8be9fd;font-style:italic">interface</span>{}) {
-    <span style="color:#ff79c6">if</span> x <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">nil</span> {
-        fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;empty interface&#34;</span>)
-        <span style="color:#ff79c6">return</span>
-    }
-    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;non-empty interface&#34;</span>)
-}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    <span style="color:#8be9fd;font-style:italic">var</span> x <span style="color:#ff79c6">*</span><span style="color:#8be9fd">int</span> = <span style="color:#ff79c6">nil</span>
-    <span style="color:#50fa7b">Foo</span>(x)
-}
-</code></pre></div><p>上面的例子的输出结果如下</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">$ <span style="color:#ff79c6">go</span> run test_interface.<span style="color:#ff79c6">go</span>
-non<span style="color:#ff79c6">-</span>empty <span style="color:#8be9fd;font-style:italic">interface</span>
-</code></pre></div><p>可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Foo</span>(x <span style="color:#8be9fd;font-style:italic">interface</span>{}) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> x <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>        fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;empty interface&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;non-empty interface&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> x <span style="color:#ff79c6">*</span><span style="color:#8be9fd">int</span> = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">Foo</span>(x)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的例子的输出结果如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>$ <span style="color:#ff79c6">go</span> run test_interface.<span style="color:#ff79c6">go</span>
+</span></span><span style="display:flex;"><span>non<span style="color:#ff79c6">-</span>empty <span style="color:#8be9fd;font-style:italic">interface</span>
+</span></span></code></pre></div><p>可能你会感觉奇怪，为什么会是 non-empty inerface，那么继续往下看，你就会知道答案。</p>
 <h3 id="interface-底层结构">interface 底层结构</h3>
 <p>根据 interface 是否包含有 method，底层实现上用两种 struct 来表示：iface 和 eface。eface表示不含 method 的 interface 结构，或者叫 empty interface。对于 Golang 中的大部分数据类型都可以抽象出来 _type 结构，同时针对不同的类型还会有一些其他信息。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> eface <span style="color:#8be9fd;font-style:italic">struct</span> {
-    _type <span style="color:#ff79c6">*</span>_type
-    data  unsafe.Pointer
-}
-
-<span style="color:#8be9fd;font-style:italic">type</span> _type <span style="color:#8be9fd;font-style:italic">struct</span> {
-    size       <span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// type size
-</span><span style="color:#6272a4"></span>    ptrdata    <span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// size of memory prefix holding all pointers
-</span><span style="color:#6272a4"></span>    hash       <span style="color:#8be9fd">uint32</span>  <span style="color:#6272a4">// hash of type; avoids computation in hash tables
-</span><span style="color:#6272a4"></span>    tflag      tflag   <span style="color:#6272a4">// extra type information flags
-</span><span style="color:#6272a4"></span>    align      <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// alignment of variable with this type
-</span><span style="color:#6272a4"></span>    fieldalign <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// alignment of struct field with this type
-</span><span style="color:#6272a4"></span>    kind       <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// enumeration for C
-</span><span style="color:#6272a4"></span>    alg        <span style="color:#ff79c6">*</span>typeAlg  <span style="color:#6272a4">// algorithm table
-</span><span style="color:#6272a4"></span>    gcdata    <span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>    <span style="color:#6272a4">// garbage collection data
-</span><span style="color:#6272a4"></span>    str       nameOff  <span style="color:#6272a4">// string form
-</span><span style="color:#6272a4"></span>    ptrToThis typeOff  <span style="color:#6272a4">// type for pointer to this type, may be zero
-</span><span style="color:#6272a4"></span>}
-</code></pre></div><p>iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.fun 变量里。如果 interface 包含多个 method，这里只有一个 fun 变量怎么存呢？这个下面再细说。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> iface <span style="color:#8be9fd;font-style:italic">struct</span> {
-    tab  <span style="color:#ff79c6">*</span>itab
-    data unsafe.Pointer
-}
-
-<span style="color:#6272a4">// layout of Itab known to compilers
-</span><span style="color:#6272a4">// allocated in non-garbage-collected memory
-</span><span style="color:#6272a4">// Needs to be in sync with
-</span><span style="color:#6272a4">// ../cmd/compile/internal/gc/reflect.go:/^func.dumptypestructs.
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">type</span> itab <span style="color:#8be9fd;font-style:italic">struct</span> {
-    inter  <span style="color:#ff79c6">*</span>interfacetype
-    _type  <span style="color:#ff79c6">*</span>_type
-    link   <span style="color:#ff79c6">*</span>itab
-    bad    <span style="color:#8be9fd">int32</span>
-    inhash <span style="color:#8be9fd">int32</span>      <span style="color:#6272a4">// has this itab been added to hash?
-</span><span style="color:#6272a4"></span>    fun    [<span style="color:#bd93f9">1</span>]<span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// variable sized
-</span><span style="color:#6272a4"></span>}
-</code></pre></div><p>我们使用实际程序来看一下。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#ff79c6">package</span> main
-
-<span style="color:#ff79c6">import</span> (
-    <span style="color:#f1fa8c">&#34;fmt&#34;</span>
-)
-
-<span style="color:#8be9fd;font-style:italic">type</span> MyInterface <span style="color:#8be9fd;font-style:italic">interface</span> {
-    <span style="color:#50fa7b">Print</span>()
-}
-
-<span style="color:#8be9fd;font-style:italic">type</span> MyStruct <span style="color:#8be9fd;font-style:italic">struct</span>{}
-<span style="color:#8be9fd;font-style:italic">func</span> (ms MyStruct) <span style="color:#50fa7b">Print</span>() {}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    x <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">1</span>
-    <span style="color:#8be9fd;font-style:italic">var</span> y <span style="color:#8be9fd;font-style:italic">interface</span>{} = x
-    <span style="color:#8be9fd;font-style:italic">var</span> s MyStruct
-    <span style="color:#8be9fd;font-style:italic">var</span> t MyInterface = s
-    fmt.<span style="color:#50fa7b">Println</span>(y, z)
-}
-</code></pre></div><p>查看汇编代码。</p>
-<pre><code>$ go build -gcflags '-l' -o interface11 interface11.go
-$ go tool objdump -s &quot;main\.main&quot; interface11
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> eface <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    _type <span style="color:#ff79c6">*</span>_type
+</span></span><span style="display:flex;"><span>    data  unsafe.Pointer
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> _type <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    size       <span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// type size
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    ptrdata    <span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// size of memory prefix holding all pointers
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    hash       <span style="color:#8be9fd">uint32</span>  <span style="color:#6272a4">// hash of type; avoids computation in hash tables
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    tflag      tflag   <span style="color:#6272a4">// extra type information flags
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    align      <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// alignment of variable with this type
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fieldalign <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// alignment of struct field with this type
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    kind       <span style="color:#8be9fd">uint8</span>   <span style="color:#6272a4">// enumeration for C
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    alg        <span style="color:#ff79c6">*</span>typeAlg  <span style="color:#6272a4">// algorithm table
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    gcdata    <span style="color:#ff79c6">*</span><span style="color:#8be9fd">byte</span>    <span style="color:#6272a4">// garbage collection data
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    str       nameOff  <span style="color:#6272a4">// string form
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    ptrToThis typeOff  <span style="color:#6272a4">// type for pointer to this type, may be zero
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><p>iface 表示 non-empty interface 的底层实现。相比于 empty interface，non-empty 要包含一些 method。method 的具体实现存放在 itab.fun 变量里。如果 interface 包含多个 method，这里只有一个 fun 变量怎么存呢？这个下面再细说。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> iface <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    tab  <span style="color:#ff79c6">*</span>itab
+</span></span><span style="display:flex;"><span>    data unsafe.Pointer
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// layout of Itab known to compilers
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// allocated in non-garbage-collected memory
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// Needs to be in sync with
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// ../cmd/compile/internal/gc/reflect.go:/^func.dumptypestructs.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">type</span> itab <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    inter  <span style="color:#ff79c6">*</span>interfacetype
+</span></span><span style="display:flex;"><span>    _type  <span style="color:#ff79c6">*</span>_type
+</span></span><span style="display:flex;"><span>    link   <span style="color:#ff79c6">*</span>itab
+</span></span><span style="display:flex;"><span>    bad    <span style="color:#8be9fd">int32</span>
+</span></span><span style="display:flex;"><span>    inhash <span style="color:#8be9fd">int32</span>      <span style="color:#6272a4">// has this itab been added to hash?
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fun    [<span style="color:#bd93f9">1</span>]<span style="color:#8be9fd">uintptr</span> <span style="color:#6272a4">// variable sized
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><p>我们使用实际程序来看一下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#f1fa8c">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> MyInterface <span style="color:#8be9fd;font-style:italic">interface</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">Print</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> MyStruct <span style="color:#8be9fd;font-style:italic">struct</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (ms MyStruct) <span style="color:#50fa7b">Print</span>() {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    x <span style="color:#ff79c6">:=</span> <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> y <span style="color:#8be9fd;font-style:italic">interface</span>{} = x
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> s MyStruct
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> t MyInterface = s
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(y, z)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>查看汇编代码。</p>
+<pre tabindex="0"><code>$ go build -gcflags &#39;-l&#39; -o interface11 interface11.go
+$ go tool objdump -s &#34;main\.main&#34; interface11
 TEXT main.main(SB) /Users/kltao/code/go/examples/interface11.go
     interface11.go:15   0x10870f0   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX
     interface11.go:15   0x10870f9   483b6110        CMPQ 0x10(CX), SP
@@ -312,31 +312,31 @@ TEXT main.main(SB) /Users/kltao/code/go/examples/interface11.go
     interface11.go:19   0x1087158   4889542408      MOVQ DX, 0x8(SP)
     interface11.go:19   0x108715d   e8fe45f8ff      CALL runtime.convT2I(SB)
 </code></pre><p>代码 17 行 var y interface{} = x 调用了函数 runtime.convT2E，将 int 类型的 x 转换成 empty interface。代码 19 行 var t MyInterface = s 将 MyStruct 类型转换成 non-empty interface: MyInterface。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">convT2E</span>(t <span style="color:#ff79c6">*</span>_type, elem unsafe.Pointer) (e eface) {
-    <span style="color:#ff79c6">...</span>
-  
-    x <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">newobject</span>(t)
-    <span style="color:#50fa7b">typedmemmove</span>(t, x, elem)
-    e._type = t
-    e.data = x
-    <span style="color:#ff79c6">return</span>
-}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">convT2I</span>(tab <span style="color:#ff79c6">*</span>itab, elem unsafe.Pointer) (i iface) {
-    t <span style="color:#ff79c6">:=</span> tab._type
-    
-    <span style="color:#ff79c6">...</span>
-  
-    x <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">newobject</span>(t)
-    <span style="color:#50fa7b">typedmemmove</span>(t, x, elem)
-    i.tab = tab
-    i.data = x
-    <span style="color:#ff79c6">return</span>
-}
-</code></pre></div><p>看上面的函数原型，可以看出中间过程编译器将根据我们的转换目标类型的 empty interface 还是 non-empty interface，来对原数据类型进行转换（转换成 &lt;*_type, unsafe.Pointer&gt; 或者 &lt;*itab, unsafe.Pointer&gt;）。这里对于 struct 满不满足 interface 的类型要求（也就是 struct 是否实现了 interface 的所有 method），是由编译器来检测的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">convT2E</span>(t <span style="color:#ff79c6">*</span>_type, elem unsafe.Pointer) (e eface) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">...</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    x <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">newobject</span>(t)
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">typedmemmove</span>(t, x, elem)
+</span></span><span style="display:flex;"><span>    e._type = t
+</span></span><span style="display:flex;"><span>    e.data = x
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">convT2I</span>(tab <span style="color:#ff79c6">*</span>itab, elem unsafe.Pointer) (i iface) {
+</span></span><span style="display:flex;"><span>    t <span style="color:#ff79c6">:=</span> tab._type
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">...</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    x <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">newobject</span>(t)
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">typedmemmove</span>(t, x, elem)
+</span></span><span style="display:flex;"><span>    i.tab = tab
+</span></span><span style="display:flex;"><span>    i.data = x
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>看上面的函数原型，可以看出中间过程编译器将根据我们的转换目标类型的 empty interface 还是 non-empty interface，来对原数据类型进行转换（转换成 &lt;*_type, unsafe.Pointer&gt; 或者 &lt;*itab, unsafe.Pointer&gt;）。这里对于 struct 满不满足 interface 的类型要求（也就是 struct 是否实现了 interface 的所有 method），是由编译器来检测的。</p>
 <h3 id="itab">itab</h3>
 <p>iface 结构中最重要的是 itab 结构。itab 可以理解为 pair&lt;interface type, concrete type&gt; 。当然 itab 里面还包含一些其他信息，比如 interface 里面包含的 method 的具体实现。下面细说。itab 的结构如下。</p>
-<pre><code>type itab struct {
+<pre tabindex="0"><code>type itab struct {
     inter  *interfacetype
     _type  *_type
     link   *itab
@@ -344,9 +344,8 @@ TEXT main.main(SB) /Users/kltao/code/go/examples/interface11.go
     inhash int32      // has this itab been added to hash?
     fun    [1]uintptr // variable sized
 }
-
 </code></pre><p>其中 interfacetype 包含了一些关于 interface 本身的信息，比如 package path，包含的 method。上面提到的 iface 和 eface 是数据类型（built-in 和 type-define）转换成 interface 之后的实体的 struct 结构，而这里的 interfacetype 是我们定义 interface 时候的一种抽象表示。</p>
-<pre><code>type interfacetype struct {
+<pre tabindex="0"><code>type interfacetype struct {
     typ     _type
     pkgpath name
     mhdr    []imethod
@@ -357,7 +356,7 @@ type imethod struct {   //这里的 method 只是一种函数声明的抽象，�
     ityp typeOff
 }
 </code></pre><p>_type 表示 concrete type。fun 表示的 interface 里面的 method 的具体实现。比如 interface type 包含了 method A, B，则通过 fun 就可以找到这两个 method 的具体实现。这里有个问题 fun 是长度为 1 的 uintptr 数组，那么怎么表示多个 method 呢？看一下测试程序。</p>
-<pre><code>package main
+<pre tabindex="0"><code>package main
 
 type MyInterface interface {
     Print()
@@ -384,10 +383,9 @@ func main() {
     var me MyStruct
     Foo(me)
 }
-
 </code></pre><p>看一下函数调用对应的汇编代码。</p>
-<pre><code>$ go build -gcflags '-l' -o interface8 interface8.go
-$ go tool objdump -s &quot;main\.Foo&quot; interface8
+<pre tabindex="0"><code>$ go build -gcflags &#39;-l&#39; -o interface8 interface8.go
+$ go tool objdump -s &#34;main\.Foo&#34; interface8
 TEXT main.Foo(SB) /Users/kltao/code/go/examples/interface8.go
     interface8.go:10    0x104c060   65488b0c25a0080000  GS MOVQ GS:0x8a0, CX
     interface8.go:10    0x104c069   483b6110        CMPQ 0x10(CX), SP
@@ -420,18 +418,16 @@ TEXT main.Foo(SB) /Users/kltao/code/go/examples/interface8.go
     interface8.go:15    0x104c0d6   c3          RET
     interface8.go:10    0x104c0d7   e8f48bffff      CALL runtime.morestack_noctxt(SB)
     interface8.go:10    0x104c0dc   eb82            JMP main.Foo(SB)
-
 </code></pre><p>其中 0x18(SP) 对应的 itab 的地址。fun 在 x86-64 机器上对应 itab 内的地址偏移为 8+8+8+4+4 = 32 = 0x20，也就是 0x20(AX) 对应的 fun 的值，此时存放的 AWK 函数地址。然后 0x28(AX) = &amp;Hello，0x30(AX) = &amp;Print，0x38(AX) = &amp;World。对的，每次函数是按字典序排序存放的。</p>
 <p>我们再来看一下函数地址究竟是怎么写入的？首先 Golang 中的 uintptr 一般用来存放指针的值，这里对应的就是函数指针的值（也就是函数的调用地址）。但是这里的 fun 是一个长度为 1 的 uintptr 数组。我们看一下 runtime 包的 additab 函数。</p>
-<pre><code>func additab(m *itab, locked, canfail bool) {
+<pre tabindex="0"><code>func additab(m *itab, locked, canfail bool) {
     ...
     *(*unsafe.Pointer)(add(unsafe.Pointer(&amp;m.fun[0]), uintptr(k)*sys.PtrSize)) = ifn
     ...
 }
-
 </code></pre><p>上面的代码的意思是在 fun[0] 的地址后面依次写入其他 method 对应的函数指针。熟悉 C++ 的同学可以类比 C++ 的虚函数表指针来看。</p>
 <p>剩下的还有 bad，link，inhash。其中 bad 是一个表征 itab 状态的变量。而这里的 link 是 *itab 类型，是不是表示 interface 的嵌套呢？并不是，interface 的嵌套也是把 method 平铺而已。link 要和 inhash 一起来说。在 runtime 包里面有一个 hash 表，通过 hash[hashitab(interface_type, concrete_type)] 可以取得 itab，这是出于性能方面的考虑。主要代码如下，这里就不再赘述了。</p>
-<pre><code>const (
+<pre tabindex="0"><code>const (
     hashSize = 1009
 )
 
@@ -457,7 +453,7 @@ func additab(...) {
 }
 </code></pre><h2 id="3-type-assertion"><strong>3. Type Assertion</strong></h2>
 <p>我们知道使用 interface type assertion (中文一般叫断言) 的时候需要注意，不然很容易引入 panic。</p>
-<pre><code>func do(v interface{}) {
+<pre tabindex="0"><code>func do(v interface{}) {
     n := v.(int)    // might panic
 }
 
@@ -467,15 +463,14 @@ func do(v interface{}) {
         // 断言失败处理
     }
 }
-
 </code></pre><p>这个过程体现在下面的几个函数上。</p>
-<pre><code>// The assertXXX functions may fail (either panicking or returning false,
+<pre tabindex="0"><code>// The assertXXX functions may fail (either panicking or returning false,
 // depending on whether they are 1-result or 2-result).
 func assertI2I(inter *interfacetype, i iface) (r iface) {
     tab := i.tab
     if tab == nil {
         // explicit conversions require non-nil interface value.
-        panic(&amp;TypeAssertionError{&quot;&quot;, &quot;&quot;, inter.typ.string(), &quot;&quot;})
+        panic(&amp;TypeAssertionError{&#34;&#34;, &#34;&#34;, inter.typ.string(), &#34;&#34;})
     }
     if tab.inter == inter {
         r.tab = tab
@@ -506,7 +501,6 @@ func assertI2I2(inter *interfacetype, i iface) (r iface, b bool) {
 // 类似
 func assertE2I(inter *interfacetype, e eface) (r iface)
 func assertE2I2(inter *interfacetype, e eface) (r iface, b bool)
-
 </code></pre><h2 id="4-总结"><strong>4. 总结</strong></h2>
 <p>从某种意义上来说，Golang 的 interface 也是一种多态的体现。对比其他支持多态特性的语言，实现还是略有差异，很难说谁好谁坏。</p>
 
@@ -651,8 +645,20 @@ func assertE2I2(inter *interfacetype, e eface) (r iface, b bool)
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

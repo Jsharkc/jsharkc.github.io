@@ -211,171 +211,170 @@
                 <p>Log 用的 <code>go.uber.org/zap</code> 库。</p>
 <h2 id="按大小切割日志">按大小切割日志</h2>
 <p>按大小切割日志，用到 <code>github.com/natefinch/lumberjack</code> 库，代码如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#ff79c6">package</span> log
-
-<span style="color:#ff79c6">import</span> (
-	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
-	<span style="color:#f1fa8c">&#34;os&#34;</span>
-	<span style="color:#f1fa8c">&#34;strings&#34;</span>
-	<span style="color:#f1fa8c">&#34;time&#34;</span>
-
-	<span style="color:#f1fa8c">&#34;github.com/natefinch/lumberjack&#34;</span>
-	<span style="color:#f1fa8c">&#34;go.uber.org/zap&#34;</span>
-	<span style="color:#f1fa8c">&#34;go.uber.org/zap/zapcore&#34;</span>
-)
-
-<span style="color:#8be9fd;font-style:italic">var</span> Sugar <span style="color:#ff79c6">*</span>zap.SugaredLogger = <span style="color:#ff79c6">nil</span>
-<span style="color:#8be9fd;font-style:italic">var</span> Raw <span style="color:#ff79c6">*</span>zap.Logger = <span style="color:#ff79c6">nil</span>
-
-
-<span style="color:#6272a4">// LogInit 初始化日志库
-</span><span style="color:#6272a4">// dev 开发模式，日志不入文件
-</span><span style="color:#6272a4">// logPath 日志文件存放路径
-</span><span style="color:#6272a4">// logName 日志文件名称
-</span><span style="color:#6272a4">// maxSize 单个文件大小，超过后切割，单位 M
-</span><span style="color:#6272a4">// maxBackups 旧的日志文件最多保留个数，0 为保存所有
-</span><span style="color:#6272a4">// maxAge 旧的日志文件最多保留天数，0 为保存所有
-</span><span style="color:#6272a4">// MaxBackups 和 maxAge 只要有一个不满足，就不再保留
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">LogInit</span>(dev <span style="color:#8be9fd">bool</span>, logPath, logName <span style="color:#8be9fd">string</span>, maxSize, maxBackups, maxAge <span style="color:#8be9fd">int</span>) (err <span style="color:#8be9fd">error</span>) {
-  <span style="color:#ff79c6">if</span> dev {
-    Raw, _ = zap.<span style="color:#50fa7b">NewDevelopment</span>()
-    Sugar = Raw.<span style="color:#50fa7b">Sugar</span>()
-    <span style="color:#ff79c6">return</span>
-  }
-
-  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logPath, <span style="color:#f1fa8c">&#34;/&#34;</span>) {
-    logPath <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;/&#34;</span>
-  }
-
-  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logName, <span style="color:#f1fa8c">&#34;.log&#34;</span>) {
-    logName <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;.log&#34;</span>
-  }
-
-  _, err = os.<span style="color:#50fa7b">Stat</span>(logPath)
-  <span style="color:#ff79c6">if</span> os.<span style="color:#50fa7b">IsNotExist</span>(err) {
-    <span style="color:#6272a4">// Create parent directory if it does not exist
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> err = os.<span style="color:#50fa7b">MkdirAll</span>(logPath, <span style="color:#bd93f9">0744</span>); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-      fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.MkdirAll failed, err=&#34;</span>, err)
-      <span style="color:#ff79c6">return</span>
-    }
-  }
-  
-  <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.Stat failed, err=&#34;</span>, err)
-    <span style="color:#ff79c6">return</span>
-  }
-
-  w <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">AddSync</span>(<span style="color:#ff79c6">&amp;</span>lumberjack.Logger{
-    Filename:   logPath <span style="color:#ff79c6">+</span> logName,
-    MaxSize:    maxSize,
-    MaxBackups: maxBackups,
-    MaxAge:     maxAge,
-  })
-
-  core <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">NewCore</span>(
-    zapcore.<span style="color:#50fa7b">NewConsoleEncoder</span>(zap.<span style="color:#50fa7b">NewProductionEncoderConfig</span>()),
-    w,
-    zap.InfoLevel,
-  )
-  Raw = zap.<span style="color:#50fa7b">New</span>(core)
-  Sugar = Raw.<span style="color:#50fa7b">Sugar</span>()
-
-  <span style="color:#ff79c6">return</span>
-}
-</code></pre></div><p><code>zap.NewProductionEncoderConfig()</code> 产生的日志，事件格式为时间戳，人类不方便读，如果想自定义时间格式的话，只需要替换 <code>core := zapcore.NewCore</code> 即可，代码如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang">core <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">NewCore</span>(
-  zapcore.<span style="color:#50fa7b">NewConsoleEncoder</span>(<span style="color:#50fa7b">MyEncoderConfig</span>()),
-  w,
-  zap.InfoLevel,
-)
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">MyEncoderConfig</span>() zapcore.EncoderConfig {
-  <span style="color:#ff79c6">return</span> zapcore.EncoderConfig{
-    TimeKey:       <span style="color:#f1fa8c">&#34;ts&#34;</span>,
-    LevelKey:      <span style="color:#f1fa8c">&#34;level&#34;</span>,
-    NameKey:       <span style="color:#f1fa8c">&#34;logger&#34;</span>,
-    CallerKey:     <span style="color:#f1fa8c">&#34;caller&#34;</span>,
-    FunctionKey:   zapcore.OmitKey,
-    MessageKey:    <span style="color:#f1fa8c">&#34;msg&#34;</span>,
-    StacktraceKey: <span style="color:#f1fa8c">&#34;stacktrace&#34;</span>,
-    LineEnding:    zapcore.DefaultLineEnding,
-    EncodeLevel:   zapcore.LowercaseLevelEncoder,
-    EncodeTime: <span style="color:#8be9fd;font-style:italic">func</span>(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-      enc.<span style="color:#50fa7b">AppendString</span>(t.<span style="color:#50fa7b">Format</span>(<span style="color:#f1fa8c">&#34;2006/01/02T15:04:05&#34;</span>))
-    },
-    EncodeDuration: zapcore.SecondsDurationEncoder,
-    EncodeCaller:   zapcore.ShortCallerEncoder,
-  }
-}
-</code></pre></div><h2 id="按时间切割日志">按时间切割日志</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-golang" data-lang="golang"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;strings&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;github.com/natefinch/lumberjack&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;go.uber.org/zap&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;go.uber.org/zap/zapcore&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> Sugar <span style="color:#ff79c6">*</span>zap.SugaredLogger = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> Raw <span style="color:#ff79c6">*</span>zap.Logger = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// LogInit 初始化日志库
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// dev 开发模式，日志不入文件
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// logPath 日志文件存放路径
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// logName 日志文件名称
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// maxSize 单个文件大小，超过后切割，单位 M
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// maxBackups 旧的日志文件最多保留个数，0 为保存所有
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// maxAge 旧的日志文件最多保留天数，0 为保存所有
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// MaxBackups 和 maxAge 只要有一个不满足，就不再保留
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">LogInit</span>(dev <span style="color:#8be9fd">bool</span>, logPath, logName <span style="color:#8be9fd">string</span>, maxSize, maxBackups, maxAge <span style="color:#8be9fd">int</span>) (err <span style="color:#8be9fd">error</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> dev {
+</span></span><span style="display:flex;"><span>    Raw, _ = zap.<span style="color:#50fa7b">NewDevelopment</span>()
+</span></span><span style="display:flex;"><span>    Sugar = Raw.<span style="color:#50fa7b">Sugar</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logPath, <span style="color:#f1fa8c">&#34;/&#34;</span>) {
+</span></span><span style="display:flex;"><span>    logPath <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;/&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logName, <span style="color:#f1fa8c">&#34;.log&#34;</span>) {
+</span></span><span style="display:flex;"><span>    logName <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;.log&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  _, err = os.<span style="color:#50fa7b">Stat</span>(logPath)
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> os.<span style="color:#50fa7b">IsNotExist</span>(err) {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// Create parent directory if it does not exist
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> err = os.<span style="color:#50fa7b">MkdirAll</span>(logPath, <span style="color:#bd93f9">0744</span>); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>      fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.MkdirAll failed, err=&#34;</span>, err)
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.Stat failed, err=&#34;</span>, err)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  w <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">AddSync</span>(<span style="color:#ff79c6">&amp;</span>lumberjack.Logger{
+</span></span><span style="display:flex;"><span>    Filename:   logPath <span style="color:#ff79c6">+</span> logName,
+</span></span><span style="display:flex;"><span>    MaxSize:    maxSize,
+</span></span><span style="display:flex;"><span>    MaxBackups: maxBackups,
+</span></span><span style="display:flex;"><span>    MaxAge:     maxAge,
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  core <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">NewCore</span>(
+</span></span><span style="display:flex;"><span>    zapcore.<span style="color:#50fa7b">NewConsoleEncoder</span>(zap.<span style="color:#50fa7b">NewProductionEncoderConfig</span>()),
+</span></span><span style="display:flex;"><span>    w,
+</span></span><span style="display:flex;"><span>    zap.InfoLevel,
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>  Raw = zap.<span style="color:#50fa7b">New</span>(core)
+</span></span><span style="display:flex;"><span>  Sugar = Raw.<span style="color:#50fa7b">Sugar</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>zap.NewProductionEncoderConfig()</code> 产生的日志，事件格式为时间戳，人类不方便读，如果想自定义时间格式的话，只需要替换 <code>core := zapcore.NewCore</code> 即可，代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-golang" data-lang="golang"><span style="display:flex;"><span>core <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">NewCore</span>(
+</span></span><span style="display:flex;"><span>  zapcore.<span style="color:#50fa7b">NewConsoleEncoder</span>(<span style="color:#50fa7b">MyEncoderConfig</span>()),
+</span></span><span style="display:flex;"><span>  w,
+</span></span><span style="display:flex;"><span>  zap.InfoLevel,
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">MyEncoderConfig</span>() zapcore.EncoderConfig {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span> zapcore.EncoderConfig{
+</span></span><span style="display:flex;"><span>    TimeKey:       <span style="color:#f1fa8c">&#34;ts&#34;</span>,
+</span></span><span style="display:flex;"><span>    LevelKey:      <span style="color:#f1fa8c">&#34;level&#34;</span>,
+</span></span><span style="display:flex;"><span>    NameKey:       <span style="color:#f1fa8c">&#34;logger&#34;</span>,
+</span></span><span style="display:flex;"><span>    CallerKey:     <span style="color:#f1fa8c">&#34;caller&#34;</span>,
+</span></span><span style="display:flex;"><span>    FunctionKey:   zapcore.OmitKey,
+</span></span><span style="display:flex;"><span>    MessageKey:    <span style="color:#f1fa8c">&#34;msg&#34;</span>,
+</span></span><span style="display:flex;"><span>    StacktraceKey: <span style="color:#f1fa8c">&#34;stacktrace&#34;</span>,
+</span></span><span style="display:flex;"><span>    LineEnding:    zapcore.DefaultLineEnding,
+</span></span><span style="display:flex;"><span>    EncodeLevel:   zapcore.LowercaseLevelEncoder,
+</span></span><span style="display:flex;"><span>    EncodeTime: <span style="color:#8be9fd;font-style:italic">func</span>(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+</span></span><span style="display:flex;"><span>      enc.<span style="color:#50fa7b">AppendString</span>(t.<span style="color:#50fa7b">Format</span>(<span style="color:#f1fa8c">&#34;2006/01/02T15:04:05&#34;</span>))
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    EncodeDuration: zapcore.SecondsDurationEncoder,
+</span></span><span style="display:flex;"><span>    EncodeCaller:   zapcore.ShortCallerEncoder,
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="按时间切割日志">按时间切割日志</h2>
 <p>按时间切割日志，用到 <code>github.com/lestrrat/go-file-rotatelogs</code> 库，代码如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">package</span> log
-
-<span style="color:#ff79c6">import</span> (
-	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
-	<span style="color:#f1fa8c">&#34;os&#34;</span>
-	<span style="color:#f1fa8c">&#34;strings&#34;</span>
-	<span style="color:#f1fa8c">&#34;time&#34;</span>
-
-	rotatelogs <span style="color:#f1fa8c">&#34;github.com/lestrrat/go-file-rotatelogs&#34;</span>
-	<span style="color:#f1fa8c">&#34;go.uber.org/zap&#34;</span>
-	<span style="color:#f1fa8c">&#34;go.uber.org/zap/zapcore&#34;</span>
-)
-
-<span style="color:#8be9fd;font-style:italic">var</span> Sugar <span style="color:#ff79c6">*</span>zap.SugaredLogger = <span style="color:#ff79c6">nil</span>
-<span style="color:#8be9fd;font-style:italic">var</span> Raw <span style="color:#ff79c6">*</span>zap.Logger = <span style="color:#ff79c6">nil</span>
-
-<span style="color:#6272a4">// LogInit 初始化日志库
-</span><span style="color:#6272a4">// logPath 日志文件存放路径
-</span><span style="color:#6272a4">// logName 日志文件名称
-</span><span style="color:#6272a4">// rotationTime 按时间分割，分割的时间长度
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">LogInit</span>(logPath, logName <span style="color:#8be9fd">string</span>, rotationTime time.Duration) (err <span style="color:#8be9fd">error</span>) {
-  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logPath, <span style="color:#f1fa8c">&#34;/&#34;</span>) {
-    logPath <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;/&#34;</span>
-  }
-
-  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logName, <span style="color:#f1fa8c">&#34;.log&#34;</span>) {
-    logName <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;.log&#34;</span>
-  }
-
-  _, err = os.<span style="color:#50fa7b">Stat</span>(logPath)
-  <span style="color:#ff79c6">if</span> os.<span style="color:#50fa7b">IsNotExist</span>(err) {
-    <span style="color:#6272a4">// Create parent directory if it does not exist
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> err = os.<span style="color:#50fa7b">MkdirAll</span>(logPath, <span style="color:#bd93f9">0744</span>); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-      fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.MkdirAll failed, err=&#34;</span>, err)
-      <span style="color:#ff79c6">return</span>
-    }
-  }
-
-  <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.Stat failed, err=&#34;</span>, err)
-    <span style="color:#ff79c6">return</span>
-  }
-
-  rotate, err <span style="color:#ff79c6">:=</span> rotatelogs.<span style="color:#50fa7b">New</span>(
-    logPath<span style="color:#ff79c6">+</span>logName<span style="color:#ff79c6">+</span><span style="color:#f1fa8c">&#34;.%Y%m%d&#34;</span>,
-    rotatelogs.<span style="color:#50fa7b">WithLinkName</span>(logPath<span style="color:#ff79c6">+</span>logName),
-    rotatelogs.<span style="color:#50fa7b">WithMaxAge</span>(rotationTime), <span style="color:#6272a4">// 这里不写默认 24 hour
-</span><span style="color:#6272a4"></span>  )
-  <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;rotatelogs.New failed, err=&#34;</span>, err)
-    <span style="color:#ff79c6">return</span>
-  }
-
-  writer <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">AddSync</span>(rotate)
-
-  core <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">NewCore</span>(
-    zapcore.<span style="color:#50fa7b">NewConsoleEncoder</span>(zap.<span style="color:#50fa7b">NewProductionEncoderConfig</span>()),
-    writer,
-    zap.InfoLevel,
-  )
-  Raw = zap.<span style="color:#50fa7b">New</span>(core)
-  Sugar = Raw.<span style="color:#50fa7b">Sugar</span>()
-
-  <span style="color:#ff79c6">return</span>
-}
-
-</code></pre></div><p>假设 <code>rotationTime</code> 为 <code>24hour</code> 即「天」，那么当你的程序在任意时间启动，都会在半夜 12 点，产生日志切割。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;os&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;strings&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	rotatelogs <span style="color:#f1fa8c">&#34;github.com/lestrrat/go-file-rotatelogs&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;go.uber.org/zap&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f1fa8c">&#34;go.uber.org/zap/zapcore&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> Sugar <span style="color:#ff79c6">*</span>zap.SugaredLogger = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> Raw <span style="color:#ff79c6">*</span>zap.Logger = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// LogInit 初始化日志库
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// logPath 日志文件存放路径
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// logName 日志文件名称
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4">// rotationTime 按时间分割，分割的时间长度
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">LogInit</span>(logPath, logName <span style="color:#8be9fd">string</span>, rotationTime time.Duration) (err <span style="color:#8be9fd">error</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logPath, <span style="color:#f1fa8c">&#34;/&#34;</span>) {
+</span></span><span style="display:flex;"><span>    logPath <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;/&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> !strings.<span style="color:#50fa7b">HasSuffix</span>(logName, <span style="color:#f1fa8c">&#34;.log&#34;</span>) {
+</span></span><span style="display:flex;"><span>    logName <span style="color:#ff79c6">+=</span> <span style="color:#f1fa8c">&#34;.log&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  _, err = os.<span style="color:#50fa7b">Stat</span>(logPath)
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> os.<span style="color:#50fa7b">IsNotExist</span>(err) {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// Create parent directory if it does not exist
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> err = os.<span style="color:#50fa7b">MkdirAll</span>(logPath, <span style="color:#bd93f9">0744</span>); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>      fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.MkdirAll failed, err=&#34;</span>, err)
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;os.Stat failed, err=&#34;</span>, err)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  rotate, err <span style="color:#ff79c6">:=</span> rotatelogs.<span style="color:#50fa7b">New</span>(
+</span></span><span style="display:flex;"><span>    logPath<span style="color:#ff79c6">+</span>logName<span style="color:#ff79c6">+</span><span style="color:#f1fa8c">&#34;.%Y%m%d&#34;</span>,
+</span></span><span style="display:flex;"><span>    rotatelogs.<span style="color:#50fa7b">WithLinkName</span>(logPath<span style="color:#ff79c6">+</span>logName),
+</span></span><span style="display:flex;"><span>    rotatelogs.<span style="color:#50fa7b">WithMaxAge</span>(rotationTime), <span style="color:#6272a4">// 这里不写默认 24 hour
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>  )
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;rotatelogs.New failed, err=&#34;</span>, err)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  writer <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">AddSync</span>(rotate)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  core <span style="color:#ff79c6">:=</span> zapcore.<span style="color:#50fa7b">NewCore</span>(
+</span></span><span style="display:flex;"><span>    zapcore.<span style="color:#50fa7b">NewConsoleEncoder</span>(zap.<span style="color:#50fa7b">NewProductionEncoderConfig</span>()),
+</span></span><span style="display:flex;"><span>    writer,
+</span></span><span style="display:flex;"><span>    zap.InfoLevel,
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>  Raw = zap.<span style="color:#50fa7b">New</span>(core)
+</span></span><span style="display:flex;"><span>  Sugar = Raw.<span style="color:#50fa7b">Sugar</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>假设 <code>rotationTime</code> 为 <code>24hour</code> 即「天」，那么当你的程序在任意时间启动，都会在半夜 12 点，产生日志切割。</p>
 <p>以上</p>
 
 
@@ -519,8 +518,20 @@
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

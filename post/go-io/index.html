@@ -212,165 +212,165 @@
 <p>golang标准库对io的抽象非常精巧，各个组件可以随意组合，可以作为接口设计的典范。这篇文章结合一个实际的例子来和大家分享一下。</p>
 <h2 id="背景">背景</h2>
 <p>以一个RPC的协议包来说，每个包有如下结构</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">type</span> Packet <span style="color:#8be9fd;font-style:italic">struct</span> {
-    TotalSize <span style="color:#8be9fd">uint32</span>
-    Magic     [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>
-    Payload   []<span style="color:#8be9fd">byte</span>
-    Checksum  <span style="color:#8be9fd">uint32</span>
-}
-</code></pre></div><p>其中<code>TotalSize</code>是整个包除去TotalSize后的字节数， <code>Magic</code>是一个固定长度的字串，<code>Payload</code>是包的实际内容，包含业务逻辑的数据。
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Packet <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    TotalSize <span style="color:#8be9fd">uint32</span>
+</span></span><span style="display:flex;"><span>    Magic     [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>
+</span></span><span style="display:flex;"><span>    Payload   []<span style="color:#8be9fd">byte</span>
+</span></span><span style="display:flex;"><span>    Checksum  <span style="color:#8be9fd">uint32</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>其中<code>TotalSize</code>是整个包除去TotalSize后的字节数， <code>Magic</code>是一个固定长度的字串，<code>Payload</code>是包的实际内容，包含业务逻辑的数据。
 <code>Checksum</code>是对<code>Magic</code>和<code>Payload</code>的<code>adler32</code>校验和。</p>
 <h2 id="编码encode">编码(encode)</h2>
 <p>我们使用一个原型为<code>func EncodePacket(w io.Writer, payload []byte) error</code>的函数来把数据打包，结合<a href="http://godoc.org/encoding/binary">encoding/binary</a>我们很容易写出第一版，演示需要，错误处理方面就简化处理了。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">var</span> RPC_MAGIC = [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>{<span style="color:#f1fa8c">&#39;p&#39;</span>, <span style="color:#f1fa8c">&#39;y&#39;</span>, <span style="color:#f1fa8c">&#39;x&#39;</span>, <span style="color:#f1fa8c">&#39;i&#39;</span>}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
-    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
-</span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">8</span>)
-    <span style="color:#6272a4">// write total size
-</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
-
-    <span style="color:#6272a4">// write magic bytes
-</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, RPC_MAGIC)
-
-    <span style="color:#6272a4">// write payload
-</span><span style="color:#6272a4"></span>    w.<span style="color:#50fa7b">Write</span>(payload)
-
-    <span style="color:#6272a4">// calculate checksum
-</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">var</span> buf bytes.Buffer
-    buf.<span style="color:#50fa7b">Write</span>(RPC_MAGIC[:])
-    buf.<span style="color:#50fa7b">Write</span>(payload)
-    checksum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">Checksum</span>(buf.<span style="color:#50fa7b">Bytes</span>())
-
-    <span style="color:#6272a4">// write checksum
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
-}
-</code></pre></div><p>在上面的实现中，为了计算checksum，我们使用了一个内存buffer来缓存数据，最后把所有的数据一次性读出来算checksum，考虑到计算checksum是一个不断update地过程，我们应该有方法直接略过内存buffer而计算checksum。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">var</span> RPC_MAGIC = [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>{<span style="color:#f1fa8c">&#39;p&#39;</span>, <span style="color:#f1fa8c">&#39;y&#39;</span>, <span style="color:#f1fa8c">&#39;x&#39;</span>, <span style="color:#f1fa8c">&#39;i&#39;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">8</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write total size
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write magic bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, RPC_MAGIC)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write payload
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    w.<span style="color:#50fa7b">Write</span>(payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// calculate checksum
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">var</span> buf bytes.Buffer
+</span></span><span style="display:flex;"><span>    buf.<span style="color:#50fa7b">Write</span>(RPC_MAGIC[:])
+</span></span><span style="display:flex;"><span>    buf.<span style="color:#50fa7b">Write</span>(payload)
+</span></span><span style="display:flex;"><span>    checksum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">Checksum</span>(buf.<span style="color:#50fa7b">Bytes</span>())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write checksum
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在上面的实现中，为了计算checksum，我们使用了一个内存buffer来缓存数据，最后把所有的数据一次性读出来算checksum，考虑到计算checksum是一个不断update地过程，我们应该有方法直接略过内存buffer而计算checksum。</p>
 <p>查看<a href="http://godoc.org/hash/adler32#New">hash/adler32</a>我们得知，我们可以构造一个<a href="http://godoc.org/hash#Hash32">Hash32</a>的对象，这个对象内嵌了一个<a href="http://godoc.org/hash#Hash">Hash</a>的接口，这个接口的定义如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">type</span> Hash <span style="color:#8be9fd;font-style:italic">interface</span> {
-    <span style="color:#6272a4">// Write (via the embedded io.Writer interface) adds more data to the running hash.
-</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// It never returns an error.
-</span><span style="color:#6272a4"></span>    io.Writer
-
-    <span style="color:#6272a4">// Sum appends the current hash to b and returns the resulting slice.
-</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// It does not change the underlying hash state.
-</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Sum</span>(b []<span style="color:#8be9fd">byte</span>) []<span style="color:#8be9fd">byte</span>
-
-    <span style="color:#6272a4">// Reset resets the Hash to its initial state.
-</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Reset</span>()
-
-    <span style="color:#6272a4">// Size returns the number of bytes Sum will return.
-</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Size</span>() <span style="color:#8be9fd">int</span>
-
-    <span style="color:#6272a4">// BlockSize returns the hash&#39;s underlying block size.
-</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// The Write method must be able to accept any amount
-</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// of data, but it may operate more efficiently if all writes
-</span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// are a multiple of the block size.
-</span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">BlockSize</span>() <span style="color:#8be9fd">int</span>
-}
-</code></pre></div><p>这是一个通用的计算hash的接口，标准库里面所有计算hash的对象都实现了这个接口，比如<a href="http://godoc.org/crypto/md5#New">md5</a>, <a href="http://godoc.org/hash/crc32#NewIEEE">crc32</a>等。由于<code>Hash</code>实现了<code>io.Writer</code>接口，因此我们可以把所有要计算的数据像写入文件一样写入到这个对象中，最后调用<code>Sum(nil)</code>就可以得到最终的hash的byte数组。利用这个思路，第二版可以这样写:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket2</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
-    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
-</span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(RPC_MAGIC) <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span>)
-    <span style="color:#6272a4">// write total size
-</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
-
-    <span style="color:#6272a4">// write magic bytes
-</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, RPC_MAGIC)
-
-    <span style="color:#6272a4">// write payload
-</span><span style="color:#6272a4"></span>    w.<span style="color:#50fa7b">Write</span>(payload)
-
-    <span style="color:#6272a4">// calculate checksum
-</span><span style="color:#6272a4"></span>    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
-    sum.<span style="color:#50fa7b">Write</span>(RPC_MAGIC[:])
-    sum.<span style="color:#50fa7b">Write</span>(payload)
-    checksum <span style="color:#ff79c6">:=</span> sum.<span style="color:#50fa7b">Sum32</span>()
-
-    <span style="color:#6272a4">// write checksum
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
-}
-</code></pre></div><p>注意这次的变化，前面写入TotalSize，Magic，Payload部分没有变化，在计算checksum的时候去掉了bytes.Buffer，减少了一次内存申请和拷贝。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Hash <span style="color:#8be9fd;font-style:italic">interface</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// Write (via the embedded io.Writer interface) adds more data to the running hash.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// It never returns an error.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    io.Writer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// Sum appends the current hash to b and returns the resulting slice.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// It does not change the underlying hash state.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Sum</span>(b []<span style="color:#8be9fd">byte</span>) []<span style="color:#8be9fd">byte</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// Reset resets the Hash to its initial state.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Reset</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// Size returns the number of bytes Sum will return.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">Size</span>() <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// BlockSize returns the hash&#39;s underlying block size.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// The Write method must be able to accept any amount
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// of data, but it may operate more efficiently if all writes
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#6272a4">// are a multiple of the block size.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#50fa7b">BlockSize</span>() <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>这是一个通用的计算hash的接口，标准库里面所有计算hash的对象都实现了这个接口，比如<a href="http://godoc.org/crypto/md5#New">md5</a>, <a href="http://godoc.org/hash/crc32#NewIEEE">crc32</a>等。由于<code>Hash</code>实现了<code>io.Writer</code>接口，因此我们可以把所有要计算的数据像写入文件一样写入到这个对象中，最后调用<code>Sum(nil)</code>就可以得到最终的hash的byte数组。利用这个思路，第二版可以这样写:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket2</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(RPC_MAGIC) <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write total size
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write magic bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, RPC_MAGIC)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write payload
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    w.<span style="color:#50fa7b">Write</span>(payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// calculate checksum
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
+</span></span><span style="display:flex;"><span>    sum.<span style="color:#50fa7b">Write</span>(RPC_MAGIC[:])
+</span></span><span style="display:flex;"><span>    sum.<span style="color:#50fa7b">Write</span>(payload)
+</span></span><span style="display:flex;"><span>    checksum <span style="color:#ff79c6">:=</span> sum.<span style="color:#50fa7b">Sum32</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write checksum
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>注意这次的变化，前面写入TotalSize，Magic，Payload部分没有变化，在计算checksum的时候去掉了bytes.Buffer，减少了一次内存申请和拷贝。</p>
 <p>考虑到<code>sum</code>和<code>w</code>都是<code>io.Writer</code>，利用神奇的<a href="http://godoc.org/io#MultiWriter">io.MultiWriter</a>，我们可以这样写</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
-    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
-</span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(RPC_MAGIC) <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span>)
-    <span style="color:#6272a4">// write total size
-</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
-
-    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
-    ww <span style="color:#ff79c6">:=</span> io.<span style="color:#50fa7b">MultiWriter</span>(sum, w)
-    <span style="color:#6272a4">// write magic bytes
-</span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(ww, binary.BigEndian, RPC_MAGIC)
-
-    <span style="color:#6272a4">// write payload
-</span><span style="color:#6272a4"></span>    ww.<span style="color:#50fa7b">Write</span>(payload)
-
-    <span style="color:#6272a4">// calculate checksum
-</span><span style="color:#6272a4"></span>    checksum <span style="color:#ff79c6">:=</span> sum.<span style="color:#50fa7b">Sum32</span>()
-
-    <span style="color:#6272a4">// write checksum
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
-}
-</code></pre></div><p>注意MultiWriter的使用，我们把<code>w</code>和<code>sum</code>利用MultiWriter绑在了一起创建了一个新的Writer，向这个Writer里面写入数据就同时向<code>w</code>和<code>sum</code>里面都写入数据，这样就完成了发送数据和计算checksum的同步进行，而对于<code>binary.Write</code>来说没有任何区别，因为它需要的是一个实现了<code>Write</code>方法的对象。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">EncodePacket</span>(w io.Writer, payload []<span style="color:#8be9fd">byte</span>) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// len(Magic) + len(Checksum) == 8
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    totalsize <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">uint32</span>(<span style="color:#8be9fd;font-style:italic">len</span>(RPC_MAGIC) <span style="color:#ff79c6">+</span> <span style="color:#8be9fd;font-style:italic">len</span>(payload) <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">4</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write total size
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, totalsize)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
+</span></span><span style="display:flex;"><span>    ww <span style="color:#ff79c6">:=</span> io.<span style="color:#50fa7b">MultiWriter</span>(sum, w)
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write magic bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    binary.<span style="color:#50fa7b">Write</span>(ww, binary.BigEndian, RPC_MAGIC)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write payload
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    ww.<span style="color:#50fa7b">Write</span>(payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// calculate checksum
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    checksum <span style="color:#ff79c6">:=</span> sum.<span style="color:#50fa7b">Sum32</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// write checksum
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">return</span> binary.<span style="color:#50fa7b">Write</span>(w, binary.BigEndian, checksum)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>注意MultiWriter的使用，我们把<code>w</code>和<code>sum</code>利用MultiWriter绑在了一起创建了一个新的Writer，向这个Writer里面写入数据就同时向<code>w</code>和<code>sum</code>里面都写入数据，这样就完成了发送数据和计算checksum的同步进行，而对于<code>binary.Write</code>来说没有任何区别，因为它需要的是一个实现了<code>Write</code>方法的对象。</p>
 <h2 id="解码decode">解码(decode)</h2>
 <p>基于上面的思想，解码也可以把接收数据和计算checksum一起进行，完整代码如下</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">DecodePacket</span>(r io.Reader) ([]<span style="color:#8be9fd">byte</span>, <span style="color:#8be9fd">error</span>) {
-    <span style="color:#8be9fd;font-style:italic">var</span> totalsize <span style="color:#8be9fd">uint32</span>
-    err <span style="color:#ff79c6">:=</span> binary.<span style="color:#50fa7b">Read</span>(r, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>totalsize)
-    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read total size&#34;</span>)
-    }
-
-    <span style="color:#6272a4">// at least len(magic) + len(checksum)
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> totalsize &lt; <span style="color:#bd93f9">8</span> {
-        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;bad packet. header:%d&#34;</span>, totalsize)
-    }
-
-    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
-    rr <span style="color:#ff79c6">:=</span> io.<span style="color:#50fa7b">TeeReader</span>(r, sum)
-
-    <span style="color:#8be9fd;font-style:italic">var</span> magic [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>
-    err = binary.<span style="color:#50fa7b">Read</span>(rr, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>magic)
-    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read magic&#34;</span>)
-    }
-    <span style="color:#ff79c6">if</span> magic <span style="color:#ff79c6">!=</span> RPC_MAGIC {
-        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;bad rpc magic:%v&#34;</span>, magic)
-    }
-
-    payload <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">byte</span>, totalsize<span style="color:#ff79c6">-</span><span style="color:#bd93f9">8</span>)
-    _, err = io.<span style="color:#50fa7b">ReadFull</span>(rr, payload)
-    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read payload&#34;</span>)
-    }
-
-    <span style="color:#8be9fd;font-style:italic">var</span> checksum <span style="color:#8be9fd">uint32</span>
-    err = binary.<span style="color:#50fa7b">Read</span>(r, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>checksum)
-    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read checksum&#34;</span>)
-    }
-
-    <span style="color:#ff79c6">if</span> checksum <span style="color:#ff79c6">!=</span> sum.<span style="color:#50fa7b">Sum32</span>() {
-        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;checkSum error, %d(calc) %d(remote)&#34;</span>, sum.<span style="color:#50fa7b">Sum32</span>(), checksum)
-    }
-    <span style="color:#ff79c6">return</span> payload, <span style="color:#ff79c6">nil</span>
-}
-</code></pre></div><p>上面代码中，我们使用了<a href="http://godoc.org/io#TeeReader">io.TeeReader</a>，这个函数的原型为<code>func TeeReader(r Reader, w Writer) Reader</code>，它返回一个Reader，这个Reader是参数<code>r</code>的代理，读取的数据还是来自<code>r</code>，不过同时把读取的数据写入到<code>w</code>里面。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">DecodePacket</span>(r io.Reader) ([]<span style="color:#8be9fd">byte</span>, <span style="color:#8be9fd">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> totalsize <span style="color:#8be9fd">uint32</span>
+</span></span><span style="display:flex;"><span>    err <span style="color:#ff79c6">:=</span> binary.<span style="color:#50fa7b">Read</span>(r, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>totalsize)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read total size&#34;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// at least len(magic) + len(checksum)
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> totalsize &lt; <span style="color:#bd93f9">8</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;bad packet. header:%d&#34;</span>, totalsize)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    sum <span style="color:#ff79c6">:=</span> adler32.<span style="color:#50fa7b">New</span>()
+</span></span><span style="display:flex;"><span>    rr <span style="color:#ff79c6">:=</span> io.<span style="color:#50fa7b">TeeReader</span>(r, sum)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> magic [<span style="color:#bd93f9">4</span>]<span style="color:#8be9fd">byte</span>
+</span></span><span style="display:flex;"><span>    err = binary.<span style="color:#50fa7b">Read</span>(rr, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>magic)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read magic&#34;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> magic <span style="color:#ff79c6">!=</span> RPC_MAGIC {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;bad rpc magic:%v&#34;</span>, magic)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]<span style="color:#8be9fd">byte</span>, totalsize<span style="color:#ff79c6">-</span><span style="color:#bd93f9">8</span>)
+</span></span><span style="display:flex;"><span>    _, err = io.<span style="color:#50fa7b">ReadFull</span>(rr, payload)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read payload&#34;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">var</span> checksum <span style="color:#8be9fd">uint32</span>
+</span></span><span style="display:flex;"><span>    err = binary.<span style="color:#50fa7b">Read</span>(r, binary.BigEndian, <span style="color:#ff79c6">&amp;</span>checksum)
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Annotate</span>(err, <span style="color:#f1fa8c">&#34;read checksum&#34;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> checksum <span style="color:#ff79c6">!=</span> sum.<span style="color:#50fa7b">Sum32</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>, errors.<span style="color:#50fa7b">Errorf</span>(<span style="color:#f1fa8c">&#34;checkSum error, %d(calc) %d(remote)&#34;</span>, sum.<span style="color:#50fa7b">Sum32</span>(), checksum)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> payload, <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面代码中，我们使用了<a href="http://godoc.org/io#TeeReader">io.TeeReader</a>，这个函数的原型为<code>func TeeReader(r Reader, w Writer) Reader</code>，它返回一个Reader，这个Reader是参数<code>r</code>的代理，读取的数据还是来自<code>r</code>，不过同时把读取的数据写入到<code>w</code>里面。</p>
 <h2 id="一切皆文件">一切皆文件</h2>
 <p>unix下有一切皆文件的思想，golang把这个思想贯彻到更远，因为本质上我们对文件的抽象就是一个可读可写的一个对象，也就是实现了<code>io.Writer</code>和<code>io.Reader</code>的对象我们都可以称为文件，在上面的例子中无论是<code>EncodePacket</code>还是<code>DecodePacket</code>我们都没有假定编码后的数据是发送到socket，还是从内存读取数据解码，因此我们可以这样调用EncodePacket</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
-<span style="color:#50fa7b">EncodePacket</span>(conn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
-</code></pre></div><p>把数据直接发送到socket，也可以这样</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
-bufconn <span style="color:#ff79c6">:=</span> bufio.<span style="color:#50fa7b">NewWriter</span>(conn)
-<span style="color:#50fa7b">EncodePacket</span>(bufconn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
-</code></pre></div><p>对socket加上一个buffer来增加吞吐量，也可以这样</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
-zip <span style="color:#ff79c6">:=</span> zlib.<span style="color:#50fa7b">NewWriter</span>(conn)
-bufconn <span style="color:#ff79c6">:=</span> bufio.<span style="color:#50fa7b">NewWriter</span>(conn)
-<span style="color:#50fa7b">EncodePacket</span>(bufconn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
-</code></pre></div><p>加上一个zip压缩，还可以利用加上<a href="http://godoc.org/crypto/aes">crypto/aes</a>来个AES加密&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">EncodePacket</span>(conn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
+</span></span></code></pre></div><p>把数据直接发送到socket，也可以这样</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
+</span></span><span style="display:flex;"><span>bufconn <span style="color:#ff79c6">:=</span> bufio.<span style="color:#50fa7b">NewWriter</span>(conn)
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">EncodePacket</span>(bufconn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
+</span></span></code></pre></div><p>对socket加上一个buffer来增加吞吐量，也可以这样</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>conn, _ <span style="color:#ff79c6">:=</span> net.<span style="color:#50fa7b">Dial</span>(<span style="color:#f1fa8c">&#34;tcp&#34;</span>, <span style="color:#f1fa8c">&#34;127.0.0.1:8000&#34;</span>)
+</span></span><span style="display:flex;"><span>zip <span style="color:#ff79c6">:=</span> zlib.<span style="color:#50fa7b">NewWriter</span>(conn)
+</span></span><span style="display:flex;"><span>bufconn <span style="color:#ff79c6">:=</span> bufio.<span style="color:#50fa7b">NewWriter</span>(conn)
+</span></span><span style="display:flex;"><span><span style="color:#50fa7b">EncodePacket</span>(bufconn, []<span style="color:#8be9fd;font-style:italic">byte</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>))
+</span></span></code></pre></div><p>加上一个zip压缩，还可以利用加上<a href="http://godoc.org/crypto/aes">crypto/aes</a>来个AES加密&hellip;</p>
 <p>在这个时候，文件已经不再局限于io，可以是一个内存buffer，也可以是一个计算hash的对象，甚至是一个计数器，流量限速器。golang灵活的接口机制为我们提供了无限可能。</p>
 <h2 id="结尾">结尾</h2>
 <p>我一直认为一个好的语言一定有一个设计良好的标准库，golang的标准库是作者们多年系统编程的沉淀，值得我们细细品味</p>
@@ -517,8 +517,20 @@ bufconn <span style="color:#ff79c6">:=</span> bufio.<span style="color:#50fa7b">
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

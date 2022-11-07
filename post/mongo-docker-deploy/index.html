@@ -234,105 +234,104 @@
 </tbody>
 </table>
 <p>例子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run -m 100M --memory-swap -1 mongo:5.0
-</code></pre></div><h4 id="二通过-mongo-配置文件限制">二、通过 mongo 配置文件限制</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -m 100M --memory-swap -1 mongo:5.0
+</span></span></code></pre></div><h4 id="二通过-mongo-配置文件限制">二、通过 mongo 配置文件限制</h4>
 <blockquote>
 <p>配置文件位置：</p>
 <p>3.x : /etc/mongod.conf</p>
 <p>4.x : /etc/mongod.conf.orig</p>
 </blockquote>
 <p>默认配置：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ff79c6">storage</span>:
-  <span style="color:#6272a4"># mongod 进程存储数据目录，此配置仅对 mongod 进程有效</span>
-  <span style="color:#ff79c6">dbPath</span>: /data/mongodb/db
-  是否开启 journal 日志持久存储，journal 日志用来数据恢复，是 mongod 最基础的特性，通常用于故障恢复。64 位系统默认为 true，32 位默认为 false，建议开启，仅对 mongod 进程有效。
-  <span style="color:#ff79c6">journal</span>:
-    <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">true</span>
- <span style="color:#6272a4"># 存储引擎类型，mongodb 3.0 之后支持 “mmapv1”、“wiredTiger” 两种引擎，默认值为“mmapv1”；官方宣称 wiredTiger 引擎更加优秀。</span>
-  <span style="color:#ff79c6">engine</span>: mmapv1
-
-<span style="color:#ff79c6">systemLog</span>:
-  <span style="color:#6272a4"># 日志输出目的地，可以指定为 “file” 或者“syslog”，表述输出到日志文件，如果不指定，则会输出到标准输出中（standard output）</span>
-  <span style="color:#ff79c6">destination</span>: file
-  <span style="color:#6272a4"># 如果为 true，当 mongod/mongos 重启后，将在现有日志的尾部继续添加日志。否则，将会备份当前日志文件，然后创建一个新的日志文件；默认为 false。</span>
-  <span style="color:#ff79c6">logAppend</span>: <span style="color:#ff79c6">true</span>
-  <span style="color:#6272a4"># 日志路径</span>
-  <span style="color:#ff79c6">path</span>: /var/log/mongodb/mongod.log
-
-<span style="color:#ff79c6">net</span>:
- <span style="color:#6272a4"># 指定端口</span>
-  <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">27017</span>
-  <span style="color:#6272a4"># 绑定外网 op 多个用逗号分隔</span>
-  <span style="color:#ff79c6">bindIp</span>: <span style="color:#bd93f9">0.0.0.0</span>
-  <span style="color:#ff79c6">maxIncomingConnections</span>: <span style="color:#bd93f9">10000</span>
-</code></pre></div><p>限制内存、使用 wiredTiger 引擎后配置：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#6272a4"># mongod.conf</span>
-
-<span style="color:#6272a4"># for documentation of all options, see:</span>
-<span style="color:#6272a4">#   http://docs.mongodb.org/manual/reference/configuration-options/</span>
-
-<span style="color:#6272a4"># Where and how to store data.</span>
-<span style="color:#ff79c6">storage</span>:
-  <span style="color:#ff79c6">dbPath</span>: /data/db
-  <span style="color:#ff79c6">journal</span>:
-    <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">true</span>
-  <span style="color:#ff79c6">engine</span>: wiredTiger
-    <span style="color:#ff79c6">wiredTiger</span>:
-      <span style="color:#ff79c6">engineConfig</span>:
-        <span style="color:#6272a4"># 限制 5GB 内存大小</span>
-        <span style="color:#ff79c6">cacheSizeGB</span>: <span style="color:#bd93f9">5</span>
-
-<span style="color:#6272a4"># where to write logging data.</span>
-<span style="color:#ff79c6">systemLog</span>:
-  <span style="color:#ff79c6">destination</span>: file
-  <span style="color:#ff79c6">logAppend</span>: <span style="color:#ff79c6">true</span>
-  <span style="color:#ff79c6">path</span>: /var/log/mongodb/mongod.log
-
-<span style="color:#6272a4"># network interfaces</span>
-<span style="color:#ff79c6">net</span>:
-  <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">27017</span>
-  <span style="color:#ff79c6">bindIp</span>: <span style="color:#bd93f9">0.0.0.0</span>
-	<span style="color:#ff79c6">maxIncomingConnections</span>: <span style="color:#bd93f9">10000</span>
-
-<span style="color:#6272a4"># how the process runs</span>
-<span style="color:#ff79c6">processManagement</span>:
-  <span style="color:#ff79c6">timeZoneInfo</span>: /usr/share/zoneinfo
-
-</code></pre></div><h4 id="三用-docker-compose-启动">三、用 docker-compose 启动</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">storage</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># mongod 进程存储数据目录，此配置仅对 mongod 进程有效</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">dbPath</span>: /data/mongodb/db
+</span></span><span style="display:flex;"><span>  是否开启 journal 日志持久存储，journal 日志用来数据恢复，是 mongod 最基础的特性，通常用于故障恢复。64 位系统默认为 true，32 位默认为 false，建议开启，仅对 mongod 进程有效。
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">journal</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span> <span style="color:#6272a4"># 存储引擎类型，mongodb 3.0 之后支持 “mmapv1”、“wiredTiger” 两种引擎，默认值为“mmapv1”；官方宣称 wiredTiger 引擎更加优秀。</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">engine</span>: mmapv1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">systemLog</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># 日志输出目的地，可以指定为 “file” 或者“syslog”，表述输出到日志文件，如果不指定，则会输出到标准输出中（standard output）</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">destination</span>: file
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># 如果为 true，当 mongod/mongos 重启后，将在现有日志的尾部继续添加日志。否则，将会备份当前日志文件，然后创建一个新的日志文件；默认为 false。</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">logAppend</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># 日志路径</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">path</span>: /var/log/mongodb/mongod.log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">net</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#6272a4"># 指定端口</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">27017</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#6272a4"># 绑定外网 op 多个用逗号分隔</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">bindIp</span>: <span style="color:#bd93f9">0.0.0.0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">maxIncomingConnections</span>: <span style="color:#bd93f9">10000</span>
+</span></span></code></pre></div><p>限制内存、使用 wiredTiger 引擎后配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#6272a4"># mongod.conf</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># for documentation of all options, see:</span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">#   http://docs.mongodb.org/manual/reference/configuration-options/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># Where and how to store data.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">storage</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">dbPath</span>: /data/db
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">journal</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">enabled</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">engine</span>: wiredTiger
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">wiredTiger</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">engineConfig</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4"># 限制 5GB 内存大小</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">cacheSizeGB</span>: <span style="color:#bd93f9">5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># where to write logging data.</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">systemLog</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">destination</span>: file
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">logAppend</span>: <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">path</span>: /var/log/mongodb/mongod.log
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># network interfaces</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">net</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">port</span>: <span style="color:#bd93f9">27017</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">bindIp</span>: <span style="color:#bd93f9">0.0.0.0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">maxIncomingConnections</span>: <span style="color:#bd93f9">10000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6272a4"># how the process runs</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">processManagement</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">timeZoneInfo</span>: /usr/share/zoneinfo
+</span></span></code></pre></div><h4 id="三用-docker-compose-启动">三、用 docker-compose 启动</h4>
 <p>docker-comopose 文件内容：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;2&#39;</span>
-<span style="color:#ff79c6">services</span>:
-  <span style="color:#ff79c6">mongo</span>:
-    <span style="color:#ff79c6">image</span>: <span style="color:#f1fa8c">&#34;mongo:5.0&#34;</span>
-    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;mongo-v5&#34;</span>
-    <span style="color:#ff79c6">restart</span>: always
-    <span style="color:#ff79c6">mem_limit</span>: 6G
-    <span style="color:#ff79c6">environment</span>:
-      <span style="color:#ff79c6">MONGO_INITDB_ROOT_USERNAME</span>: admin
-      <span style="color:#ff79c6">MONGO_INITDB_ROOT_PASSWORD</span>: xxxxxx
-    <span style="color:#ff79c6">ports</span>:
-      - <span style="color:#bd93f9">27017</span>:<span style="color:#bd93f9">27017</span>
-    <span style="color:#ff79c6">volumes</span>:
-      - ./db:/data/db
-      - ./logs:/var/log/mongodb
-      - ./mongod.conf.orig:/etc/mongod.conf.orig
-    <span style="color:#ff79c6">command</span>: mongod --auth
-
-  <span style="color:#ff79c6">mongo-express</span>:
-    <span style="color:#ff79c6">image</span>: <span style="color:#f1fa8c">&#34;mongo-express:0.54&#34;</span>
-    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;mongo-express&#34;</span>
-    <span style="color:#ff79c6">links</span>:
-      - mongo
-    <span style="color:#ff79c6">depends_on</span>:
-      - mongo
-    <span style="color:#ff79c6">ports</span>:
-      - <span style="color:#bd93f9">8081</span>:<span style="color:#bd93f9">8081</span>
-    <span style="color:#ff79c6">environment</span>:
-      <span style="color:#ff79c6">ME_CONFIG_BASICAUTH_USERNAME</span>: admin
-      <span style="color:#ff79c6">ME_CONFIG_BASICAUTH_PASSWORD</span>: xxxxxx
-      <span style="color:#ff79c6">ME_CONFIG_MONGODB_ADMINUSERNAME</span>: admin
-      <span style="color:#ff79c6">ME_CONFIG_MONGODB_ADMINPASSWORD</span>: xxxxxx
-</code></pre></div><p>做了 volume 映射，<code>./db:/data/db</code> 保证容器删了数据不会丢失，<code>./mongod.conf.orig</code> 记得放到该 <code>docker-compose.yam </code> 同目录。<code>./logs</code> 查看 MongoDB 日志。另外起了 <code>mongo-express</code> 容器方便查看数据。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ff79c6">version</span>: <span style="color:#f1fa8c">&#39;2&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">services</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">mongo</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: <span style="color:#f1fa8c">&#34;mongo:5.0&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;mongo-v5&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">restart</span>: always
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">mem_limit</span>: 6G
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">MONGO_INITDB_ROOT_USERNAME</span>: admin
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">MONGO_INITDB_ROOT_PASSWORD</span>: xxxxxx
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#bd93f9">27017</span>:<span style="color:#bd93f9">27017</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">volumes</span>:
+</span></span><span style="display:flex;"><span>      - ./db:/data/db
+</span></span><span style="display:flex;"><span>      - ./logs:/var/log/mongodb
+</span></span><span style="display:flex;"><span>      - ./mongod.conf.orig:/etc/mongod.conf.orig
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">command</span>: mongod --auth
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ff79c6">mongo-express</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">image</span>: <span style="color:#f1fa8c">&#34;mongo-express:0.54&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">container_name</span>: <span style="color:#f1fa8c">&#34;mongo-express&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">links</span>:
+</span></span><span style="display:flex;"><span>      - mongo
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - mongo
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#bd93f9">8081</span>:<span style="color:#bd93f9">8081</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ME_CONFIG_BASICAUTH_USERNAME</span>: admin
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ME_CONFIG_BASICAUTH_PASSWORD</span>: xxxxxx
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ME_CONFIG_MONGODB_ADMINUSERNAME</span>: admin
+</span></span><span style="display:flex;"><span>      <span style="color:#ff79c6">ME_CONFIG_MONGODB_ADMINPASSWORD</span>: xxxxxx
+</span></span></code></pre></div><p>做了 volume 映射，<code>./db:/data/db</code> 保证容器删了数据不会丢失，<code>./mongod.conf.orig</code> 记得放到该 <code>docker-compose.yam </code> 同目录。<code>./logs</code> 查看 MongoDB 日志。另外起了 <code>mongo-express</code> 容器方便查看数据。</p>
 <p>至此，完。</p>
 
 
@@ -386,6 +385,11 @@
                             Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/post/centos-install-jenkins/" data-toggle="tooltip" data-placement="top" title="CentOS 以 Docker 方式部署 Jenkins">Next
+                            Post &rarr;</a>
+                    </li>
                     
                 </ul>
                 
@@ -471,8 +475,20 @@
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

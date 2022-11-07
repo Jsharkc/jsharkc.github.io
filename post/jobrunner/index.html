@@ -210,25 +210,25 @@
                 
                 <p>s</p>
 <h2 id="安装">安装</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">go</span> get github.com<span style="color:#ff79c6">/</span>bamzi<span style="color:#ff79c6">/</span>jobrunner
-</code></pre></div><h2 id="使用">使用</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">go</span> get github.com<span style="color:#ff79c6">/</span>bamzi<span style="color:#ff79c6">/</span>jobrunner
+</span></span></code></pre></div><h2 id="使用">使用</h2>
 <h4 id="eg1">eg1</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#ff79c6">package</span> main
-
-<span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;github.com/bamzi/jobrunner&#34;</span>
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    jobrunner.<span style="color:#50fa7b">Start</span>()
-    jobrunner.<span style="color:#50fa7b">Schedule</span>(<span style="color:#f1fa8c">&#34;@every 5s&#34;</span>, ReminderEmails{})
-  	<span style="color:#ff79c6">select</span>{}
-}
-
-<span style="color:#8be9fd;font-style:italic">type</span> ReminderEmails <span style="color:#8be9fd;font-style:italic">struct</span> {}
-
-<span style="color:#8be9fd;font-style:italic">func</span> (e ReminderEmails) <span style="color:#50fa7b">Run</span>() {
-    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;Every 5 sec send reminder emails \n&#34;</span>)
-}
-</code></pre></div><p>***解析：***在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> <span style="color:#f1fa8c">&#34;github.com/bamzi/jobrunner&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    jobrunner.<span style="color:#50fa7b">Start</span>()
+</span></span><span style="display:flex;"><span>    jobrunner.<span style="color:#50fa7b">Schedule</span>(<span style="color:#f1fa8c">&#34;@every 5s&#34;</span>, ReminderEmails{})
+</span></span><span style="display:flex;"><span>  	<span style="color:#ff79c6">select</span>{}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> ReminderEmails <span style="color:#8be9fd;font-style:italic">struct</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (e ReminderEmails) <span style="color:#50fa7b">Run</span>() {
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;Every 5 sec send reminder emails \n&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>***解析：***在 main() 函数中，jobrunner 是导入的包, jobrunner.Start() 代表启动，jobrunner.Schedule() 代表添加定时 job，第一个参数是时间格式，第二个是任务实例，任务必须实现 Run() 方法。</p>
 <p>Jobrunner 支持两种时间格式：</p>
 <ul>
 <li>
@@ -312,128 +312,128 @@
 </ul>
 <h2 id="源码解析">源码解析</h2>
 <h4 id="jobrunner-开始函数-start">jobrunner 开始函数 Start()</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Start</span>(v <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) {
-	MainCron = cron.<span style="color:#50fa7b">New</span>()
-
-	<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(v) &gt; <span style="color:#bd93f9">0</span> {
-		<span style="color:#ff79c6">if</span> v[<span style="color:#bd93f9">0</span>] &gt; <span style="color:#bd93f9">0</span> {
-			workPermits = <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, v[<span style="color:#bd93f9">0</span>])
-		} <span style="color:#ff79c6">else</span> {
-			workPermits = <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, DEFAULT_JOB_POOL_SIZE)
-		}
-	}
-
-	<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(v) &gt; <span style="color:#bd93f9">1</span> {
-		<span style="color:#ff79c6">if</span> v[<span style="color:#bd93f9">1</span>] &gt; <span style="color:#bd93f9">0</span> {
-			selfConcurrent = <span style="color:#ff79c6">true</span>
-		} <span style="color:#ff79c6">else</span> {
-			selfConcurrent = <span style="color:#ff79c6">false</span>
-		}
-	}
-
-	MainCron.<span style="color:#50fa7b">Start</span>()
-
-	fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;%s[JobRunner] %v Started... %s \n&#34;</span>,
-		magenta, time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">Format</span>(<span style="color:#f1fa8c">&#34;2006/01/02 - 15:04:05&#34;</span>), reset)
-
-}
-</code></pre></div><p>**解析：**Start() 接受不定长参数，可以不传，可以传多个，但实际上最多前两个参数有效。首先，创建一个 Cron 定时任务实例 MainCron。如果传入了 &gt; 0 个参数，并且第一个参数 &gt; 0，则用此参数初始化 workPermits 参数，此参数用于控制最多同时运行的 job 数量，如果 &lt;= 0，则用默认 DEFAULT_JOB_POOL_SIZE 常量。如果传入了 &gt; 1 个参数，并且第二个参数 &gt; 0，则用此参数初始化 selfConcurrent 参数，此参数用于控制同一个 job 是否可以并行执行，如果 &lt;= 0，则不可并行。最后，MainCron 开始执行，并打印开始时间。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Start</span>(v <span style="color:#ff79c6">...</span><span style="color:#8be9fd">int</span>) {
+</span></span><span style="display:flex;"><span>	MainCron = cron.<span style="color:#50fa7b">New</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(v) &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> v[<span style="color:#bd93f9">0</span>] &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>			workPermits = <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, v[<span style="color:#bd93f9">0</span>])
+</span></span><span style="display:flex;"><span>		} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>			workPermits = <span style="color:#8be9fd;font-style:italic">make</span>(<span style="color:#8be9fd;font-style:italic">chan</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}, DEFAULT_JOB_POOL_SIZE)
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">len</span>(v) &gt; <span style="color:#bd93f9">1</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> v[<span style="color:#bd93f9">1</span>] &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>			selfConcurrent = <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>		} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span>			selfConcurrent = <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	MainCron.<span style="color:#50fa7b">Start</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;%s[JobRunner] %v Started... %s \n&#34;</span>,
+</span></span><span style="display:flex;"><span>		magenta, time.<span style="color:#50fa7b">Now</span>().<span style="color:#50fa7b">Format</span>(<span style="color:#f1fa8c">&#34;2006/01/02 - 15:04:05&#34;</span>), reset)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**Start() 接受不定长参数，可以不传，可以传多个，但实际上最多前两个参数有效。首先，创建一个 Cron 定时任务实例 MainCron。如果传入了 &gt; 0 个参数，并且第一个参数 &gt; 0，则用此参数初始化 workPermits 参数，此参数用于控制最多同时运行的 job 数量，如果 &lt;= 0，则用默认 DEFAULT_JOB_POOL_SIZE 常量。如果传入了 &gt; 1 个参数，并且第二个参数 &gt; 0，则用此参数初始化 selfConcurrent 参数，此参数用于控制同一个 job 是否可以并行执行，如果 &lt;= 0，则不可并行。最后，MainCron 开始执行，并打印开始时间。</p>
 <h4 id="添加任务的四种方式">添加任务的四种方式</h4>
 <h5 id="1-schedulespec-string-job-cronjob">1. Schedule(spec string, job cron.Job)</h5>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Schedule</span>(spec <span style="color:#8be9fd">string</span>, job cron.Job) <span style="color:#8be9fd">error</span> {
-	sched, err <span style="color:#ff79c6">:=</span> cron.<span style="color:#50fa7b">Parse</span>(spec)
-	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-		<span style="color:#ff79c6">return</span> err
-	}
-	MainCron.<span style="color:#50fa7b">Schedule</span>(sched, <span style="color:#50fa7b">New</span>(job))
-	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
-}
-</code></pre></div><p>**解析：**第一个参数是表示什么时间执行，第二个参数就是任务。首先调用 cron 的Parse 解析函数，判断是否有错误，成功的话添加到 MainCron 中准备执行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Schedule</span>(spec <span style="color:#8be9fd">string</span>, job cron.Job) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>	sched, err <span style="color:#ff79c6">:=</span> cron.<span style="color:#50fa7b">Parse</span>(spec)
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> err
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	MainCron.<span style="color:#50fa7b">Schedule</span>(sched, <span style="color:#50fa7b">New</span>(job))
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**第一个参数是表示什么时间执行，第二个参数就是任务。首先调用 cron 的Parse 解析函数，判断是否有错误，成功的话添加到 MainCron 中准备执行。</p>
 <h5 id="2everyduration-timeduration-job-cronjob">2.Every(duration time.Duration, job cron.Job)</h5>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Every</span>(duration time.Duration, job cron.Job) {
-	MainCron.<span style="color:#50fa7b">Schedule</span>(cron.<span style="color:#50fa7b">Every</span>(duration), <span style="color:#50fa7b">New</span>(job))
-}
-</code></pre></div><p>**解析：**这个方法是以固定时间间隔执行任务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Every</span>(duration time.Duration, job cron.Job) {
+</span></span><span style="display:flex;"><span>	MainCron.<span style="color:#50fa7b">Schedule</span>(cron.<span style="color:#50fa7b">Every</span>(duration), <span style="color:#50fa7b">New</span>(job))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**这个方法是以固定时间间隔执行任务。</p>
 <h5 id="3nowjob-cronjob">3.Now(job cron.Job)</h5>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Now</span>(job cron.Job) {
-	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">New</span>(job).<span style="color:#50fa7b">Run</span>()
-}
-</code></pre></div><p>**解析：**新起一个协程立即运行一次。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Now</span>(job cron.Job) {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#50fa7b">New</span>(job).<span style="color:#50fa7b">Run</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**新起一个协程立即运行一次。</p>
 <h5 id="4induration-timeduration-job-cronjob">4.In(duration time.Duration, job cron.Job)</h5>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">In</span>(duration time.Duration, job cron.Job) {
-	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
-		time.<span style="color:#50fa7b">Sleep</span>(duration)
-		<span style="color:#50fa7b">New</span>(job).<span style="color:#50fa7b">Run</span>()
-	}()
-}
-</code></pre></div><p>**解析：**在第一个参数的时间后，执行一次。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">In</span>(duration time.Duration, job cron.Job) {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">go</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		time.<span style="color:#50fa7b">Sleep</span>(duration)
+</span></span><span style="display:flex;"><span>		<span style="color:#50fa7b">New</span>(job).<span style="color:#50fa7b">Run</span>()
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**在第一个参数的时间后，执行一次。</p>
 <h4 id="job-结构">job 结构</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> Job <span style="color:#8be9fd;font-style:italic">struct</span> {
-	Name    <span style="color:#8be9fd">string</span>        <span style="color:#6272a4">// inner 类型名称
-</span><span style="color:#6272a4"></span>	inner   cron.Job      <span style="color:#6272a4">// 实现 Run() 方法的 type
-</span><span style="color:#6272a4"></span>	status  <span style="color:#8be9fd">uint32</span>        <span style="color:#6272a4">// 状态数
-</span><span style="color:#6272a4"></span>	Status  <span style="color:#8be9fd">string</span>        <span style="color:#6272a4">// 状态解释
-</span><span style="color:#6272a4"></span>	Latency <span style="color:#8be9fd">string</span>        <span style="color:#6272a4">// job 运行所用时间
-</span><span style="color:#6272a4"></span>	running sync.Mutex    <span style="color:#6272a4">// 锁
-</span><span style="color:#6272a4"></span>}
-</code></pre></div><h4 id="新建一个-job">新建一个 job</h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">New</span>(job cron.Job) <span style="color:#ff79c6">*</span>Job {
-	name <span style="color:#ff79c6">:=</span> reflect.<span style="color:#50fa7b">TypeOf</span>(job).<span style="color:#50fa7b">Name</span>()
-	<span style="color:#ff79c6">if</span> name <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;Func&#34;</span> {
-		name = UNNAMED
-	}
-	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>Job{
-		Name:  name,
-		inner: job,
-	}
-}
-</code></pre></div><p>**解析：**用反射获取一下传入的 job 的类型，并新建一个 Job 。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Job <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>	Name    <span style="color:#8be9fd">string</span>        <span style="color:#6272a4">// inner 类型名称
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	inner   cron.Job      <span style="color:#6272a4">// 实现 Run() 方法的 type
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	status  <span style="color:#8be9fd">uint32</span>        <span style="color:#6272a4">// 状态数
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	Status  <span style="color:#8be9fd">string</span>        <span style="color:#6272a4">// 状态解释
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	Latency <span style="color:#8be9fd">string</span>        <span style="color:#6272a4">// job 运行所用时间
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	running sync.Mutex    <span style="color:#6272a4">// 锁
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><h4 id="新建一个-job">新建一个 job</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">New</span>(job cron.Job) <span style="color:#ff79c6">*</span>Job {
+</span></span><span style="display:flex;"><span>	name <span style="color:#ff79c6">:=</span> reflect.<span style="color:#50fa7b">TypeOf</span>(job).<span style="color:#50fa7b">Name</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> name <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;Func&#34;</span> {
+</span></span><span style="display:flex;"><span>		name = UNNAMED
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">&amp;</span>Job{
+</span></span><span style="display:flex;"><span>		Name:  name,
+</span></span><span style="display:flex;"><span>		inner: job,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**用反射获取一下传入的 job 的类型，并新建一个 Job 。</p>
 <h5 id="更新-job-状态">更新 job 状态</h5>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> (j <span style="color:#ff79c6">*</span>Job) <span style="color:#50fa7b">StatusUpdate</span>() <span style="color:#8be9fd">string</span> {
-	<span style="color:#ff79c6">if</span> atomic.<span style="color:#50fa7b">LoadUint32</span>(<span style="color:#ff79c6">&amp;</span>j.status) &gt; <span style="color:#bd93f9">0</span> {
-		j.Status = <span style="color:#f1fa8c">&#34;RUNNING&#34;</span>
-		<span style="color:#ff79c6">return</span> j.Status
-	}
-	j.Status = <span style="color:#f1fa8c">&#34;IDLE&#34;</span>
-	<span style="color:#ff79c6">return</span> j.Status
-}
-</code></pre></div><p>**解析：**以原子方式获取 job.status 的状态数，如果 &gt;0 ，设置 job.Status = “RUNNING”, 否则 job.Status = “IDLE”</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (j <span style="color:#ff79c6">*</span>Job) <span style="color:#50fa7b">StatusUpdate</span>() <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> atomic.<span style="color:#50fa7b">LoadUint32</span>(<span style="color:#ff79c6">&amp;</span>j.status) &gt; <span style="color:#bd93f9">0</span> {
+</span></span><span style="display:flex;"><span>		j.Status = <span style="color:#f1fa8c">&#34;RUNNING&#34;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> j.Status
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	j.Status = <span style="color:#f1fa8c">&#34;IDLE&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> j.Status
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**以原子方式获取 job.status 的状态数，如果 &gt;0 ，设置 job.Status = “RUNNING”, 否则 job.Status = “IDLE”</p>
 <h5 id="job-运行">job 运行</h5>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> (j <span style="color:#ff79c6">*</span>Job) <span style="color:#50fa7b">Run</span>() {
-	start <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
-	<span style="color:#6272a4">// If the job panics, just print a stack trace.
-</span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// Don&#39;t let the whole process die.
-</span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
-		<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">recover</span>(); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-			<span style="color:#8be9fd;font-style:italic">var</span> buf bytes.Buffer
-			logger <span style="color:#ff79c6">:=</span> log.<span style="color:#50fa7b">New</span>(<span style="color:#ff79c6">&amp;</span>buf, <span style="color:#f1fa8c">&#34;JobRunner Log: &#34;</span>, log.Lshortfile)
-			logger.<span style="color:#50fa7b">Panic</span>(err, <span style="color:#f1fa8c">&#34;\n&#34;</span>, <span style="color:#8be9fd;font-style:italic">string</span>(debug.<span style="color:#50fa7b">Stack</span>()))
-		}
-	}()
-
-	<span style="color:#ff79c6">if</span> !selfConcurrent {
-		j.running.<span style="color:#50fa7b">Lock</span>()
-		<span style="color:#ff79c6">defer</span> j.running.<span style="color:#50fa7b">Unlock</span>()
-	}
-
-	<span style="color:#ff79c6">if</span> workPermits <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-		workPermits <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
-		<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() { <span style="color:#ff79c6">&lt;-</span>workPermits }()
-	}
-
-	atomic.<span style="color:#50fa7b">StoreUint32</span>(<span style="color:#ff79c6">&amp;</span>j.status, <span style="color:#bd93f9">1</span>)
-	j.<span style="color:#50fa7b">StatusUpdate</span>()
-
-	<span style="color:#ff79c6">defer</span> j.<span style="color:#50fa7b">StatusUpdate</span>()
-	<span style="color:#ff79c6">defer</span> atomic.<span style="color:#50fa7b">StoreUint32</span>(<span style="color:#ff79c6">&amp;</span>j.status, <span style="color:#bd93f9">0</span>)
-
-	j.inner.<span style="color:#50fa7b">Run</span>()
-
-	end <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
-	j.Latency = end.<span style="color:#50fa7b">Sub</span>(start).<span style="color:#50fa7b">String</span>()
-
-}
-</code></pre></div><p>**解析：**先获取一下当前时间，作为任务开始时间记录下来，并添加 defer recover 防止崩溃，并打印错误信息。如果 selfConcurrent 为 false ，不能同一个任务并行执行，则加锁，一个一个执行。否则可以同时执行。如果 workPermits 不为空，则限制同时最大执行数量。以原子方式把 job.status 存储为 1，更新一下状态，以 defer 延迟修改 job.status 存储为 0，并更新状态。最后，run job。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (j <span style="color:#ff79c6">*</span>Job) <span style="color:#50fa7b">Run</span>() {
+</span></span><span style="display:flex;"><span>	start <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// If the job panics, just print a stack trace.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#6272a4">// Don&#39;t let the whole process die.
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">recover</span>(); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#8be9fd;font-style:italic">var</span> buf bytes.Buffer
+</span></span><span style="display:flex;"><span>			logger <span style="color:#ff79c6">:=</span> log.<span style="color:#50fa7b">New</span>(<span style="color:#ff79c6">&amp;</span>buf, <span style="color:#f1fa8c">&#34;JobRunner Log: &#34;</span>, log.Lshortfile)
+</span></span><span style="display:flex;"><span>			logger.<span style="color:#50fa7b">Panic</span>(err, <span style="color:#f1fa8c">&#34;\n&#34;</span>, <span style="color:#8be9fd;font-style:italic">string</span>(debug.<span style="color:#50fa7b">Stack</span>()))
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> !selfConcurrent {
+</span></span><span style="display:flex;"><span>		j.running.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> j.running.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> workPermits <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>		workPermits <span style="color:#ff79c6">&lt;-</span> <span style="color:#8be9fd;font-style:italic">struct</span>{}{}
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">defer</span> <span style="color:#8be9fd;font-style:italic">func</span>() { <span style="color:#ff79c6">&lt;-</span>workPermits }()
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	atomic.<span style="color:#50fa7b">StoreUint32</span>(<span style="color:#ff79c6">&amp;</span>j.status, <span style="color:#bd93f9">1</span>)
+</span></span><span style="display:flex;"><span>	j.<span style="color:#50fa7b">StatusUpdate</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> j.<span style="color:#50fa7b">StatusUpdate</span>()
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">defer</span> atomic.<span style="color:#50fa7b">StoreUint32</span>(<span style="color:#ff79c6">&amp;</span>j.status, <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	j.inner.<span style="color:#50fa7b">Run</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	end <span style="color:#ff79c6">:=</span> time.<span style="color:#50fa7b">Now</span>()
+</span></span><span style="display:flex;"><span>	j.Latency = end.<span style="color:#50fa7b">Sub</span>(start).<span style="color:#50fa7b">String</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>**解析：**先获取一下当前时间，作为任务开始时间记录下来，并添加 defer recover 防止崩溃，并打印错误信息。如果 selfConcurrent 为 false ，不能同一个任务并行执行，则加锁，一个一个执行。否则可以同时执行。如果 workPermits 不为空，则限制同时最大执行数量。以原子方式把 job.status 存储为 1，更新一下状态，以 defer 延迟修改 job.status 存储为 0，并更新状态。最后，run job。</p>
 
 
                 
@@ -576,8 +576,20 @@
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

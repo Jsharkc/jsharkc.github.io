@@ -230,13 +230,13 @@
 <p>下载之后安装即可，不 root 也可以用，但是很多目录没权限访问，所以能 root 还是 root 一下。</p>
 <h2 id="配置-termux">配置 Termux</h2>
 <p>Termux 自带 apt 包管理器，进行更新，安装 ssh 和用户管理模块</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">apt update
-apt upgrade
-
-apt install openssh
-pkg install termux-auth
-</code></pre></div><p>查看用户名，ip，设置密码</p>
-<pre><code>whoami
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>apt update
+</span></span><span style="display:flex;"><span>apt upgrade
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>apt install openssh
+</span></span><span style="display:flex;"><span>pkg install termux-auth
+</span></span></code></pre></div><p>查看用户名，ip，设置密码</p>
+<pre tabindex="0"><code>whoami
 # 结果为：u0_a150，你的可能不一样，用自己的
 ifconfig
 # 找到 inet addr，我的是 192.168.0.104，也是用你自己的
@@ -245,38 +245,38 @@ passwd
 sshd -p 9999
 # 让 ssh 监听 9999 端口
 </code></pre><p>设置好后，用电脑登录</p>
-<pre><code>ssh u0_a150@192.168.0.104 -p 9999
+<pre tabindex="0"><code>ssh u0_a150@192.168.0.104 -p 9999
 # 回车，输入密码就行了
 </code></pre><p>之后通过 apt、pkg 安装 git、golang 等，就成服务器了，还可以通过 <code>termux-setup-storage</code> 插件把手机目录挂载到 <code>/data/data/com.termux/files/home/storage/shared</code>目录下，之后就可以随意操作了。用法是在命令行输入以下命令即可：</p>
-<pre><code>termux-setup-storage
+<pre tabindex="0"><code>termux-setup-storage
 </code></pre><p>当然如果你有公网服务器，还可以通过 frp 内网穿透，就可以在公网访问你的 Android 服务器了</p>
 <h2 id="利用-frp-内网穿透">利用 frp 内网穿透</h2>
 <p>安装 <code>Golang</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">pkg install golang
-</code></pre></div><p><a href="https://github.com/fatedier/frp/releases">frp 下载地址</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>pkg install golang
+</span></span></code></pre></div><p><a href="https://github.com/fatedier/frp/releases">frp 下载地址</a></p>
 <p>Android 下载以arm结尾的，服务器端根据自己的服务器选。</p>
 <p>写个 Hello world http 服务</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ff79c6">package</span> main
-
-<span style="color:#ff79c6">import</span> (
-        <span style="color:#f1fa8c">&#34;fmt&#34;</span>
-        <span style="color:#f1fa8c">&#34;net/http&#34;</span>
-)
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-        http.<span style="color:#50fa7b">HandleFunc</span>(<span style="color:#f1fa8c">&#34;/&#34;</span>, <span style="color:#8be9fd;font-style:italic">func</span>(w http.ResponseWriter, r <span style="color:#ff79c6">*</span>http.Request) {
-                fmt.<span style="color:#50fa7b">Fprintf</span>(w, <span style="color:#f1fa8c">&#34;Hello World&#34;</span>)
-        })
-
-        http.<span style="color:#50fa7b">ListenAndServe</span>(<span style="color:#f1fa8c">&#34;:8085&#34;</span>, <span style="color:#ff79c6">nil</span>)
-}
-</code></pre></div><h4 id="配置-frp-服务端">配置 frp 服务端</h4>
-<pre><code># frps.ini
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#ff79c6">package</span> main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">import</span> (
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f1fa8c">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>        http.<span style="color:#50fa7b">HandleFunc</span>(<span style="color:#f1fa8c">&#34;/&#34;</span>, <span style="color:#8be9fd;font-style:italic">func</span>(w http.ResponseWriter, r <span style="color:#ff79c6">*</span>http.Request) {
+</span></span><span style="display:flex;"><span>                fmt.<span style="color:#50fa7b">Fprintf</span>(w, <span style="color:#f1fa8c">&#34;Hello World&#34;</span>)
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        http.<span style="color:#50fa7b">ListenAndServe</span>(<span style="color:#f1fa8c">&#34;:8085&#34;</span>, <span style="color:#ff79c6">nil</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="配置-frp-服务端">配置 frp 服务端</h4>
+<pre tabindex="0"><code># frps.ini
 [common]
 bind_port = 7001       # frp 服务绑定的端口
 vhost_http_port = 8082 # 外网可访问的 web 服务端口
 </code></pre><h4 id="配置-frp-客户端">配置 frp 客户端</h4>
-<pre><code># frpc.ini
+<pre tabindex="0"><code># frpc.ini
 [common]
 server_addr = xx.xx.xx.xx  # 你的服务器地址
 server_port = 7001         # 服务器绑定的端口，与服务端配置 bind_port 一致
@@ -293,24 +293,24 @@ local_port = 8085          # 本地 web 服务监听端口
 custom_domains = xx.xx.xx  # 服务器域名，有域名写域名，没域名写 ip
 </code></pre><h4 id="运行-frp">运行 frp</h4>
 <p><strong>服务端</strong></p>
-<pre><code>./frps -c ./frps.ini
+<pre tabindex="0"><code>./frps -c ./frps.ini
 </code></pre><p><strong>客户端</strong></p>
-<pre><code>./frpc -c ./frpc.ini
+<pre tabindex="0"><code>./frpc -c ./frpc.ini
 </code></pre><p><strong>测试</strong></p>
-<pre><code>curl http://xx.xx.xx:8082
+<pre tabindex="0"><code>curl http://xx.xx.xx:8082
 # 可以看到 Hello world
 </code></pre><h4 id="ssh-连接">ssh 连接</h4>
-<pre><code>ssh u0_a150@xx.xx.xx.xx -oPort=6000
+<pre tabindex="0"><code>ssh u0_a150@xx.xx.xx.xx -oPort=6000
 </code></pre><p>格式：ssh  [Android用户名]@[服务器地址] -oPort=[frpc.ini 中 ssh 下 remote_port]</p>
 <h2 id="安装发行版-linux">安装发行版 linux</h2>
 <p>可以再 Termux 上安装发行版 linux，包括 fedora、debian、alpine、aosc、arch、ubuntu、centos。</p>
 <h4 id="安装-atilo">安装 atilo</h4>
-<pre><code>echo &quot;deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras&quot; &gt;&gt; $PREFIX/etc/apt/sources.list
+<pre tabindex="0"><code>echo &#34;deb [trusted=yes] https://yadominjinta.github.io/files/ termux extras&#34; &gt;&gt; $PREFIX/etc/apt/sources.list
 pkg in atilo-cn
 </code></pre><h4 id="安装系统">安装系统</h4>
-<pre><code>atilo install centos
+<pre tabindex="0"><code>atilo install centos
 </code></pre><h4 id="删除系统">删除系统</h4>
-<pre><code>atilo remove centos
+<pre tabindex="0"><code>atilo remove centos
 </code></pre>
 
                 
@@ -453,8 +453,20 @@ pkg in atilo-cn
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         

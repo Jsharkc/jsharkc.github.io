@@ -217,356 +217,356 @@
 <p>许多人不同意这一观点，接下来我会做一些澄清。像 <a href="https://github.com/coreos/etcd">etcd</a> 或 <a href="https://camlistore.org/">camlistore</a> 这样的大项目使用了像 <a href="https://github.com/tools/godep">godep</a> 这样的工具，将所有依赖保存到某个目录中。也就是说，这些项目自身有一个单一的 GOPATH。它们只能在这个目录里找到对应的版本。除非你的项目很大并且极为重要，否则不要为每个项目使用不同的 GOPATH。如果你认为项目需要一个自己的 GOPATH 目录，那么就创建它，否则不要尝试使用多个 GOPATH。它只会拖慢你的进度。</p>
 <h2 id="2-将-for-select-封装到函数中">2. 将 for-select 封装到函数中</h2>
 <p>如果在某个条件下，你需要从 for-select 中退出，就需要使用标签。例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-
-L:
-    <span style="color:#ff79c6">for</span> {
-        <span style="color:#ff79c6">select</span> {
-        <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>time.<span style="color:#50fa7b">After</span>(time.Second):
-            fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>)
-        <span style="color:#ff79c6">default</span>:
-            <span style="color:#ff79c6">break</span> L
-        }
-    }
-
-    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;ending&#34;</span>)
-}
-</code></pre></div><p>如你所见，需要联合<code>break</code>使用标签。这有其用途，不过我不喜欢。这个例子中的 for 循环看起来很小，但是通常它们会更大，而判断<code>break</code>的条件也更为冗长。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>L:
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>time.<span style="color:#50fa7b">After</span>(time.Second):
+</span></span><span style="display:flex;"><span>            fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">break</span> L
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;ending&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如你所见，需要联合<code>break</code>使用标签。这有其用途，不过我不喜欢。这个例子中的 for 循环看起来很小，但是通常它们会更大，而判断<code>break</code>的条件也更为冗长。</p>
 <p>如果需要退出循环，我会将 for-select 封装到函数中：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    <span style="color:#50fa7b">foo</span>()
-    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;ending&#34;</span>)
-}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
-    <span style="color:#ff79c6">for</span> {
-        <span style="color:#ff79c6">select</span> {
-        <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>time.<span style="color:#50fa7b">After</span>(time.Second):
-            fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>)
-        <span style="color:#ff79c6">default</span>:
-            <span style="color:#ff79c6">return</span>
-        }
-    }
-}
-</code></pre></div><p>你还可以返回一个错误（或任何其他值），也是同样漂亮的，只需要：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6272a4">// 阻塞
-</span><span style="color:#6272a4"></span><span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">foo</span>(); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-    <span style="color:#6272a4">// 处理 err
-</span><span style="color:#6272a4"></span>}
-</code></pre></div><h2 id="3-在初始化结构体时使用带有标签的语法">3. 在初始化结构体时使用带有标签的语法</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">foo</span>()
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;ending&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">select</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">&lt;-</span>time.<span style="color:#50fa7b">After</span>(time.Second):
+</span></span><span style="display:flex;"><span>            fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;hello&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#ff79c6">return</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>你还可以返回一个错误（或任何其他值），也是同样漂亮的，只需要：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// 阻塞
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">foo</span>(); err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 处理 err
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><h2 id="3-在初始化结构体时使用带有标签的语法">3. 在初始化结构体时使用带有标签的语法</h2>
 <p>这是一个无标签语法的例子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
-    Foo <span style="color:#8be9fd">string</span>
-    Bar <span style="color:#8be9fd">int</span>
-}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    t <span style="color:#ff79c6">:=</span> T{<span style="color:#f1fa8c">&#34;example&#34;</span>, <span style="color:#bd93f9">123</span>} <span style="color:#6272a4">// 无标签语法
-</span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
-}
-</code></pre></div><p>那么如果你添加一个新的字段到<code>T</code>结构体，代码会编译失败：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
-    Foo <span style="color:#8be9fd">string</span>
-    Bar <span style="color:#8be9fd">int</span>
-    Qux <span style="color:#8be9fd">string</span>
-}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    t <span style="color:#ff79c6">:=</span> T{<span style="color:#f1fa8c">&#34;example&#34;</span>, <span style="color:#bd93f9">123</span>} <span style="color:#6272a4">// 无法编译
-</span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
-}
-</code></pre></div><p>如果使用了标签语法，Go 的兼容性规则（<a href="http://golang.org/doc/go1compat">http://golang.org/doc/go1compat</a>）会处理代码。例如在向<code>net</code>包的类型添加叫做<code>Zone</code>的字段，参见：<a href="http://golang.org/doc/go1.1#library">http://golang.org/doc/go1.1#library</a>。回到我们的例子，使用标签语法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
-    Foo <span style="color:#8be9fd">string</span>
-    Bar <span style="color:#8be9fd">int</span>
-    Qux <span style="color:#8be9fd">string</span>
-}
-
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    t <span style="color:#ff79c6">:=</span> T{Foo: <span style="color:#f1fa8c">&#34;example&#34;</span>, Qux: <span style="color:#bd93f9">123</span>}
-    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
-}
-</code></pre></div><p>这个编译起来没问题，而且弹性也好。不论你如何添加其他字段到<code>T</code>结构体。你的代码总是能编译，并且在以后的 Go 的版本也可以保证这一点。只要在代码集中执行<code>go vet</code>，就可以发现所有的无标签的语法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    Foo <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>    Bar <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    t <span style="color:#ff79c6">:=</span> T{<span style="color:#f1fa8c">&#34;example&#34;</span>, <span style="color:#bd93f9">123</span>} <span style="color:#6272a4">// 无标签语法
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>那么如果你添加一个新的字段到<code>T</code>结构体，代码会编译失败：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    Foo <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>    Bar <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>    Qux <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    t <span style="color:#ff79c6">:=</span> T{<span style="color:#f1fa8c">&#34;example&#34;</span>, <span style="color:#bd93f9">123</span>} <span style="color:#6272a4">// 无法编译
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果使用了标签语法，Go 的兼容性规则（<a href="http://golang.org/doc/go1compat">http://golang.org/doc/go1compat</a>）会处理代码。例如在向<code>net</code>包的类型添加叫做<code>Zone</code>的字段，参见：<a href="http://golang.org/doc/go1.1#library">http://golang.org/doc/go1.1#library</a>。回到我们的例子，使用标签语法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    Foo <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>    Bar <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>    Qux <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    t <span style="color:#ff79c6">:=</span> T{Foo: <span style="color:#f1fa8c">&#34;example&#34;</span>, Qux: <span style="color:#bd93f9">123</span>}
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>这个编译起来没问题，而且弹性也好。不论你如何添加其他字段到<code>T</code>结构体。你的代码总是能编译，并且在以后的 Go 的版本也可以保证这一点。只要在代码集中执行<code>go vet</code>，就可以发现所有的无标签的语法。</p>
 <h2 id="4-将结构体的初始化拆分到多行">4. 将结构体的初始化拆分到多行</h2>
 <p>如果有两个以上的字段，那么就用多行。它会让你的代码更加容易阅读，也就是说不要：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">T{Foo: <span style="color:#f1fa8c">&#34;example&#34;</span>, Bar:someLongVariable, Qux:anotherLongVariable, B: forgetToAddThisToo}
-</code></pre></div><p>而是：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">T{
-    Foo: <span style="color:#f1fa8c">&#34;example&#34;</span>,
-    Bar: someLongVariable,
-    Qux: anotherLongVariable,
-    B: forgetToAddThisToo,
-}
-</code></pre></div><p>这有许多好处，首先它容易阅读，其次它使得允许或屏蔽字段初始化变得容易（只要注释或删除它们），最后添加其他字段也更容易（只要添加一行）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>T{Foo: <span style="color:#f1fa8c">&#34;example&#34;</span>, Bar:someLongVariable, Qux:anotherLongVariable, B: forgetToAddThisToo}
+</span></span></code></pre></div><p>而是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>T{
+</span></span><span style="display:flex;"><span>    Foo: <span style="color:#f1fa8c">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>    Bar: someLongVariable,
+</span></span><span style="display:flex;"><span>    Qux: anotherLongVariable,
+</span></span><span style="display:flex;"><span>    B: forgetToAddThisToo,
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>这有许多好处，首先它容易阅读，其次它使得允许或屏蔽字段初始化变得容易（只要注释或删除它们），最后添加其他字段也更容易（只要添加一行）。</p>
 <h2 id="5-为整数常量添加-string-方法">5. 为整数常量添加 String() 方法</h2>
 <p>如果你利用 iota 来使用自定义的整数枚举类型，务必要为其添加 String() 方法。例如，像这样：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> State <span style="color:#8be9fd">int</span>
-
-<span style="color:#8be9fd;font-style:italic">const</span> (
-    Running State = <span style="color:#ff79c6">iota</span> 
-    Stopped
-    Rebooting
-    Terminated
-)
-</code></pre></div><p>如果你创建了这个类型的一个变量，然后输出，会得到一个整数（<a href="http://play.golang.org/p/V5VVFB05HB">http://play.golang.org/p/V5VVFB05HB</a>）：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    state <span style="color:#ff79c6">:=</span> Running
- 
-    <span style="color:#6272a4">// print: &#34;state 0&#34;
-</span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;state &#34;</span>, state)
-}
-</code></pre></div><p>除非你回顾常量定义，否则这里的<code>0</code>看起来毫无意义。只需要为<code>State</code>类型添加<code>String()</code>方法就可以修复这个问题（<a href="http://play.golang.org/p/ewMKl6K302">http://play.golang.org/p/ewMKl6K302</a>）：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> (s State) <span style="color:#50fa7b">String</span>() <span style="color:#8be9fd">string</span> {
-    <span style="color:#ff79c6">switch</span> s {
-    <span style="color:#ff79c6">case</span> Running:
-        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Running&#34;</span>
-    <span style="color:#ff79c6">case</span> Stopped:
-        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Stopped&#34;</span>
-    <span style="color:#ff79c6">case</span> Rebooting:
-        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Rebooting&#34;</span>
-    <span style="color:#ff79c6">case</span> Terminated:
-        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Terminated&#34;</span>
-    <span style="color:#ff79c6">default</span>:
-        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Unknown&#34;</span>
-    }
-}
-</code></pre></div><p>新的输出是：<code>state: Running</code>。显然现在看起来可读性好了很多。在你调试程序的时候，这会带来更多的便利。同时还可以在实现 MarshalJSON()、UnmarshalJSON() 这类方法的时候使用同样的手段。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> State <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">const</span> (
+</span></span><span style="display:flex;"><span>    Running State = <span style="color:#ff79c6">iota</span> 
+</span></span><span style="display:flex;"><span>    Stopped
+</span></span><span style="display:flex;"><span>    Rebooting
+</span></span><span style="display:flex;"><span>    Terminated
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>如果你创建了这个类型的一个变量，然后输出，会得到一个整数（<a href="http://play.golang.org/p/V5VVFB05HB">http://play.golang.org/p/V5VVFB05HB</a>）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    state <span style="color:#ff79c6">:=</span> Running
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// print: &#34;state 0&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Println</span>(<span style="color:#f1fa8c">&#34;state &#34;</span>, state)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>除非你回顾常量定义，否则这里的<code>0</code>看起来毫无意义。只需要为<code>State</code>类型添加<code>String()</code>方法就可以修复这个问题（<a href="http://play.golang.org/p/ewMKl6K302">http://play.golang.org/p/ewMKl6K302</a>）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (s State) <span style="color:#50fa7b">String</span>() <span style="color:#8be9fd">string</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">switch</span> s {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> Running:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Running&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> Stopped:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Stopped&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> Rebooting:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Rebooting&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">case</span> Terminated:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Terminated&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;Unknown&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>新的输出是：<code>state: Running</code>。显然现在看起来可读性好了很多。在你调试程序的时候，这会带来更多的便利。同时还可以在实现 MarshalJSON()、UnmarshalJSON() 这类方法的时候使用同样的手段。</p>
 <h2 id="6-让-iota-从-a-1-开始增量">6. 让 iota 从 a +1 开始增量</h2>
 <p>在前面的例子中同时也产生了一个我已经遇到过许多次的 bug。假设你有一个新的结构体，有一个<code>State</code>字段：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
-    Name  <span style="color:#8be9fd">string</span>
-    Port  <span style="color:#8be9fd">int</span>
-    State State
-}
-</code></pre></div><p>现在如果基于 T 创建一个新的变量，然后输出，你会得到奇怪的结果（<a href="http://play.golang.org/p/LPG2RF3y39">http://play.golang.org/p/LPG2RF3y39</a>）：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    t <span style="color:#ff79c6">:=</span> T{Name: <span style="color:#f1fa8c">&#34;example&#34;</span>, Port: <span style="color:#bd93f9">6666</span>}
- 
-    <span style="color:#6272a4">// prints: &#34;t {Name:example Port:6666 State:Running}&#34;
-</span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
-}
-</code></pre></div><p>看到 bug 了吗？<code>State</code>字段没有初始化，Go 默认使用对应类型的零值进行填充。由于<code>State</code>是一个整数，零值也就是<code>0</code>，但在我们的例子中它表示<code>Running</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> T <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    Name  <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>    Port  <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>    State State
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>现在如果基于 T 创建一个新的变量，然后输出，你会得到奇怪的结果（<a href="http://play.golang.org/p/LPG2RF3y39">http://play.golang.org/p/LPG2RF3y39</a>）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    t <span style="color:#ff79c6">:=</span> T{Name: <span style="color:#f1fa8c">&#34;example&#34;</span>, Port: <span style="color:#bd93f9">6666</span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// prints: &#34;t {Name:example Port:6666 State:Running}&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>看到 bug 了吗？<code>State</code>字段没有初始化，Go 默认使用对应类型的零值进行填充。由于<code>State</code>是一个整数，零值也就是<code>0</code>，但在我们的例子中它表示<code>Running</code>。</p>
 <p>那么如何知道 State 被初始化了？还是它真得是在<code>Running</code>模式？没有办法区分它们，那么这就会产生未知的、不可预测的 bug。不过，修复这个很容易，只要让 iota 从 +1 开始（<a href="http://play.golang.org/p/VyAq-3OItv">http://play.golang.org/p/VyAq-3OItv</a>）：</p>
 <p>现在<code>t</code>变量将默认输出<code>Unknown</code>，不是吗？ 🙂 ：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    t <span style="color:#ff79c6">:=</span> T{Name: <span style="color:#f1fa8c">&#34;example&#34;</span>, Port: <span style="color:#bd93f9">6666</span>}
- 
-    <span style="color:#6272a4">// 输出： &#34;t {Name:example Port:6666 State:Unknown}&#34;
-</span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
-}
-</code></pre></div><p>不过让 iota 从零值开始也是一种解决办法。例如，你可以引入一个新的状态叫做<code>Unknown</code>，将其修改为：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">const</span> (
-    Unknown State = <span style="color:#ff79c6">iota</span>
-    Running
-    Stopped
-    Rebooting
-    Terminated
-)
-</code></pre></div><h2 id="7-返回函数调用">7. 返回函数调用</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    t <span style="color:#ff79c6">:=</span> T{Name: <span style="color:#f1fa8c">&#34;example&#34;</span>, Port: <span style="color:#bd93f9">6666</span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 输出： &#34;t {Name:example Port:6666 State:Unknown}&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;t %+v\n&#34;</span>, t)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>不过让 iota 从零值开始也是一种解决办法。例如，你可以引入一个新的状态叫做<code>Unknown</code>，将其修改为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">const</span> (
+</span></span><span style="display:flex;"><span>    Unknown State = <span style="color:#ff79c6">iota</span>
+</span></span><span style="display:flex;"><span>    Running
+</span></span><span style="display:flex;"><span>    Stopped
+</span></span><span style="display:flex;"><span>    Rebooting
+</span></span><span style="display:flex;"><span>    Terminated
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h2 id="7-返回函数调用">7. 返回函数调用</h2>
 <p>我已经看过很多代码例如（<a href="http://play.golang.org/p/8Rz1EJwFTZ">http://play.golang.org/p/8Rz1EJwFTZ</a>）：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() (<span style="color:#8be9fd">string</span>, <span style="color:#8be9fd">error</span>) {
-    v, err <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">foo</span>()
-    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
-        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;&#34;</span>, err
-    }
- 
-    <span style="color:#ff79c6">return</span> v, <span style="color:#ff79c6">nil</span>
-}
-</code></pre></div><p>然而，你只需要：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() (<span style="color:#8be9fd">string</span>, <span style="color:#8be9fd">error</span>) {
-    <span style="color:#ff79c6">return</span> <span style="color:#50fa7b">foo</span>()
-}
-</code></pre></div><p>更简单也更容易阅读（当然，除非你要对某些内部的值做一些记录）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() (<span style="color:#8be9fd">string</span>, <span style="color:#8be9fd">error</span>) {
+</span></span><span style="display:flex;"><span>    v, err <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">foo</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">if</span> err <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">nil</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;&#34;</span>, err
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> v, <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然而，你只需要：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() (<span style="color:#8be9fd">string</span>, <span style="color:#8be9fd">error</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#50fa7b">foo</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>更简单也更容易阅读（当然，除非你要对某些内部的值做一些记录）。</p>
 <h2 id="8-把-slicemap-等定义为自定义类型">8. 把 slice、map 等定义为自定义类型</h2>
 <p>将 slice 或 map 定义成自定义类型可以让代码维护起来更加容易。假设有一个<code>Server</code>类型和一个返回服务器列表的函数：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> Server <span style="color:#8be9fd;font-style:italic">struct</span> {
-    Name <span style="color:#8be9fd">string</span>
-}
- 
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ListServers</span>() []Server {
-    <span style="color:#ff79c6">return</span> []Server{
-        {Name: <span style="color:#f1fa8c">&#34;Server1&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Server2&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Foo1&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Foo2&#34;</span>},
-    }
-}
-</code></pre></div><p>现在假设需要获取某些特定名字的服务器。需要对 ListServers() 做一些改动，增加筛选条件：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6272a4">// ListServers 返回服务器列表。只会返回包含 name 的服务器。空的 name 将会返回所有服务器。
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ListServers</span>(name <span style="color:#8be9fd">string</span>) []Server {
-    servers <span style="color:#ff79c6">:=</span> []Server{
-        {Name: <span style="color:#f1fa8c">&#34;Server1&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Server2&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Foo1&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Foo2&#34;</span>},
-    }
- 
-    <span style="color:#6272a4">// 返回所有服务器
-</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> name <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;&#34;</span> {
-        <span style="color:#ff79c6">return</span> servers
-    }
- 
-    <span style="color:#6272a4">// 返回过滤后的结果
-</span><span style="color:#6272a4"></span>    filtered <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]Server, <span style="color:#bd93f9">0</span>)
- 
-    <span style="color:#ff79c6">for</span> _, server <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> servers {
-        <span style="color:#ff79c6">if</span> strings.<span style="color:#50fa7b">Contains</span>(server.Name, name) {
-            filtered = <span style="color:#8be9fd;font-style:italic">append</span>(filtered, server)
-        }
-    }
- 
-    <span style="color:#ff79c6">return</span> filtered
-}
-</code></pre></div><p>现在可以用这个来筛选有字符串<code>Foo</code>的服务器：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    servers <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">ListServers</span>(<span style="color:#f1fa8c">&#34;Foo&#34;</span>)
- 
-    <span style="color:#6272a4">// 输出：“servers [{Name:Foo1} {Name:Foo2}]”
-</span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;servers %+v\n&#34;</span>, servers)
-}
-</code></pre></div><p>显然这个函数能够正常工作。不过它的弹性并不好。如果你想对服务器集合引入其他逻辑的话会如何呢？例如检查所有服务器的状态，为每个服务器创建一个数据库记录，用其他字段进行筛选等等……</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Server <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>    Name <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ListServers</span>() []Server {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> []Server{
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Server1&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Server2&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Foo1&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Foo2&#34;</span>},
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>现在假设需要获取某些特定名字的服务器。需要对 ListServers() 做一些改动，增加筛选条件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// ListServers 返回服务器列表。只会返回包含 name 的服务器。空的 name 将会返回所有服务器。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ListServers</span>(name <span style="color:#8be9fd">string</span>) []Server {
+</span></span><span style="display:flex;"><span>    servers <span style="color:#ff79c6">:=</span> []Server{
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Server1&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Server2&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Foo1&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Foo2&#34;</span>},
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 返回所有服务器
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">if</span> name <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#34;&#34;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">return</span> servers
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 返回过滤后的结果
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    filtered <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>([]Server, <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> _, server <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> servers {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> strings.<span style="color:#50fa7b">Contains</span>(server.Name, name) {
+</span></span><span style="display:flex;"><span>            filtered = <span style="color:#8be9fd;font-style:italic">append</span>(filtered, server)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> filtered
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>现在可以用这个来筛选有字符串<code>Foo</code>的服务器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    servers <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">ListServers</span>(<span style="color:#f1fa8c">&#34;Foo&#34;</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 输出：“servers [{Name:Foo1} {Name:Foo2}]”
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;servers %+v\n&#34;</span>, servers)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>显然这个函数能够正常工作。不过它的弹性并不好。如果你想对服务器集合引入其他逻辑的话会如何呢？例如检查所有服务器的状态，为每个服务器创建一个数据库记录，用其他字段进行筛选等等……</p>
 <p>现在引入一个叫做<code>Servers</code>的新类型，并且修改原始版本的 ListServers() 返回这个新类型：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> Servers []Server
- 
-<span style="color:#6272a4">// ListServers 返回服务器列表
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ListServers</span>() Servers {
-    <span style="color:#ff79c6">return</span> []Server{
-        {Name: <span style="color:#f1fa8c">&#34;Server1&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Server2&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Foo1&#34;</span>},
-        {Name: <span style="color:#f1fa8c">&#34;Foo2&#34;</span>},
-    }
-}
-</code></pre></div><p>现在需要做的是只要为<code>Servers</code>类型添加一个新的<code>Filter()</code>方法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#6272a4">// Filter 返回包含 name 的服务器。空的 name 将会返回所有服务器。
-</span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">Filter</span>(name <span style="color:#8be9fd">string</span>) Servers {
-    filtered <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(Servers, <span style="color:#bd93f9">0</span>)
- 
-    <span style="color:#ff79c6">for</span> _, server <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> s {
-        <span style="color:#ff79c6">if</span> strings.<span style="color:#50fa7b">Contains</span>(server.Name, name) {
-            filtered = <span style="color:#8be9fd;font-style:italic">append</span>(filtered, server)
-        }
- 
-    }
- 
-    <span style="color:#ff79c6">return</span> filtered
-}
-</code></pre></div><p>现在可以针对字符串<code>Foo</code>筛选服务器：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
-    servers <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">ListServers</span>()
-    servers = servers.<span style="color:#50fa7b">Filter</span>(<span style="color:#f1fa8c">&#34;Foo&#34;</span>)
-    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;servers %+v\n&#34;</span>, servers)
-}
-</code></pre></div><p>哈！看到你的代码是多么的简单了吗？还想对服务器的状态进行检查？或者为每个服务器添加一条数据库记录？没问题，添加以下新方法即可：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">Check</span>()
-<span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">AddRecord</span>()
-<span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">Len</span>()
-<span style="color:#ff79c6">...</span>
-</code></pre></div><h2 id="9-withcontext-封装函数">9. withContext 封装函数</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Servers []Server
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#6272a4">// ListServers 返回服务器列表
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">ListServers</span>() Servers {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> []Server{
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Server1&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Server2&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Foo1&#34;</span>},
+</span></span><span style="display:flex;"><span>        {Name: <span style="color:#f1fa8c">&#34;Foo2&#34;</span>},
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>现在需要做的是只要为<code>Servers</code>类型添加一个新的<code>Filter()</code>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// Filter 返回包含 name 的服务器。空的 name 将会返回所有服务器。
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span><span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">Filter</span>(name <span style="color:#8be9fd">string</span>) Servers {
+</span></span><span style="display:flex;"><span>    filtered <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">make</span>(Servers, <span style="color:#bd93f9">0</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">for</span> _, server <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> s {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff79c6">if</span> strings.<span style="color:#50fa7b">Contains</span>(server.Name, name) {
+</span></span><span style="display:flex;"><span>            filtered = <span style="color:#8be9fd;font-style:italic">append</span>(filtered, server)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> filtered
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>现在可以针对字符串<code>Foo</code>筛选服务器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">main</span>() {
+</span></span><span style="display:flex;"><span>    servers <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">ListServers</span>()
+</span></span><span style="display:flex;"><span>    servers = servers.<span style="color:#50fa7b">Filter</span>(<span style="color:#f1fa8c">&#34;Foo&#34;</span>)
+</span></span><span style="display:flex;"><span>    fmt.<span style="color:#50fa7b">Printf</span>(<span style="color:#f1fa8c">&#34;servers %+v\n&#34;</span>, servers)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>哈！看到你的代码是多么的简单了吗？还想对服务器的状态进行检查？或者为每个服务器添加一条数据库记录？没问题，添加以下新方法即可：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">Check</span>()
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">AddRecord</span>()
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> (s Servers) <span style="color:#50fa7b">Len</span>()
+</span></span><span style="display:flex;"><span><span style="color:#ff79c6">...</span>
+</span></span></code></pre></div><h2 id="9-withcontext-封装函数">9. withContext 封装函数</h2>
 <p>有时对于函数会有一些重复劳动，例如锁/解锁，初始化一个新的局部上下文，准备初始化变量等等……这里有一个例子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
-    mu.<span style="color:#50fa7b">Lock</span>()
-    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
- 
-    <span style="color:#6272a4">// foo 相关的工作
-</span><span style="color:#6272a4"></span>}
- 
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() {
-    mu.<span style="color:#50fa7b">Lock</span>()
-    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
- 
-    <span style="color:#6272a4">// bar 相关的工作
-</span><span style="color:#6272a4"></span>}
- 
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">qux</span>() {
-    mu.<span style="color:#50fa7b">Lock</span>()
-    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
- 
-    <span style="color:#6272a4">// qux 相关的工作
-</span><span style="color:#6272a4"></span>}
-</code></pre></div><p>如果你想要修改某个内容，你需要对所有的都进行修改。如果它是一个常见的任务，那么最好创建一个叫做<code>withContext</code>的函数。这个函数的输入参数是另一个函数，并用调用者提供的上下文来调用它：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">withLockContext</span>(fn <span style="color:#8be9fd;font-style:italic">func</span>()) {
-    mu.Lock
-    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
- 
-    <span style="color:#50fa7b">fn</span>()
-}
-</code></pre></div><p>只需要将之前的函数用这个进行封装：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
-    <span style="color:#50fa7b">withLockContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>() {
-        <span style="color:#6272a4">// foo 相关工作
-</span><span style="color:#6272a4"></span>    })
-}
- 
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() {
-    <span style="color:#50fa7b">withLockContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>() {
-        <span style="color:#6272a4">// bar 相关工作
-</span><span style="color:#6272a4"></span>    })
-}
- 
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">qux</span>() {
-    <span style="color:#50fa7b">withLockContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>() {
-        <span style="color:#6272a4">// qux 相关工作
-</span><span style="color:#6272a4"></span>    })
-}
-</code></pre></div><p>不要光想着加锁的情形。对此来说最好的用例是数据库链接。现在对 withContext 函数作一些小小的改动：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">withDBContext</span>(fn <span style="color:#8be9fd;font-style:italic">func</span>(db DB) <span style="color:#8be9fd">error</span>) <span style="color:#8be9fd">error</span> {
-    <span style="color:#6272a4">// 从连接池获取一个数据库连接
-</span><span style="color:#6272a4"></span>    dbConn <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">NewDB</span>()
- 
-    <span style="color:#ff79c6">return</span> <span style="color:#50fa7b">fn</span>(dbConn)
-}
-</code></pre></div><p>如你所见，它获取一个连接，然后传递给提供的参数，并且在调用函数的时候返回错误。你需要做的只是：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
-    <span style="color:#50fa7b">withDBContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>(db <span style="color:#ff79c6">*</span>DB) <span style="color:#8be9fd">error</span> {
-        <span style="color:#6272a4">// foo 相关工作
-</span><span style="color:#6272a4"></span>    })
-}
- 
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() {
-    <span style="color:#50fa7b">withDBContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>(db <span style="color:#ff79c6">*</span>DB) <span style="color:#8be9fd">error</span> {
-        <span style="color:#6272a4">// bar 相关工作
-</span><span style="color:#6272a4"></span>    })
-}
- 
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">qux</span>() {
-    <span style="color:#50fa7b">withDBContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>(db <span style="color:#ff79c6">*</span>DB) <span style="color:#8be9fd">error</span> {
-        <span style="color:#6272a4">// qux 相关工作
-</span><span style="color:#6272a4"></span>    })
-}
-</code></pre></div><p>你在考虑一个不同的场景，例如作一些预初始化？没问题，只需要将它们加到<code>withDBContext</code>就可以了。这对于测试也同样有效。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// foo 相关的工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() {
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// bar 相关的工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">qux</span>() {
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// qux 相关的工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>}
+</span></span></code></pre></div><p>如果你想要修改某个内容，你需要对所有的都进行修改。如果它是一个常见的任务，那么最好创建一个叫做<code>withContext</code>的函数。这个函数的输入参数是另一个函数，并用调用者提供的上下文来调用它：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">withLockContext</span>(fn <span style="color:#8be9fd;font-style:italic">func</span>()) {
+</span></span><span style="display:flex;"><span>    mu.Lock
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">defer</span> mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">fn</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>只需要将之前的函数用这个进行封装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">withLockContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// foo 相关工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">withLockContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// bar 相关工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">qux</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">withLockContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// qux 相关工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>不要光想着加锁的情形。对此来说最好的用例是数据库链接。现在对 withContext 函数作一些小小的改动：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">withDBContext</span>(fn <span style="color:#8be9fd;font-style:italic">func</span>(db DB) <span style="color:#8be9fd">error</span>) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 从连接池获取一个数据库连接
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    dbConn <span style="color:#ff79c6">:=</span> <span style="color:#50fa7b">NewDB</span>()
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#50fa7b">fn</span>(dbConn)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如你所见，它获取一个连接，然后传递给提供的参数，并且在调用函数的时候返回错误。你需要做的只是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">foo</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">withDBContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>(db <span style="color:#ff79c6">*</span>DB) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// foo 相关工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">bar</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">withDBContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>(db <span style="color:#ff79c6">*</span>DB) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// bar 相关工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">qux</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">withDBContext</span>(<span style="color:#8be9fd;font-style:italic">func</span>(db <span style="color:#ff79c6">*</span>DB) <span style="color:#8be9fd">error</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#6272a4">// qux 相关工作
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>    })
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>你在考虑一个不同的场景，例如作一些预初始化？没问题，只需要将它们加到<code>withDBContext</code>就可以了。这对于测试也同样有效。</p>
 <p>这个方法有个缺陷，它增加了缩进并且更难阅读。再次提示，永远寻找最简单的解决方案。</p>
 <h2 id="10-为访问-map-增加-settergetters">10. 为访问 map 增加 setter，getters</h2>
 <p>如果你重度使用 map 读写数据，那么就为其添加 getter 和 setter 吧。通过 getter 和 setter 你可以将逻辑封分别装到函数里。这里最常见的错误就是并发访问。如果你在某个 goroutein 里有这样的代码：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">m[<span style="color:#f1fa8c">&#34;foo&#34;</span>] = bar
-</code></pre></div><p>还有这个：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">delete</span>(m, <span style="color:#f1fa8c">&#34;foo&#34;</span>)
-</code></pre></div><p>会发生什么？你们中的大多数应当已经非常熟悉这样的竞态了。简单来说这个竞态是由于 map 默认并非线程安全。不过你可以用互斥量来保护它们：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go">mu.<span style="color:#50fa7b">Lock</span>()
-m[<span style="color:#f1fa8c">&#34;foo&#34;</span>] = <span style="color:#f1fa8c">&#34;bar&#34;</span>
-mu.<span style="color:#50fa7b">Unlock</span>()
-</code></pre></div><p>以及：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">mu.<span style="color:#50fa7b">Lock</span>()
-<span style="color:#8be9fd;font-style:italic">delete</span>(m, <span style="color:#f1fa8c">&#34;foo&#34;</span>)
-mu.<span style="color:#50fa7b">Unlock</span>()
-</code></pre></div><p>假设你在其他地方也使用这个 map。你必须把互斥量放得到处都是！然而通过 getter 和 setter 函数就可以很容易的避免这个问题：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Put</span>(key, value <span style="color:#8be9fd">string</span>) {
-    mu.<span style="color:#50fa7b">Lock</span>()
-    m[key] = value
-    mu.<span style="color:#50fa7b">Unlock</span>()
-}
-<span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Delete</span>(key <span style="color:#8be9fd">string</span>) {
-    mu.<span style="color:#50fa7b">Lock</span>()
-    <span style="color:#8be9fd;font-style:italic">delete</span>(m, key)
-    mu.<span style="color:#50fa7b">Unlock</span>()
-}
-</code></pre></div><p>使用接口可以对这一过程做进一步的改进。你可以将实现完全隐藏起来。只使用一个简单的、设计良好的接口，然后让包的用户使用它们：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#8be9fd;font-style:italic">type</span> Storage <span style="color:#8be9fd;font-style:italic">interface</span> {
-    <span style="color:#50fa7b">Delete</span>(key <span style="color:#8be9fd">string</span>)
-    <span style="color:#50fa7b">Get</span>(key <span style="color:#8be9fd">string</span>) <span style="color:#8be9fd">string</span>
-    <span style="color:#50fa7b">Put</span>(key, value <span style="color:#8be9fd">string</span>)
-}
-</code></pre></div><p>这只是个例子，不过你应该能体会到。对于底层的实现使用什么都没关系。不光是使用接口本身很简单，而且还解决了暴露内部数据结构带来的大量的问题。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>m[<span style="color:#f1fa8c">&#34;foo&#34;</span>] = bar
+</span></span></code></pre></div><p>还有这个：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">delete</span>(m, <span style="color:#f1fa8c">&#34;foo&#34;</span>)
+</span></span></code></pre></div><p>会发生什么？你们中的大多数应当已经非常熟悉这样的竞态了。简单来说这个竞态是由于 map 默认并非线程安全。不过你可以用互斥量来保护它们：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Go" data-lang="Go"><span style="display:flex;"><span>mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>m[<span style="color:#f1fa8c">&#34;foo&#34;</span>] = <span style="color:#f1fa8c">&#34;bar&#34;</span>
+</span></span><span style="display:flex;"><span>mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span></code></pre></div><p>以及：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">delete</span>(m, <span style="color:#f1fa8c">&#34;foo&#34;</span>)
+</span></span><span style="display:flex;"><span>mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span></code></pre></div><p>假设你在其他地方也使用这个 map。你必须把互斥量放得到处都是！然而通过 getter 和 setter 函数就可以很容易的避免这个问题：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Put</span>(key, value <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>    m[key] = value
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">Delete</span>(key <span style="color:#8be9fd">string</span>) {
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#50fa7b">Lock</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd;font-style:italic">delete</span>(m, key)
+</span></span><span style="display:flex;"><span>    mu.<span style="color:#50fa7b">Unlock</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>使用接口可以对这一过程做进一步的改进。你可以将实现完全隐藏起来。只使用一个简单的、设计良好的接口，然后让包的用户使用它们：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">type</span> Storage <span style="color:#8be9fd;font-style:italic">interface</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">Delete</span>(key <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">Get</span>(key <span style="color:#8be9fd">string</span>) <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">Put</span>(key, value <span style="color:#8be9fd">string</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>这只是个例子，不过你应该能体会到。对于底层的实现使用什么都没关系。不光是使用接口本身很简单，而且还解决了暴露内部数据结构带来的大量的问题。</p>
 <p>但是得承认，有时只是为了同时对若干个变量加锁就使用接口会有些过分。理解你的程序，并且在你需要的时候使用这些改进。</p>
 <h2 id="总结">总结</h2>
 <p>抽象永远都不是容易的事情。有时，最简单的就是你已经实现的方法。要知道，不要让你的代码看起来很聪明。Go 天生就是个简单的语言，在大多数情况下只会有一种方法来作某事。简单是力量的源泉，也是为什么在人的层面它表现的如此有弹性。</p>
@@ -714,8 +714,20 @@ mu.<span style="color:#50fa7b">Unlock</span>()
                         
                         
                         
+                        <a href="/tags/gitea" title="gitea">
+                            gitea
+                        </a>
+                        
+                        
+                        
                         <a href="/tags/golang" title="golang">
                             golang
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/jenkins" title="jenkins">
+                            jenkins
                         </a>
                         
                         
